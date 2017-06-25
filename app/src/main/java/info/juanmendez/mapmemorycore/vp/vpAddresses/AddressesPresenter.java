@@ -11,7 +11,7 @@ import info.juanmendez.mapmemorycore.services.AddressProvider;
  * contact@juanmendez.info
  */
 
-public class AddressesPresenter {
+public class AddressesPresenter{
 
     @Inject
     AddressProvider provider;

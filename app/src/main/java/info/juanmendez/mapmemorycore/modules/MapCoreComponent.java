@@ -4,7 +4,6 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesPresenter;
-import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesView;
 
 /**
  * Created by Juan Mendez on 6/24/2017.
@@ -15,5 +14,4 @@ import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesView;
 @Component(modules={MapCoreModule.class})
 public interface MapCoreComponent {
     void inject(AddressesPresenter addressesPresenter );
-    void inject(AddressesView addressesView );
 }

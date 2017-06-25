@@ -4,6 +4,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import info.juanmendez.mapmemorycore.CoreApp;
 import info.juanmendez.mapmemorycore.services.AddressProvider;
 
 /**
@@ -16,19 +17,23 @@ import info.juanmendez.mapmemorycore.services.AddressProvider;
 public class MapCoreModule {
 
     private static MapCoreComponent component;
+    private CoreApp app;
+
+    public MapCoreModule(CoreApp app) {
+        this.app = app;
+    }
+
+    public static void setApp(CoreApp app ){
+        component = DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(app)).build();
+    }
 
     @Singleton
     @Provides
-    public AddressProvider getAddressProvider(){
-        return new AddressProvider();
+    public AddressProvider getAddressAdapter(){
+        return app.getAddressProvider();
     }
 
     public static MapCoreComponent getComponent(){
-
-        if( component == null ){
-            component = DaggerMapCoreComponent.builder().build();
-        }
-
         return component;
     }
 }

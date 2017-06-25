@@ -6,6 +6,7 @@ package info.juanmendez.mapmemorycore.models;
  * contact@juanmendez.info
  */
 
+
 public class Address {
 
     private int addressId;

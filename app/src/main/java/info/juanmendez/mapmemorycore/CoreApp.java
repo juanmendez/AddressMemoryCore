@@ -2,7 +2,7 @@ package info.juanmendez.mapmemorycore;
 
 import android.content.Context;
 
-import info.juanmendez.mapmemorycore.services.AddressProvider;
+import info.juanmendez.mapmemorycore.dependencies.RealmProvider;
 
 /**
  * Created by Juan Mendez on 6/25/2017.
@@ -12,5 +12,5 @@ import info.juanmendez.mapmemorycore.services.AddressProvider;
 
 public interface CoreApp {
     public Context getApplication();
-    public AddressProvider getAddressProvider();
+    public RealmProvider getRealmProvider();
 }

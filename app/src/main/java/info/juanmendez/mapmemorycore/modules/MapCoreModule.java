@@ -5,7 +5,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import info.juanmendez.mapmemorycore.CoreApp;
-import info.juanmendez.mapmemorycore.services.AddressProvider;
+import info.juanmendez.mapmemorycore.dependencies.RealmProvider;
 
 /**
  * Created by Juan Mendez on 6/24/2017.
@@ -29,8 +29,8 @@ public class MapCoreModule {
 
     @Singleton
     @Provides
-    public AddressProvider getAddressAdapter(){
-        return app.getAddressProvider();
+    public RealmProvider getRealmProvider(){
+        return app.getRealmProvider();
     }
 
     public static MapCoreComponent getComponent(){

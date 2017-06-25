@@ -4,8 +4,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import info.juanmendez.mapmemorycore.vp.TestApp;
-import info.juanmendez.mapmemorycore.vp.vpAddresses.TestAddressesView;
+import info.juanmendez.mapmemorycore.modules.MapCoreModule;
+import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesPresenter;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -13,17 +13,18 @@ import info.juanmendez.mapmemorycore.vp.vpAddresses.TestAddressesView;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class DependencyInjectionTests {
-    TestApp testApp;
+
 
     @Before
     public void before(){
-        testApp = new TestApp();
+
     }
 
     @Test
     public void testComponentExists(){
-        Assert.assertNotNull( TestApp.getComponent() );
+        Assert.assertNotNull( MapCoreModule.getComponent() );
 
-        TestApp.getComponent().inject( new TestAddressesView() );
+        AddressesPresenter presenter = new AddressesPresenter();
+        Assert.assertNotNull( presenter.getProvider() );
     }
 }

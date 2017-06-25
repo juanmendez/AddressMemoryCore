@@ -12,8 +12,8 @@ import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesView;
  * contact@juanmendez.info
  */
 @Singleton
-@Component(modules={MapMemoryModule.class})
-public interface MapMemoryComponent {
-    void inject(AddressesView addressesView );
+@Component(modules={MapCoreModule.class})
+public interface MapCoreComponent {
     void inject(AddressesPresenter addressesPresenter );
+    void inject(AddressesView addressesView );
 }

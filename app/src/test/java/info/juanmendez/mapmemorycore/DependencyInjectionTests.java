@@ -54,8 +54,7 @@ public class DependencyInjectionTests extends MockRealmTester {
 
         addresses = provider.getAddresses();
         assertEquals(addresses.size(), 0);
-
-
+        
         address = provider.getAddress(2);
         assertNull( address );
 
@@ -78,6 +77,5 @@ public class DependencyInjectionTests extends MockRealmTester {
         }, error -> {
             assertTrue( false );
         } );
-
     }
 }

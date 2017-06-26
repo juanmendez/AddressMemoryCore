@@ -1,3 +1,4 @@
 include ':app'
+//local installation for: https://github.com/juanmendez/Mocking-Realm
 include 'mockrealm'
 project(':mockrealm').projectDir = new File('C:/codes/Android/misc/mockRealm/mockrealm' )

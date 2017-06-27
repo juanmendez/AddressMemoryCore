@@ -37,6 +37,17 @@ public class AddressProvider {
         return addresses;
     }
 
+    public Observable<RealmResults<Address>> getAddressesAsync() {
+
+        RealmResults<Address> addresses;
+
+        realm.beginTransaction();
+        addresses = realm.where( Address.class ).findAllAsync();
+        realm.commitTransaction();
+
+        return addresses.asObservable();
+    }
+
     public Observable<Address> getAddressAsync(int addressId){
 
         return realm.where( Address.class )
@@ -54,6 +65,7 @@ public class AddressProvider {
 
         return address;
     }
+
 
     public void updateAddressAsync(Address address, Realm.Transaction.OnSuccess successHandler, Realm.Transaction.OnError errorHandler ){
 
@@ -96,4 +108,5 @@ public class AddressProvider {
 
         return primaryKeyValue.incrementAndGet();
     }
+
 }

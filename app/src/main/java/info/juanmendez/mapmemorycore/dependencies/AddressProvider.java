@@ -21,6 +21,23 @@ import rx.Observable;
 public class AddressProvider {
 
     Realm realm;
+    Address selectedAddress;
+
+    public Realm getRealm() {
+        return realm;
+    }
+
+    public void setRealm(Realm realm) {
+        this.realm = realm;
+    }
+
+    public Address getSelectedAddress() {
+        return selectedAddress;
+    }
+
+    public void setSelectedAddress(Address selectedAddress) {
+        this.selectedAddress = selectedAddress;
+    }
 
     @Inject
     public AddressProvider(RealmProvider realmProvider) {

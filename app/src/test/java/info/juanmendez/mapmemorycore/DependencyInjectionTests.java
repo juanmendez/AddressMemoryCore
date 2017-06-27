@@ -80,6 +80,12 @@ public class DependencyInjectionTests extends MockRealmTester {
         } );
     }
 
+    /**
+     * In this scenario there is an activity or fragment which has a recyclerView, and
+     * whose presenter is going to update the list. We are stealing away the provider
+     * inside this view's presenter in order to update it and see if the data is changed
+     * in the actual view.
+     */
     @Test
     public void testAddressesView(){
         MockRealm.clearData();
@@ -123,11 +129,25 @@ public class DependencyInjectionTests extends MockRealmTester {
 
         //good, good.. now I want to delete the first item..
         provider.deleteAddressAsync(1, () -> {
-
             //should be just one.
             assertEquals( addressesView.getAddresses().size(), 1 );
         }, error -> {
 
         });
+
+        //lets see rotation..
+        addressesView.onPause();
+        addressesView.onStart();
+
+        assertEquals( addressesView.getAddresses().size(), 1 );
+
+        //we want to make the o
+        address = provider.getAddress(2);
+        provider.setSelectedAddress( address );
     }
+
+
+    /**
+     *
+     */
 }

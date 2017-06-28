@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: "me.tatarka.retrolambda"
 apply plugin: 'realm-android'
 
@@ -6,7 +6,6 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "info.juanmendez.mapmemorycore"
         minSdkVersion 21
         targetSdkVersion 25
         versionCode 1

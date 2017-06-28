@@ -35,7 +35,7 @@ public class AddressProvider {
         return selectedAddress;
     }
 
-    public void setSelectedAddress(Address selectedAddress) {
+    public void selectAddress(Address selectedAddress) {
         this.selectedAddress = selectedAddress;
     }
 

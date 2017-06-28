@@ -41,4 +41,12 @@ public class AddressesPresenter implements ViewPresenter<AddressesPresenter, Add
     public AddressesPresenter onPause() {
         return this;
     }
+
+    public void selectAddress( Address address ){
+        addressProvider.selectAddress( address );
+    }
+
+    public void addAddress(){
+        addressProvider.selectAddress( null );
+    }
 }

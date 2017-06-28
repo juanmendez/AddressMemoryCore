@@ -8,6 +8,7 @@ import org.powermock.reflect.Whitebox;
 import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
 import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
 import info.juanmendez.mapmemorycore.mamemorycore.dependencies.TestRealmProvider;
+import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressView;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddresses.TestAddressesView;
 import info.juanmendez.mapmemorycore.models.Address;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
@@ -143,11 +144,79 @@ public class DependencyInjectionTests extends MockRealmTester {
 
         //we want to make the o
         address = provider.getAddress(2);
-        provider.setSelectedAddress( address );
+        provider.selectAddress( address );
+    }
+
+    /**
+     * scenario from addressesView we want to select one item and
+     * open addressView.
+     * @param provider
+     */
+    @Test
+    public void testAddressView(){
+
+        MockRealm.clearData();
+
+        RealmResults<Address> addresses;
+        AddressProvider provider;
+        Address address;
+
+        /**
+         * lets build addressesView
+         */
+        TestAddressesView addressesView = new TestAddressesView();
+        provider = Whitebox.getInternalState( addressesView.getPresenter(), "addressProvider" );
+
+        addressesView.onStart();
+        addresses = addressesView.getAddresses();
+
+        insertAddresses( provider );
+        assertEquals( addresses.size(), 4 );
+
+        //we are going to select the first address from provider.
+        address = provider.getAddress(1);
+        provider.selectAddress( address );
+
+
+        //programmatically we are going to start the next view
+        TestAddressView addressView = new TestAddressView();
+        addressView.onStart();
+
     }
 
 
-    /**
-     *
-     */
+
+    void insertAddresses( AddressProvider provider ){
+
+        Address address;
+
+        //lets add an address, and see if addressesView has updated its addresses
+        address = new Address(provider.getNextPrimaryKey());
+        address.setName( "1");
+        address.setAddress("0 N. State");
+        address.setCity( "Chicago" );
+        address.setZip( "60641" );
+        provider.updateAddress( address );
+
+        address = new Address(provider.getNextPrimaryKey());
+        address.setName( "2");
+        address.setAddress("1 N. State");
+        address.setCity( "Chicago" );
+        address.setZip( "60641" );
+        provider.updateAddress( address );
+
+        address = new Address(provider.getNextPrimaryKey());
+        address.setName( "3");
+        address.setAddress("2 N. State");
+        address.setCity( "Chicago" );
+        address.setZip( "60641" );
+        provider.updateAddress( address );
+
+        address = new Address(provider.getNextPrimaryKey());
+        address.setName( "4");
+        address.setAddress("3 N. State");
+        address.setCity( "Chicago" );
+        address.setZip( "60641" );
+        provider.updateAddress( address );
+    }
 }

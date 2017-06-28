@@ -3,6 +3,7 @@ package info.juanmendez.mapmemorycore.modules;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
 import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesPresenter;
 
 /**
@@ -14,4 +15,5 @@ import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesPresenter;
 @Component(modules={MapCoreModule.class})
 public interface MapCoreComponent {
     void inject(AddressesPresenter addressesPresenter );
+    void inject(AddressPresenter addressPresenter );
 }

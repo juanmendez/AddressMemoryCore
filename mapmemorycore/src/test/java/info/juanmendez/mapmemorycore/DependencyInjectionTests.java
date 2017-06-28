@@ -184,8 +184,6 @@ public class DependencyInjectionTests extends MockRealmTester {
 
     }
 
-
-
     void insertAddresses( AddressProvider provider ){
 
         Address address;

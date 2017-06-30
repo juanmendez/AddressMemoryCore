@@ -150,7 +150,6 @@ public class DependencyInjectionTests extends MockRealmTester {
     /**
      * scenario from addressesView we want to select one item and
      * open addressView.
-     * @param provider
      */
     @Test
     public void testAddressView(){
@@ -171,7 +170,7 @@ public class DependencyInjectionTests extends MockRealmTester {
         addresses = addressesView.getAddresses();
 
         insertAddresses( provider );
-        assertEquals( addresses.size(), 4 );
+        assertEquals( provider.countAddresses(), 4 );
 
         //we are going to select the first address from provider.
         address = provider.getAddress(1);

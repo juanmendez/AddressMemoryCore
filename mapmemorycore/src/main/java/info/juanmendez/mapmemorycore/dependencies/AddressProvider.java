@@ -126,4 +126,8 @@ public class AddressProvider {
         return primaryKeyValue.incrementAndGet();
     }
 
+    public long countAddresses(){
+        return realm.where(Address.class).count();
+    }
+
 }

@@ -18,8 +18,10 @@ public class AddressesPresenter implements ViewPresenter<AddressesPresenter, Add
 
     @Inject
     AddressProvider addressProvider;
-    RealmResults<Address> addresses;
 
+    public static final String TAG = "addressesView";
+
+    private RealmResults<Address> addresses;
     private AddressesView view;
 
     public AddressesPresenter() {
@@ -30,10 +32,11 @@ public class AddressesPresenter implements ViewPresenter<AddressesPresenter, Add
     public AddressesPresenter onStart(AddressesView view) {
         this.view = view;
 
-        addressProvider.getAddressesAsync().subscribe(addresses -> {
-            view.injectAddresses( addresses );
-        });
+        Address address = new Address(1);
+        address.setName("Home");
+        addressProvider.updateAddress(address);
 
+        view.injectAddresses( addressProvider.getAddresses() );
         return this;
     }
 

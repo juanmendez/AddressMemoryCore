@@ -1,6 +1,6 @@
 package info.juanmendez.mapmemorycore.dependencies;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -96,7 +96,7 @@ public class AddressProvider {
         Address updatedAddress;
 
         realm.beginTransaction();
-           updatedAddress = realm.copyToRealm( address );
+           updatedAddress = realm.copyToRealmOrUpdate( address );
         realm.commitTransaction();
 
         return updatedAddress;
@@ -114,11 +114,11 @@ public class AddressProvider {
         }, successHandler, errorHandler  );
     }
 
-    public int getNextPrimaryKey(){
-        AtomicInteger primaryKeyValue;
+    public long getNextPrimaryKey(){
+        AtomicLong primaryKeyValue;
 
         try {
-            primaryKeyValue = new AtomicInteger(realm.where(Address.class).max("addressId").intValue());
+            primaryKeyValue = new AtomicLong(realm.where(Address.class).max("addressId").longValue());
         } catch (Exception e) {
             return 1;
         }

@@ -17,6 +17,9 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressV
     AddressProvider addressProvider;
     AddressView view;
 
+    public static final String VIEW_TAG = "addressView";
+    public static final String EDIT_TAG = "editAddressView";
+
     public AddressPresenter() {
         MapCoreModule.getComponent().inject(this);
     }

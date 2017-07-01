@@ -13,7 +13,7 @@ import io.realm.annotations.PrimaryKey;
 public class Address extends RealmObject{
 
     @PrimaryKey
-    private int addressId;
+    private long addressId;
 
     String name;
     String address;
@@ -33,7 +33,7 @@ public class Address extends RealmObject{
         this.addressId = addressId;
     }
 
-    public int getAddressId() {
+    public long getAddressId() {
         return addressId;
     }
 

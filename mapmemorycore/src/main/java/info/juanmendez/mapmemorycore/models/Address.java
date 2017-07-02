@@ -29,7 +29,7 @@ public class Address extends RealmObject{
     public Address() {
     }
 
-    public Address(int addressId) {
+    public Address(long addressId) {
         this.addressId = addressId;
     }
 

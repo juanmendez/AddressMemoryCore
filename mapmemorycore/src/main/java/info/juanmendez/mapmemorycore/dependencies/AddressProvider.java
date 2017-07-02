@@ -65,14 +65,14 @@ public class AddressProvider {
         return addresses.asObservable();
     }
 
-    public Observable<Address> getAddressAsync(int addressId){
+    public Observable<Address> getAddressAsync(long addressId){
 
         return realm.where( Address.class )
                 .equalTo( "addressId", addressId )
                 .findFirstAsync().asObservable();
     }
 
-    public Address getAddress( int addressId ){
+    public Address getAddress( long addressId ){
 
         Address address;
 
@@ -102,7 +102,7 @@ public class AddressProvider {
         return updatedAddress;
     }
 
-    public void deleteAddressAsync(int addressId, Realm.Transaction.OnSuccess successHandler, Realm.Transaction.OnError errorHandler ){
+    public void deleteAddressAsync(long addressId, Realm.Transaction.OnSuccess successHandler, Realm.Transaction.OnError errorHandler ){
         realm.executeTransactionAsync(thisRealm -> {
             RealmResults<Address> addresses = thisRealm.where( Address.class ).equalTo( "addressId", addressId ).findAll();
 

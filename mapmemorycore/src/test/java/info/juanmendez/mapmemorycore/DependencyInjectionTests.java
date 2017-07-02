@@ -43,6 +43,7 @@ public class DependencyInjectionTests extends MockRealmTester {
     @Test
     public void testAddressProvider(){
 
+        MockRealm.clearData();
         RealmResults<Address> addresses;
         Address address;
 
@@ -55,7 +56,7 @@ public class DependencyInjectionTests extends MockRealmTester {
         AddressProvider provider = Whitebox.getInternalState( presenter, "addressProvider" );
 
         addresses = provider.getAddresses();
-        assertEquals(addresses.size(), 0);
+        assertEquals(provider.countAddresses(), 0);
 
         address = provider.getAddress(2);
         assertNull( address );
@@ -103,7 +104,8 @@ public class DependencyInjectionTests extends MockRealmTester {
 
         addressesView.onStart();
         addresses = addressesView.getAddresses();
-        assertEquals( addresses.size(), 0 );
+
+        assertEquals(0, provider.countAddresses());
 
         //lets add an address, and see if addressesView has updated its addresses
         address = new Address(provider.getNextPrimaryKey());
@@ -116,7 +118,7 @@ public class DependencyInjectionTests extends MockRealmTester {
         provider.updateAddress( address );
 
         //ok, lets see..
-        assertEquals( addressesView.getAddresses().size(), 1 );
+        assertEquals( provider.countAddresses(), 1 );
 
 
         //lets add another address, and see if it has also updated.

@@ -54,8 +54,6 @@ public class DependencyInjectionTests extends MockRealmTester {
 
         //Pull the injection, and test it!
         AddressProvider provider = Whitebox.getInternalState( presenter, "addressProvider" );
-
-        addresses = provider.getAddresses();
         assertEquals(provider.countAddresses(), 0);
 
         address = provider.getAddress(2);
@@ -64,7 +62,7 @@ public class DependencyInjectionTests extends MockRealmTester {
         provider.updateAddress( new Address(1));
 
         address = provider.getAddress(1);
-        address.setName( "Home");
+        address.setName( "testAddressProvider");
         address.setAddress("0 N. State");
         address.setCity( "Chicago" );
         address.setZip( "60641" );
@@ -109,7 +107,7 @@ public class DependencyInjectionTests extends MockRealmTester {
 
         //lets add an address, and see if addressesView has updated its addresses
         address = new Address(provider.getNextPrimaryKey());
-        address.setName( "Home");
+        address.setName( "testAddressesView1");
         address.setAddress("0 N. State");
         address.setCity( "Chicago" );
         address.setZip( "60641" );
@@ -123,17 +121,17 @@ public class DependencyInjectionTests extends MockRealmTester {
 
         //lets add another address, and see if it has also updated.
         address = new Address(provider.getNextPrimaryKey());
-        address.setName( "Home");
+        address.setName( "testAddressesView2");
         address.setAddress("0 N. State");
         address.setCity( "Chicago" );
         address.setZip( "60641" );
         provider.updateAddress( address );
-        assertEquals( addressesView.getAddresses().size(), 2 );
+        assertEquals( provider.countAddresses(), 2 );
 
         //good, good.. now I want to delete the first item..
         provider.deleteAddressAsync(1, () -> {
             //should be just one.
-            assertEquals( addressesView.getAddresses().size(), 1 );
+            assertEquals( provider.countAddresses(), 1 );
         }, error -> {
 
         });
@@ -142,7 +140,7 @@ public class DependencyInjectionTests extends MockRealmTester {
         addressesView.onPause();
         addressesView.onStart();
 
-        assertEquals( addressesView.getAddresses().size(), 1 );
+        assertEquals( provider.countAddresses(), 1 );
 
         //we want to make the o
         address = provider.getAddress(2);

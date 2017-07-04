@@ -31,11 +31,6 @@ public class AddressesPresenter implements ViewPresenter<AddressesPresenter, Add
     @Override
     public AddressesPresenter onStart(AddressesView view) {
         this.view = view;
-
-        Address address = new Address(1);
-        address.setName("Home");
-        addressProvider.updateAddress(address);
-
         view.injectAddresses( addressProvider.getAddresses() );
         return this;
     }

@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MapMemoryCore.iml" filepath="$PROJECT_DIR$/MapMemoryCore.iml" />
       <module fileurl="file://$PROJECT_DIR$/mapmemorycore/mapmemorycore.iml" filepath="$PROJECT_DIR$/mapmemorycore/mapmemorycore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../../misc/mockRealm/mockrealm/mockrealm.iml" filepath="$PROJECT_DIR$/../../../misc/mockRealm/mockrealm/mockrealm.iml" />
     </modules>
   </component>
 </project>

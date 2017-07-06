@@ -246,5 +246,8 @@ public class DependencyInjectionTests extends MockRealmTester {
         address.setLat( 12 );
         errors = provider.validate( address);
         assertTrue( errors.size()==1 );
+
+        errors = provider.validate( new Address(2));
+        assertTrue( errors.size()==1 );
     }
 }

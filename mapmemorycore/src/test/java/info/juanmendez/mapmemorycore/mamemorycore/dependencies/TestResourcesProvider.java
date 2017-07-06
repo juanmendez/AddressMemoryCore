@@ -16,6 +16,8 @@ public class TestResourcesProvider implements ResourcesProvider {
     public String getString(int stringId) {
         if( stringId == R.string.required_field )
             return "Test says field is required!";
+        else if( stringId == R.string.address_gone )
+            return "Test says address is gone!";
 
         return null;
     }

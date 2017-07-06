@@ -141,13 +141,25 @@ public class AddressProvider {
     public List<SubmitError> validate(Address address ){
         List<SubmitError> errors = new ArrayList<>();
 
+
+        if( SubmitError.initialized( address.getAddressId() ) ){
+
+            Address savedAddress =  getAddress( address.getAddressId() );
+
+            //This is the only invalid field needed.
+            if( savedAddress == null ){
+                errors.add( new SubmitError(AddressFields.ADDRESSID, resourcesProvider.getString(R.string.address_gone)));
+                return errors;
+            }
+        }
+
         //lets do a check for name
         if( SubmitError.emptyOrNull(address.getName()) ){
             errors.add( new SubmitError(AddressFields.NAME, resourcesProvider.getString(R.string.required_field)));
         }
 
         //if lat lon are provided we skip checking address and zipcode
-        if( address.getLat() == 0l && address.getLon() == 0l ){
+        if( !SubmitError.initialized( address.getLat() ) && !SubmitError.initialized( address.getLon() ) ){
 
             if( SubmitError.emptyOrNull(address.getAddress()) ){
                 errors.add( new SubmitError(AddressFields.ADDRESS, resourcesProvider.getString(R.string.required_field)));
@@ -159,5 +171,4 @@ public class AddressProvider {
         }
         return errors;
     }
-
 }

@@ -26,4 +26,12 @@ public class SubmitError{
     public static Boolean emptyOrNull( String field ){
         return field==null || field.trim().isEmpty();
     }
+
+    public static Boolean initialized(long field ){
+        return field != 0l;
+    }
+
+    public static Boolean initialized(int field ){
+        return field != 0;
+    }
 }

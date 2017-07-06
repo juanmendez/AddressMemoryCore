@@ -22,7 +22,6 @@ import info.juanmendez.mockrealm.test.MockRealmTester;
 import io.realm.RealmResults;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertNotNull;
@@ -242,25 +241,10 @@ public class DependencyInjectionTests extends MockRealmTester {
 
         assertTrue( errors.size()==3 );
 
-
-        address = new Address(provider.getNextPrimaryKey());
-        address.setName( "3");
-        address.setAddress("2 N. State");
-        address.setCity( "Chicago" );
-        address.setZip( "60641" );
-
-        assertFalse( address.isValid() );
-        address = provider.updateAddress( address );
-        assertTrue( address.isValid() );
-
-        Address finalAddress = address;
-        provider.deleteAddressAsync(address.getAddressId(), () -> {
-            assertFalse( finalAddress.isValid() );
-        }, error -> {
-
-        });
-
-
-
+        //how about submitting lat lon instead of address and city.
+        address.setLat( 12 );
+        address.setLat( 12 );
+        errors = provider.validate( address);
+        assertTrue( errors.size()==1 );
     }
 }

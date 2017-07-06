@@ -1,11 +1,18 @@
 package info.juanmendez.mapmemorycore.dependencies;
 
+import android.app.Application;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import info.juanmendez.mapmemorycore.R;
 import info.juanmendez.mapmemorycore.models.Address;
+import info.juanmendez.mapmemorycore.models.AddressFields;
+import info.juanmendez.mapmemorycore.models.SubmitError;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.exceptions.RealmException;
@@ -21,7 +28,14 @@ import rx.Observable;
 public class AddressProvider {
 
     Realm realm;
+    Application application;
     Address selectedAddress;
+
+    @Inject
+    public AddressProvider(Application application, RealmProvider realmProvider) {
+        this.application = application;
+        this.realm = realmProvider.getRealm();
+    }
 
     public Realm getRealm() {
         return realm;
@@ -39,10 +53,6 @@ public class AddressProvider {
         this.selectedAddress = selectedAddress;
     }
 
-    @Inject
-    public AddressProvider(RealmProvider realmProvider) {
-        this.realm = realmProvider.getRealm();
-    }
 
     public RealmResults<Address> getAddresses(){
         RealmResults<Address> addresses;
@@ -128,6 +138,25 @@ public class AddressProvider {
 
     public long countAddresses(){
         return realm.where(Address.class).count();
+    }
+
+    public List<SubmitError> validate(Address address ){
+        List<SubmitError> errors = new ArrayList<>();
+
+        //lets do a check for name
+        if( SubmitError.emptyOrNull(address.getName()) ){
+            errors.add( new SubmitError(AddressFields.NAME, application.getString(R.string.required_field)));
+        }
+
+        if( SubmitError.emptyOrNull(address.getAddress()) ){
+            errors.add( new SubmitError(AddressFields.ADDRESS, application.getString(R.string.required_field)));
+        }
+
+        if( SubmitError.emptyOrNull(address.getCity()) ){
+            errors.add( new SubmitError(AddressFields.CITY, application.getString(R.string.required_field)));
+        }
+
+        return errors;
     }
 
 }

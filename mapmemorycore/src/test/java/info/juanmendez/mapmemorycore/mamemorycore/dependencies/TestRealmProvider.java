@@ -36,9 +36,4 @@ public class TestRealmProvider implements RealmProvider{
 
         return realm;
     }
-
-    @Override
-    public int getNextPrimaryKey() {
-        return 0;
-    }
 }

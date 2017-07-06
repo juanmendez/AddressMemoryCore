@@ -1,6 +1,6 @@
 package info.juanmendez.mapmemorycore;
 
-import android.content.Context;
+import android.app.Application;
 
 import info.juanmendez.mapmemorycore.dependencies.RealmProvider;
 
@@ -11,6 +11,6 @@ import info.juanmendez.mapmemorycore.dependencies.RealmProvider;
  */
 
 public interface CoreApp {
-    public Context getApplication();
+    public Application getApplication();
     public RealmProvider getRealmProvider();
 }

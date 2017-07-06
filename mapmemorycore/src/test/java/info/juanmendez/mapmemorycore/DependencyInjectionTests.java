@@ -5,12 +5,15 @@ import org.junit.Test;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.reflect.Whitebox;
 
+import java.util.List;
+
 import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
 import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
 import info.juanmendez.mapmemorycore.mamemorycore.dependencies.TestRealmProvider;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressView;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddresses.TestAddressesView;
 import info.juanmendez.mapmemorycore.models.Address;
+import info.juanmendez.mapmemorycore.models.SubmitError;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesPresenter;
 import info.juanmendez.mockrealm.MockRealm;
@@ -19,6 +22,7 @@ import info.juanmendez.mockrealm.test.MockRealmTester;
 import io.realm.RealmResults;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertNotNull;
@@ -215,5 +219,48 @@ public class DependencyInjectionTests extends MockRealmTester {
         address.setCity( "Chicago" );
         address.setZip( "60641" );
         provider.updateAddress( address );
+    }
+
+    @Test
+    public void validateAddress(){
+        MockRealm.clearData();
+
+        AddressProvider provider;
+        Address address;
+
+        /**
+         * lets build addressesView
+         */
+        TestAddressView addressView = new TestAddressView();
+        provider = Whitebox.getInternalState( addressView.getPresenter(), "addressProvider" );
+
+
+        //lets start inserting an address with errors
+        address = new Address();
+        address.setAddress(" ");
+        List<SubmitError> errors = provider.validate( address);
+
+        assertTrue( errors.size()==3 );
+
+
+        address = new Address(provider.getNextPrimaryKey());
+        address.setName( "3");
+        address.setAddress("2 N. State");
+        address.setCity( "Chicago" );
+        address.setZip( "60641" );
+
+        assertFalse( address.isValid() );
+        address = provider.updateAddress( address );
+        assertTrue( address.isValid() );
+
+        Address finalAddress = address;
+        provider.deleteAddressAsync(address.getAddressId(), () -> {
+            assertFalse( finalAddress.isValid() );
+        }, error -> {
+
+        });
+
+
+
     }
 }

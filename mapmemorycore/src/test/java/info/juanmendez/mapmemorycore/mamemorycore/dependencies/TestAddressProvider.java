@@ -70,7 +70,10 @@ public class TestAddressProvider implements AddressProvider {
 
         }
 
-        return null;
+        //adding new address
+        addresses.add( updated );
+
+        return updated;
     }
 
     @Override
@@ -82,8 +85,6 @@ public class TestAddressProvider implements AddressProvider {
         }else{
             errorHandler.onError( new Exception("couldn't update address asynchronously"));
         }
-
-
     }
 
     @Override

@@ -7,7 +7,7 @@ import org.powermock.reflect.Whitebox;
 
 import java.util.List;
 
-import info.juanmendez.mapmemorycore.dependencies.db.RealmAddressProvider;
+import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.mamemorycore.TestRealmApp;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressView;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddresses.TestAddressesView;
@@ -55,7 +55,7 @@ public class DependencyInjectionTests extends MockRealmTester {
         AddressesPresenter presenter = new AddressesPresenter();
 
         //Pull the injection, and test it!
-        RealmAddressProvider provider = Whitebox.getInternalState( presenter, "addressProvider" );
+        AddressProvider provider = Whitebox.getInternalState( presenter, "addressProvider" );
         assertEquals(provider.countAddresses(), 0);
 
         address = provider.getAddress(2);
@@ -93,7 +93,7 @@ public class DependencyInjectionTests extends MockRealmTester {
         MockRealm.clearData();
 
         List<Address> addresses;
-        RealmAddressProvider provider;
+        AddressProvider provider;
         Address address;
 
         /**
@@ -159,7 +159,7 @@ public class DependencyInjectionTests extends MockRealmTester {
         MockRealm.clearData();
 
         List<Address> addresses;
-        RealmAddressProvider provider;
+        AddressProvider provider;
         Address address;
 
         /**
@@ -185,7 +185,7 @@ public class DependencyInjectionTests extends MockRealmTester {
 
     }
 
-    void insertAddresses( RealmAddressProvider provider ){
+    void insertAddresses( AddressProvider provider ){
 
         Address address;
 
@@ -223,7 +223,7 @@ public class DependencyInjectionTests extends MockRealmTester {
     public void validateAddress(){
         MockRealm.clearData();
 
-        RealmAddressProvider provider;
+        AddressProvider provider;
         Address address;
 
         /**

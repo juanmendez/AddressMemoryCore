@@ -24,8 +24,8 @@ public class TestApp implements CoreApp {
 
     public TestApp() {
         application = Mockito.mock( Application.class );
-        PowerMockito.doAnswer(invocation -> {
 
+        PowerMockito.doAnswer(invocation -> {
             return "Mocked Error Message " + invocation.getArgumentAt(0, Integer.class ).toString();
         }).when( application ).getString( Mockito.anyInt() );
     }

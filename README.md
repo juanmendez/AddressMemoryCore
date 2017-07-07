@@ -8,3 +8,5 @@ Dependencies for this app
   * [Realm](https://realm.io/docs/java/latest/)
   * [Mocking-Realm](https://github.com/juanmendez/Mocking-Realm/), for testing realm queries on JVM.  
   * [RxJava 1.x](https://github.com/ReactiveX/RxJava), Realm is not fit yet for RxJava2
+
+Read [User Stories](wiki/User-Stories)

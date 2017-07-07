@@ -2,8 +2,8 @@ package info.juanmendez.mapmemorycore;
 
 import android.app.Application;
 
-import info.juanmendez.mapmemorycore.dependencies.RealmProvider;
-import info.juanmendez.mapmemorycore.services.AutocompleteService;
+import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.AutocompleteService;
 
 /**
  * Created by Juan Mendez on 6/25/2017.
@@ -12,7 +12,7 @@ import info.juanmendez.mapmemorycore.services.AutocompleteService;
  */
 
 public interface CoreApp {
-    public Application getApplication();
-    public RealmProvider getRealmProvider();
-    public AutocompleteService getAutocomplete();
+    Application getApplication();
+    AddressProvider getAddressProvider();
+    AutocompleteService getAutocomplete();
 }

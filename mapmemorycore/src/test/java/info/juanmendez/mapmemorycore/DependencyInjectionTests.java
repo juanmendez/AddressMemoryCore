@@ -7,9 +7,8 @@ import org.powermock.reflect.Whitebox;
 
 import java.util.List;
 
-import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
+import info.juanmendez.mapmemorycore.dependencies.db.RealmAddressProvider;
 import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
-import info.juanmendez.mapmemorycore.mamemorycore.dependencies.TestRealmProvider;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressView;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddresses.TestAddressesView;
 import info.juanmendez.mapmemorycore.models.Address;
@@ -31,7 +30,7 @@ import static junit.framework.TestCase.assertNotNull;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-@PrepareForTest({TestRealmProvider.class})
+@PrepareForTest({TestApp.class})
 public class DependencyInjectionTests extends MockRealmTester {
 
     @Before
@@ -56,7 +55,7 @@ public class DependencyInjectionTests extends MockRealmTester {
         AddressesPresenter presenter = new AddressesPresenter();
 
         //Pull the injection, and test it!
-        AddressProvider provider = Whitebox.getInternalState( presenter, "addressProvider" );
+        RealmAddressProvider provider = Whitebox.getInternalState( presenter, "addressProvider" );
         assertEquals(provider.countAddresses(), 0);
 
         address = provider.getAddress(2);
@@ -94,7 +93,7 @@ public class DependencyInjectionTests extends MockRealmTester {
         MockRealm.clearData();
 
         RealmResults<Address> addresses;
-        AddressProvider provider;
+        RealmAddressProvider provider;
         Address address;
 
         /**
@@ -160,7 +159,7 @@ public class DependencyInjectionTests extends MockRealmTester {
         MockRealm.clearData();
 
         RealmResults<Address> addresses;
-        AddressProvider provider;
+        RealmAddressProvider provider;
         Address address;
 
         /**
@@ -186,7 +185,7 @@ public class DependencyInjectionTests extends MockRealmTester {
 
     }
 
-    void insertAddresses( AddressProvider provider ){
+    void insertAddresses( RealmAddressProvider provider ){
 
         Address address;
 
@@ -224,7 +223,7 @@ public class DependencyInjectionTests extends MockRealmTester {
     public void validateAddress(){
         MockRealm.clearData();
 
-        AddressProvider provider;
+        RealmAddressProvider provider;
         Address address;
 
         /**

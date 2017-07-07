@@ -8,14 +8,13 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import java.util.List;
 
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.AutocompleteResponse;
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.AutocompleteService;
 import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
-import info.juanmendez.mapmemorycore.mamemorycore.dependencies.TestRealmProvider;
-import info.juanmendez.mapmemorycore.mamemorycore.services.TestAutocompleteService;
+import info.juanmendez.mapmemorycore.mamemorycore.dependencies.TestAutocompleteService;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressView;
 import info.juanmendez.mapmemorycore.models.Address;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
-import info.juanmendez.mapmemorycore.services.AutocompleteResponse;
-import info.juanmendez.mapmemorycore.services.AutocompleteService;
 import info.juanmendez.mockrealm.MockRealm;
 import info.juanmendez.mockrealm.models.RealmAnnotation;
 import info.juanmendez.mockrealm.test.MockRealmTester;
@@ -30,7 +29,7 @@ import static org.mockito.Mockito.verify;
  * www.juanmendez.info
  * contact@juanmendez.info
  */
-@PrepareForTest({TestRealmProvider.class})
+@PrepareForTest({TestApp.class})
 public class ServicesTests extends MockRealmTester {
 
     @Before

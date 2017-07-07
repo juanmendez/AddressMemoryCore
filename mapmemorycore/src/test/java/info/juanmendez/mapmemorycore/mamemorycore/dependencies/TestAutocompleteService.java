@@ -1,4 +1,4 @@
-package info.juanmendez.mapmemorycore.mamemorycore.services;
+package info.juanmendez.mapmemorycore.mamemorycore.dependencies;
 
 import android.app.Application;
 
@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import info.juanmendez.mapmemorycore.models.Address;
-import info.juanmendez.mapmemorycore.services.AutocompleteResponse;
-import info.juanmendez.mapmemorycore.services.AutocompleteService;
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.AutocompleteResponse;
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.AutocompleteService;
 
 
 /**

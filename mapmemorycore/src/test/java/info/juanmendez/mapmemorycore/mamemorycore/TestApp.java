@@ -6,10 +6,12 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 
 import info.juanmendez.mapmemorycore.CoreApp;
-import info.juanmendez.mapmemorycore.dependencies.RealmProvider;
-import info.juanmendez.mapmemorycore.mamemorycore.dependencies.TestRealmProvider;
-import info.juanmendez.mapmemorycore.mamemorycore.services.TestAutocompleteService;
-import info.juanmendez.mapmemorycore.services.AutocompleteService;
+import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
+import info.juanmendez.mapmemorycore.dependencies.db.RealmAddressProvider;
+import info.juanmendez.mapmemorycore.mamemorycore.dependencies.TestAutocompleteService;
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.AutocompleteService;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 
 /**
@@ -21,6 +23,7 @@ import info.juanmendez.mapmemorycore.services.AutocompleteService;
 public class TestApp implements CoreApp {
 
     Application application;
+    Realm realm;
 
     public TestApp() {
         application = Mockito.mock( Application.class );
@@ -28,6 +31,16 @@ public class TestApp implements CoreApp {
             
             return "Mocked Error Message " + invocation.getArgumentAt(0, Integer.class ).toString();
         }).when( application ).getString( Mockito.anyInt() );
+
+        Realm.init( application );
+        RealmConfiguration realmConfiguration = new RealmConfiguration
+                .Builder()
+                .name("info.juanmendez.mapmemorycore")
+                .build();
+
+        Realm.deleteRealm(realmConfiguration);
+        Realm.setDefaultConfiguration(realmConfiguration);
+        realm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -36,8 +49,8 @@ public class TestApp implements CoreApp {
     }
 
     @Override
-    public RealmProvider getRealmProvider() {
-        return new TestRealmProvider(application);
+    public AddressProvider getAddressProvider() {
+        return new RealmAddressProvider(application, realm);
     }
 
     @Override

@@ -1,9 +1,9 @@
 package info.juanmendez.mapmemorycore.vp.vpAddress;
 import javax.inject.Inject;
 
-import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
+import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
-import info.juanmendez.mapmemorycore.services.AutocompleteService;
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.AutocompleteService;
 import info.juanmendez.mapmemorycore.vp.ViewPresenter;
 
 /**

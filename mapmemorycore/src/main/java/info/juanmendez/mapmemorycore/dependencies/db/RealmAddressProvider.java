@@ -1,13 +1,10 @@
-package info.juanmendez.mapmemorycore.dependencies;
+package info.juanmendez.mapmemorycore.dependencies.db;
 
 import android.app.Application;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import info.juanmendez.mapmemorycore.R;
 import info.juanmendez.mapmemorycore.models.Address;
@@ -24,24 +21,14 @@ import rx.Observable;
  * contact@juanmendez.info
  */
 
-@Singleton
-public class AddressProvider {
+public class RealmAddressProvider implements AddressProvider {
 
     Realm realm;
     Application application;
     Address selectedAddress;
 
-    @Inject
-    public AddressProvider( Application application, RealmProvider realmProvider) {
+    public RealmAddressProvider(Application application, Realm realm) {
         this.application = application;
-        this.realm = realmProvider.getRealm();
-    }
-
-    public Realm getRealm() {
-        return realm;
-    }
-
-    public void setRealm(Realm realm) {
         this.realm = realm;
     }
 
@@ -119,7 +106,7 @@ public class AddressProvider {
             if( !addresses.isEmpty() ){
                 addresses.deleteAllFromRealm();
             }else{
-                throw new RealmException("AddressProvider.deleteAddressAsync couldn't delete any element with addressId " + addressId );
+                throw new RealmException("RealmAddressProvider.deleteAddressAsync couldn't delete any element with addressId " + addressId );
             }
         }, successHandler, errorHandler  );
     }

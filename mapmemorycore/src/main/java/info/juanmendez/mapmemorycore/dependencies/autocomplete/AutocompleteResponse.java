@@ -1,4 +1,4 @@
-package info.juanmendez.mapmemorycore.services;
+package info.juanmendez.mapmemorycore.dependencies.autocomplete;
 
 import java.util.List;
 

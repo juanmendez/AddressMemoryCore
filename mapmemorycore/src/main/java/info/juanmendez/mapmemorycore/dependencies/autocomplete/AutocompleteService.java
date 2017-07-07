@@ -1,4 +1,4 @@
-package info.juanmendez.mapmemorycore.services;
+package info.juanmendez.mapmemorycore.dependencies.autocomplete;
 
 /**
  * Created by Juan Mendez on 7/7/2017.

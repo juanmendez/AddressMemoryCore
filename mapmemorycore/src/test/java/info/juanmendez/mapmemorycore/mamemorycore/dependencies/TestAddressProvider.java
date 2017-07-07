@@ -1,12 +1,12 @@
 package info.juanmendez.mapmemorycore.mamemorycore.dependencies;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.models.Address;
 import info.juanmendez.mapmemorycore.models.SubmitError;
 import io.realm.Realm;
-import io.realm.RealmResults;
 import rx.Observable;
 
 
@@ -17,19 +17,23 @@ import rx.Observable;
  */
 
 public class TestAddressProvider implements AddressProvider {
+
+    List<Address> addresses = new ArrayList<>();
+    Address selectedAddress;
+
     @Override
     public Address getSelectedAddress() {
-        return null;
+        return selectedAddress;
     }
 
     @Override
     public void selectAddress(Address selectedAddress) {
-
+        this.selectedAddress = selectedAddress;
     }
 
     @Override
-    public RealmResults<Address> getAddresses() {
-        return null;
+    public List<Address> getAddresses() {
+        return addresses;
     }
 
     @Override
@@ -39,6 +43,13 @@ public class TestAddressProvider implements AddressProvider {
 
     @Override
     public Address getAddress(long addressId) {
+
+        for(Address address: addresses ){
+
+            if( addressId == address.getAddressId() )
+                return address;
+        }
+
         return null;
     }
 
@@ -48,28 +59,53 @@ public class TestAddressProvider implements AddressProvider {
     }
 
     @Override
-    public Address updateAddress(Address address) {
+    public Address updateAddress(Address updated) {
+        for(Address address: addresses ){
+
+            if( updated.getAddressId() == address.getAddressId() ){
+                int location = addresses.indexOf(address);
+
+                return addresses.set( location, updated );
+            }
+
+        }
+
         return null;
     }
 
     @Override
     public void updateAddressAsync(Address address, Realm.Transaction.OnSuccess successHandler, Realm.Transaction.OnError errorHandler) {
+        Address updated = updateAddress( address );
+
+        if( updated != null ){
+            successHandler.onSuccess();
+        }else{
+            errorHandler.onError( new Exception("couldn't update address asynchronously"));
+        }
+
 
     }
 
     @Override
     public void deleteAddressAsync(long addressId, Realm.Transaction.OnSuccess successHandler, Realm.Transaction.OnError errorHandler) {
+        Address address = getAddress( addressId);
 
+        if( address != null ){
+            addresses.remove(address);
+            successHandler.onSuccess();
+        }else{
+            errorHandler.onError( new Exception("couldn't delete address asynchronously"));
+        }
     }
 
     @Override
     public long getNextPrimaryKey() {
-        return 0;
+        return addresses.size() + 1;
     }
 
     @Override
     public long countAddresses() {
-        return 0;
+        return addresses.size();
     }
 
     @Override

@@ -8,6 +8,7 @@ import org.powermock.api.mockito.PowerMockito;
 import info.juanmendez.mapmemorycore.CoreApp;
 import info.juanmendez.mapmemorycore.dependencies.autocomplete.AutocompleteService;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
+import info.juanmendez.mapmemorycore.mamemorycore.dependencies.TestAddressProvider;
 import info.juanmendez.mapmemorycore.mamemorycore.dependencies.TestAutocompleteService;
 
 
@@ -36,7 +37,7 @@ public class TestApp implements CoreApp {
 
     @Override
     public AddressProvider getAddressProvider() {
-        return Mockito.mock(AddressProvider.class);
+        return new TestAddressProvider();
     }
 
     @Override

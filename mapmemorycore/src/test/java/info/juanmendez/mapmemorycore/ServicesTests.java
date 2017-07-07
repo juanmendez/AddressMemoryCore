@@ -46,7 +46,5 @@ public class ServicesTests extends MockRealmTester {
     public void testPresenterWithAutocomplete(){
         TestAddressView addressView = new TestAddressView();
         addressView.onStart();
-
-
     }
 }

@@ -1,5 +1,7 @@
 package info.juanmendez.mapmemorycore.dependencies;
 
+import android.app.Application;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -26,12 +28,12 @@ import rx.Observable;
 public class AddressProvider {
 
     Realm realm;
-    ResourcesProvider resourcesProvider;
+    Application application;
     Address selectedAddress;
 
     @Inject
-    public AddressProvider(ResourcesProvider resourcesProvider, RealmProvider realmProvider) {
-        this.resourcesProvider = resourcesProvider;
+    public AddressProvider( Application application, RealmProvider realmProvider) {
+        this.application = application;
         this.realm = realmProvider.getRealm();
     }
 
@@ -148,25 +150,25 @@ public class AddressProvider {
 
             //This is the only invalid field needed.
             if( savedAddress == null ){
-                errors.add( new SubmitError(AddressFields.ADDRESSID, resourcesProvider.getString(R.string.address_gone)));
+                errors.add( new SubmitError(AddressFields.ADDRESSID, application.getString(R.string.address_gone)));
                 return errors;
             }
         }
 
         //lets do a check for name
         if( SubmitError.emptyOrNull(address.getName()) ){
-            errors.add( new SubmitError(AddressFields.NAME, resourcesProvider.getString(R.string.required_field)));
+            errors.add( new SubmitError(AddressFields.NAME, application.getString(R.string.required_field)));
         }
 
         //if lat lon are provided we skip checking address and zipcode
         if( !SubmitError.initialized( address.getLat() ) && !SubmitError.initialized( address.getLon() ) ){
 
             if( SubmitError.emptyOrNull(address.getAddress()) ){
-                errors.add( new SubmitError(AddressFields.ADDRESS, resourcesProvider.getString(R.string.required_field)));
+                errors.add( new SubmitError(AddressFields.ADDRESS, application.getString(R.string.required_field)));
             }
 
             if( SubmitError.emptyOrNull(address.getCity()) ){
-                errors.add( new SubmitError(AddressFields.CITY, resourcesProvider.getString(R.string.required_field)));
+                errors.add( new SubmitError(AddressFields.CITY, application.getString(R.string.required_field)));
             }
         }
         return errors;

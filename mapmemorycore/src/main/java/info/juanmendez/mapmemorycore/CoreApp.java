@@ -3,7 +3,6 @@ package info.juanmendez.mapmemorycore;
 import android.app.Application;
 
 import info.juanmendez.mapmemorycore.dependencies.RealmProvider;
-import info.juanmendez.mapmemorycore.dependencies.ResourcesProvider;
 
 /**
  * Created by Juan Mendez on 6/25/2017.
@@ -14,5 +13,4 @@ import info.juanmendez.mapmemorycore.dependencies.ResourcesProvider;
 public interface CoreApp {
     public Application getApplication();
     public RealmProvider getRealmProvider();
-    public ResourcesProvider getResourceProvider();
 }

@@ -1,12 +1,13 @@
 package info.juanmendez.mapmemorycore.modules;
 
+import android.app.Application;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 import info.juanmendez.mapmemorycore.CoreApp;
 import info.juanmendez.mapmemorycore.dependencies.RealmProvider;
-import info.juanmendez.mapmemorycore.dependencies.ResourcesProvider;
 
 /**
  * Created by Juan Mendez on 6/24/2017.
@@ -36,8 +37,8 @@ public class MapCoreModule {
 
     @Singleton
     @Provides
-    public ResourcesProvider getResourcesProvider(){
-        return app.getResourceProvider();
+    public Application getApplication(){
+        return app.getApplication();
     }
 
     public static MapCoreComponent getComponent(){

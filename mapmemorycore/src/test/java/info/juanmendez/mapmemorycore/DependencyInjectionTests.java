@@ -245,8 +245,14 @@ public class DependencyInjectionTests extends MockRealmTester {
         address.setLat( 12 );
         address.setLat( 12 );
         errors = provider.validate( address);
+
+        //address and city are not checked, but only name.
         assertTrue( errors.size()==1 );
 
+        /**
+         * what happens if we try to validate an address whose id
+         * is not in the db.
+         */
         errors = provider.validate( new Address(2));
         assertTrue( errors.size()==1 );
     }

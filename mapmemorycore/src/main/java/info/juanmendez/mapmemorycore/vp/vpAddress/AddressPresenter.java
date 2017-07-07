@@ -3,6 +3,7 @@ import javax.inject.Inject;
 
 import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
+import info.juanmendez.mapmemorycore.services.AutocompleteService;
 import info.juanmendez.mapmemorycore.vp.ViewPresenter;
 
 /**
@@ -15,6 +16,10 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressV
 
     @Inject
     AddressProvider addressProvider;
+
+    @Inject
+    AutocompleteService autocompleteService;
+
     AddressView view;
 
     public static final String VIEW_TAG = "addressView";

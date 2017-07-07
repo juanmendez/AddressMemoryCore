@@ -8,6 +8,8 @@ import org.powermock.api.mockito.PowerMockito;
 import info.juanmendez.mapmemorycore.CoreApp;
 import info.juanmendez.mapmemorycore.dependencies.RealmProvider;
 import info.juanmendez.mapmemorycore.mamemorycore.dependencies.TestRealmProvider;
+import info.juanmendez.mapmemorycore.mamemorycore.services.TestAutocompleteService;
+import info.juanmendez.mapmemorycore.services.AutocompleteService;
 
 
 /**
@@ -36,5 +38,10 @@ public class TestApp implements CoreApp {
     @Override
     public RealmProvider getRealmProvider() {
         return new TestRealmProvider(application);
+    }
+
+    @Override
+    public AutocompleteService getAutocomplete() {
+        return new TestAutocompleteService(application);
     }
 }

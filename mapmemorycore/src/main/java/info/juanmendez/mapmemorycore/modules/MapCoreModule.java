@@ -8,6 +8,7 @@ import dagger.Module;
 import dagger.Provides;
 import info.juanmendez.mapmemorycore.CoreApp;
 import info.juanmendez.mapmemorycore.dependencies.RealmProvider;
+import info.juanmendez.mapmemorycore.services.AutocompleteService;
 
 /**
  * Created by Juan Mendez on 6/24/2017.
@@ -33,6 +34,11 @@ public class MapCoreModule {
     @Provides
     public RealmProvider getRealmProvider(){
         return app.getRealmProvider();
+    }
+
+    @Provides
+    public AutocompleteService autocompleteService(){
+        return  app.getAutocomplete();
     }
 
     @Singleton

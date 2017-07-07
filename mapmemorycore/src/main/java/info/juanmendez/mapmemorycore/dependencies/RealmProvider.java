@@ -9,5 +9,5 @@ import io.realm.Realm;
  */
 
 public interface RealmProvider {
-    public Realm getRealm();
+    Realm getRealm();
 }

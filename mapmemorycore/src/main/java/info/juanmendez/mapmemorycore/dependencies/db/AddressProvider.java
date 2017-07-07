@@ -5,7 +5,6 @@ import java.util.List;
 import info.juanmendez.mapmemorycore.models.Address;
 import info.juanmendez.mapmemorycore.models.SubmitError;
 import io.realm.Realm;
-import io.realm.RealmResults;
 import rx.Observable;
 
 /**
@@ -21,8 +20,8 @@ public interface AddressProvider {
     void selectAddress(Address selectedAddress);
 
     //get addresses
-    RealmResults<Address> getAddresses();
-    Observable<RealmResults<Address>> getAddressesAsync();
+    List<Address> getAddresses();
+    Observable<List<Address>> getAddressesAsync();
 
     //get address
     Address getAddress( long addressId );

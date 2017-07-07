@@ -41,17 +41,17 @@ public class RealmAddressProvider implements AddressProvider {
     }
 
 
-    public RealmResults<Address> getAddresses(){
+    public List<Address> getAddresses(){
         RealmResults<Address> addresses;
 
         realm.beginTransaction();
             addresses = realm.where( Address.class ).findAll();
         realm.commitTransaction();
 
-        return addresses;
+        return new ResultsList<>(addresses);
     }
 
-    public Observable<RealmResults<Address>> getAddressesAsync() {
+    public Observable<List<Address>> getAddressesAsync() {
 
         RealmResults<Address> addresses;
 
@@ -59,7 +59,7 @@ public class RealmAddressProvider implements AddressProvider {
         addresses = realm.where( Address.class ).findAllAsync();
         realm.commitTransaction();
 
-        return addresses.asObservable();
+        return addresses.asObservable().map(results -> new ResultsList(results));
     }
 
     public Observable<Address> getAddressAsync(long addressId){

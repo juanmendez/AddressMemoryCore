@@ -1,7 +1,8 @@
 package info.juanmendez.mapmemorycore.vp.vpAddresses;
 
+import java.util.List;
+
 import info.juanmendez.mapmemorycore.models.Address;
-import io.realm.RealmResults;
 
 /**
  * Created by Juan Mendez on 6/24/2017.
@@ -10,5 +11,5 @@ import io.realm.RealmResults;
  */
 
 public interface AddressesView {
-    void injectAddresses(RealmResults<Address> addresses );
+    void injectAddresses(List<Address> addresses );
 }

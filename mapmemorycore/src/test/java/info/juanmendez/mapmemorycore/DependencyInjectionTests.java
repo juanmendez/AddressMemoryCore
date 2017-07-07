@@ -8,7 +8,7 @@ import org.powermock.reflect.Whitebox;
 import java.util.List;
 
 import info.juanmendez.mapmemorycore.dependencies.db.RealmAddressProvider;
-import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
+import info.juanmendez.mapmemorycore.mamemorycore.TestRealmApp;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressView;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddresses.TestAddressesView;
 import info.juanmendez.mapmemorycore.models.Address;
@@ -30,7 +30,7 @@ import static junit.framework.TestCase.assertNotNull;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-@PrepareForTest({TestApp.class})
+@PrepareForTest({TestRealmApp.class})
 public class DependencyInjectionTests extends MockRealmTester {
 
     @Before
@@ -39,7 +39,7 @@ public class DependencyInjectionTests extends MockRealmTester {
         MockRealm.prepare();
         MockRealm.addAnnotations( RealmAnnotation.build(Address.class).primaryField("addressId"));
 
-        MapCoreModule.setApp( new TestApp() );
+        MapCoreModule.setApp( new TestRealmApp() );
     }
 
     @Test
@@ -92,7 +92,7 @@ public class DependencyInjectionTests extends MockRealmTester {
     public void testAddressesView(){
         MockRealm.clearData();
 
-        RealmResults<Address> addresses;
+        List<Address> addresses;
         RealmAddressProvider provider;
         Address address;
 
@@ -158,7 +158,7 @@ public class DependencyInjectionTests extends MockRealmTester {
 
         MockRealm.clearData();
 
-        RealmResults<Address> addresses;
+        List<Address> addresses;
         RealmAddressProvider provider;
         Address address;
 

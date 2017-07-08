@@ -22,12 +22,12 @@ public class MapCoreModule {
     private static MapCoreComponent component;
     private CoreApp app;
 
-    public MapCoreModule(CoreApp app) {
-        this.app = app;
-    }
-
     public static void setApp(CoreApp app ){
         component = DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(app)).build();
+    }
+
+    public MapCoreModule(CoreApp app) {
+        this.app = app;
     }
 
     @Singleton

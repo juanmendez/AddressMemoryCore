@@ -16,7 +16,6 @@ import info.juanmendez.mapmemorycore.mamemorycore.dependencies.TestAutocompleteS
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressView;
 import info.juanmendez.mapmemorycore.models.Address;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
-import info.juanmendez.mockrealm.test.MockRealmTester;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -29,7 +28,7 @@ import static org.mockito.Mockito.verify;
  * www.juanmendez.info
  * contact@juanmendez.info
  */
-public class ServicesTests extends MockRealmTester {
+public class ServicesTests{
 
     @Before
     public void before() throws Exception {
@@ -46,7 +45,7 @@ public class ServicesTests extends MockRealmTester {
     }
 
     @Test
-    public void testPresenterWithAutocomplete(){
+    public void testAddressProvider(){
         TestAddressView addressView = new TestAddressView();
         addressView.onStart();
 

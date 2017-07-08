@@ -12,6 +12,7 @@ import info.juanmendez.mapmemorycore.mamemorycore.TestRealmApp;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressView;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddresses.TestAddressesView;
 import info.juanmendez.mapmemorycore.models.Address;
+import info.juanmendez.mapmemorycore.models.AddressFields;
 import info.juanmendez.mapmemorycore.models.SubmitError;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesPresenter;
@@ -37,7 +38,7 @@ public class DependencyInjectionTests extends MockRealmTester {
     public void before() throws Exception {
 
         MockRealm.prepare();
-        MockRealm.addAnnotations( RealmAnnotation.build(Address.class).primaryField("addressId"));
+        MockRealm.addAnnotations( RealmAnnotation.build(Address.class).primaryField(AddressFields.ADDRESSID));
 
         MapCoreModule.setApp( new TestRealmApp() );
     }

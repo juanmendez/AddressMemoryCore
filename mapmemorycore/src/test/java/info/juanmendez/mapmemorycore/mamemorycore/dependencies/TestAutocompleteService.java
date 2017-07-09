@@ -17,7 +17,6 @@ import info.juanmendez.mapmemorycore.dependencies.autocomplete.AutocompleteServi
  */
 public class TestAutocompleteService implements AutocompleteService {
 
-    AutocompleteResponse response;
     Application application;
 
     public TestAutocompleteService(Application application) {
@@ -25,13 +24,13 @@ public class TestAutocompleteService implements AutocompleteService {
     }
 
     @Override
-    public AutocompleteService setHandler(AutocompleteResponse response) {
-        this.response = response;
-        return this;
+    public void suggestAddress(AutocompleteResponse response, String address) {
+        List<Address> addressList = new ArrayList<>();
+        response.onAddressResults( addressList );
     }
 
     @Override
-    public void suggestAddress(String address, long lat, long lon) {
+    public void suggestAddress(AutocompleteResponse response, long lat, long lon) {
         List<Address> addressList = new ArrayList<>();
         response.onAddressResults( addressList );
     }

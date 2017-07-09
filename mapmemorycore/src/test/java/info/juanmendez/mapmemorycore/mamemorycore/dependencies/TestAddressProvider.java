@@ -21,6 +21,8 @@ public class TestAddressProvider implements AddressProvider {
     List<Address> addresses = new ArrayList<>();
     Address selectedAddress;
 
+    int totalAdded=0;
+
     @Override
     public Address getSelectedAddress() {
         return selectedAddress;
@@ -60,6 +62,8 @@ public class TestAddressProvider implements AddressProvider {
 
     @Override
     public Address updateAddress(Address updated) {
+
+        //here we update
         for(Address address: addresses ){
 
             if( updated.getAddressId() == address.getAddressId() ){
@@ -70,9 +74,9 @@ public class TestAddressProvider implements AddressProvider {
 
         }
 
-        //adding new address
+        //here we add
         addresses.add( updated );
-
+        totalAdded++;
         return updated;
     }
 
@@ -101,7 +105,7 @@ public class TestAddressProvider implements AddressProvider {
 
     @Override
     public long getNextPrimaryKey() {
-        return addresses.size() + 1;
+        return totalAdded+1;
     }
 
     @Override

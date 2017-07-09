@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
  * with our Android environment.
  */
 
-public class TestWithoutRealm {
+public class TestingWithoutRealm {
 
     @Before
     public void before() throws Exception {

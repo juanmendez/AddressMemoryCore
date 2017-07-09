@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verify;
  * www.juanmendez.info
  * contact@juanmendez.info
  */
-public class ServicesTests{
+public class TestingAutocomplete {
 
     @Before
     public void before() throws Exception {

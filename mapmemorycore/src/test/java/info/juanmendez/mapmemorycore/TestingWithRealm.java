@@ -27,12 +27,12 @@ import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertNotNull;
 
 /**
- * Example local unit test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
+ * These tests show how to write final Realm transactions using Mocking-Realm through TDD.
+ * We are using Dagger, and our transactions are happening in RealmAddressProvider which is
+ * implementing AddressProvider and which is stated as our dependency in Dagger.
  */
 @PrepareForTest({TestRealmApp.class})
-public class DependencyInjectionTests extends MockRealmTester {
+public class TestingWithRealm extends MockRealmTester {
 
     @Before
     public void before() throws Exception {

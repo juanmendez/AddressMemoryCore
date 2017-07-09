@@ -20,4 +20,8 @@ public class AddressFields {
     public static final String  LON = "lon";
     public static final String  URL = "url";
     public static final String  PHOTOURL = "photoUrl";
+
+    public static final String DATEUPDATED = "dateUpdated";
+    public static final String TIMESVISITED = "timesVisited";
+    public static final String MAPID = "mapId";
 }

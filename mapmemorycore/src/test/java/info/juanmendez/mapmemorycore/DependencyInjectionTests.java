@@ -38,7 +38,9 @@ public class DependencyInjectionTests extends MockRealmTester {
     public void before() throws Exception {
 
         MockRealm.prepare();
-        MockRealm.addAnnotations( RealmAnnotation.build(Address.class).primaryField(AddressFields.ADDRESSID));
+        MockRealm.addAnnotations( RealmAnnotation.build(Address.class)
+                .primaryField(AddressFields.ADDRESSID)
+                .indexedFields(AddressFields.NAME, AddressFields.DATEUPDATED, AddressFields.TIMESVISITED));
 
         MapCoreModule.setApp( new TestRealmApp() );
     }

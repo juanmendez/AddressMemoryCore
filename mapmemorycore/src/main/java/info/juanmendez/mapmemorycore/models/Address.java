@@ -1,6 +1,9 @@
 package info.juanmendez.mapmemorycore.models;
 
+import java.util.Date;
+
 import io.realm.RealmObject;
+import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -15,11 +18,22 @@ public class Address extends RealmObject{
     @PrimaryKey
     private long addressId;
 
+    @Index
     String name;
+
     String address;
     String city;
     String state;
     String zip;
+
+    @Index
+    int timesVisited;
+
+    @Index
+    Date dateUpdated;
+
+    //this is a google id if we were to get it from autocomplete
+    String mapId;
 
     long lat;
     long lon;
@@ -27,6 +41,9 @@ public class Address extends RealmObject{
     String photoUrl;
 
     public Address() {
+        if( dateUpdated == null ){
+            dateUpdated = new Date();
+        }
     }
 
     public Address(long addressId) {
@@ -107,5 +124,29 @@ public class Address extends RealmObject{
 
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
+    }
+
+    public String getMapId() {
+        return mapId;
+    }
+
+    public void setMapId(String mapId) {
+        this.mapId = mapId;
+    }
+
+    public Date getDateUpdated() {
+        return dateUpdated;
+    }
+
+    public void updateDateModified() {
+        this.dateUpdated = new Date();
+    }
+
+    public int getTimesVisited() {
+        return timesVisited;
+    }
+
+    public void setTimesVisited(int timesVisited) {
+        this.timesVisited = timesVisited;
     }
 }

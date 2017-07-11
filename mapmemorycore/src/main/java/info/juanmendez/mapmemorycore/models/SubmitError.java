@@ -5,7 +5,6 @@ package info.juanmendez.mapmemorycore.models;
  * www.juanmendez.info
  * contact@juanmendez.info
  */
-
 public class SubmitError{
     String field;
     String message;

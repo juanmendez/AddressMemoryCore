@@ -38,7 +38,10 @@ public class TestingWithoutRealm {
         TestAddressView addressView = new TestAddressView();
         addressView.onStart();
 
+        //through MVP, get your hands on the presenter, and subsequently get its dagger dependency
         AddressProvider provider = Whitebox.getInternalState( addressView.getPresenter(), "addressProvider" );
+
+        //in another function just insert addresses
         insertAddresses( provider );
 
         assertEquals(provider.countAddresses(), 4);

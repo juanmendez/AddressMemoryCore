@@ -150,12 +150,12 @@ public class RealmAddressProvider implements AddressProvider {
         //if lat lon are provided we skip checking address and zipcode
         if( !SubmitError.initialized( address.getLat() ) && !SubmitError.initialized( address.getLon() ) ){
 
-            if( SubmitError.emptyOrNull(address.getAddress()) ){
-                errors.add( new SubmitError(AddressFields.ADDRESS, application.getString(R.string.required_field)));
+            if( SubmitError.emptyOrNull(address.getAddress1()) ){
+                errors.add( new SubmitError(AddressFields.ADDRESS1, application.getString(R.string.required_field)));
             }
 
-            if( SubmitError.emptyOrNull(address.getCity()) ){
-                errors.add( new SubmitError(AddressFields.CITY, application.getString(R.string.required_field)));
+            if( SubmitError.emptyOrNull(address.getAddress2()) ){
+                errors.add( new SubmitError(AddressFields.ADDRESS2, application.getString(R.string.required_field)));
             }
         }
         return errors;

@@ -21,10 +21,10 @@ public class Address extends RealmObject{
     @Index
     String name;
 
-    String address;
-    String city;
-    String state;
-    String zip;
+
+    String address1;
+    String address2;
+
 
     @Index
     int timesVisited;
@@ -62,36 +62,20 @@ public class Address extends RealmObject{
         this.name = name;
     }
 
-    public String getAddress() {
-        return address;
+    public String getAddress1() {
+        return address1;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setAddress1(String address1) {
+        this.address1 = address1;
     }
 
-    public String getCity() {
-        return city;
+    public String getAddress2() {
+        return address2;
     }
 
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getZip() {
-        return zip;
-    }
-
-    public void setZip(String zip) {
-        this.zip = zip;
+    public void setAddress2(String address2) {
+        this.address2 = address2;
     }
 
     public long getLat() {

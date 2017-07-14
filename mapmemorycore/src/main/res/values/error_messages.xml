@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="required_field">Field is required</string>
-    <string name="address_gone">This address does not exist</string>
+    <string name="address_gone">This address1 does not exist</string>
 </resources>

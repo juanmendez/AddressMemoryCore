@@ -57,30 +57,26 @@ public class TestingWithoutRealm {
         //lets add an address, and see if addressesView has updated its addresses
         address = new Address(provider.getNextPrimaryKey());
         address.setName( "1");
-        address.setAddress("0 N. State");
-        address.setCity( "Chicago" );
-        address.setZip( "60641" );
+        address.setAddress1("0 N. State");
+        address.setAddress2( "Chicago, 60641" );
         provider.updateAddress( address );
 
         address = new Address(provider.getNextPrimaryKey());
         address.setName( "2");
-        address.setAddress("1 N. State");
-        address.setCity( "Chicago" );
-        address.setZip( "60641" );
+        address.setAddress1("1 N. State");
+        address.setAddress2( "Chicago, 60641" );
         provider.updateAddress( address );
 
         address = new Address(provider.getNextPrimaryKey());
         address.setName( "3");
-        address.setAddress("2 N. State");
-        address.setCity( "Chicago" );
-        address.setZip( "60641" );
+        address.setAddress1("2 N. State");
+        address.setAddress2( "Chicago, 60641" );
         provider.updateAddress( address );
 
         address = new Address(provider.getNextPrimaryKey());
         address.setName( "4");
-        address.setAddress("3 N. State");
-        address.setCity( "Chicago" );
-        address.setZip( "60641" );
+        address.setAddress1("3 N. State");
+        address.setAddress2( "Chicago, 60641" );
         provider.updateAddress( address );
     }
 

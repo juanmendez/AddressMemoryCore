@@ -68,9 +68,8 @@ public class TestingWithRealm extends MockRealmTester {
 
         address = provider.getAddress(1);
         address.setName( "testAddressProvider");
-        address.setAddress("0 N. State");
-        address.setCity( "Chicago" );
-        address.setZip( "60641" );
+        address.setAddress1("0 N. State");
+        address.setAddress2( "Chicago, 60641" );
 
         provider.updateAddressAsync( address, () -> {
             assertTrue( true );
@@ -113,9 +112,8 @@ public class TestingWithRealm extends MockRealmTester {
         //lets add an address, and see if addressesView has updated its addresses
         address = new Address(provider.getNextPrimaryKey());
         address.setName( "testAddressesView1");
-        address.setAddress("0 N. State");
-        address.setCity( "Chicago" );
-        address.setZip( "60641" );
+        address.setAddress1("0 N. State");
+        address.setAddress2( "Chicago, 60641" );
 
         //we pull provider, and insert new address
         provider.updateAddress( address );
@@ -127,9 +125,8 @@ public class TestingWithRealm extends MockRealmTester {
         //lets add another address, and see if it has also updated.
         address = new Address(provider.getNextPrimaryKey());
         address.setName( "testAddressesView2");
-        address.setAddress("0 N. State");
-        address.setCity( "Chicago" );
-        address.setZip( "60641" );
+        address.setAddress1("0 N. State");
+        address.setAddress2( "Chicago, 60641" );
         provider.updateAddress( address );
         assertEquals( provider.countAddresses(), 2 );
 
@@ -195,30 +192,26 @@ public class TestingWithRealm extends MockRealmTester {
         //lets add an address, and see if addressesView has updated its addresses
         address = new Address(provider.getNextPrimaryKey());
         address.setName( "1");
-        address.setAddress("0 N. State");
-        address.setCity( "Chicago" );
-        address.setZip( "60641" );
+        address.setAddress1("0 N. State");
+        address.setAddress2( "Chicago, 60641" );
         provider.updateAddress( address );
 
         address = new Address(provider.getNextPrimaryKey());
         address.setName( "2");
-        address.setAddress("1 N. State");
-        address.setCity( "Chicago" );
-        address.setZip( "60641" );
+        address.setAddress1("1 N. State");
+        address.setAddress2( "Chicago, 60641" );
         provider.updateAddress( address );
 
         address = new Address(provider.getNextPrimaryKey());
         address.setName( "3");
-        address.setAddress("2 N. State");
-        address.setCity( "Chicago" );
-        address.setZip( "60641" );
+        address.setAddress1("2 N. State");
+        address.setAddress2( "Chicago, 60641" );
         provider.updateAddress( address );
 
         address = new Address(provider.getNextPrimaryKey());
         address.setName( "4");
-        address.setAddress("3 N. State");
-        address.setCity( "Chicago" );
-        address.setZip( "60641" );
+        address.setAddress1("3 N. State");
+        address.setAddress2( "Chicago, 60641" );
         provider.updateAddress( address );
     }
 
@@ -238,7 +231,7 @@ public class TestingWithRealm extends MockRealmTester {
 
         //lets start inserting an address with errors
         address = new Address();
-        address.setAddress(" ");
+        address.setAddress1(" ");
         List<SubmitError> errors = provider.validate( address);
 
         assertTrue( errors.size()==3 );

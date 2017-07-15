@@ -2,7 +2,7 @@ package info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress;
 
 import info.juanmendez.mapmemorycore.models.Address;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
-import info.juanmendez.mapmemorycore.vp.vpAddress.AddressView;
+import info.juanmendez.mapmemorycore.vp.vpAddress.AddressFragment;
 
 
 /**
@@ -11,19 +11,12 @@ import info.juanmendez.mapmemorycore.vp.vpAddress.AddressView;
  * contact@juanmendez.info
  */
 
-public class TestAddressView implements AddressView {
+public class TestAddressFragment implements AddressFragment {
     AddressPresenter presenter;
 
-    public TestAddressView() {
+    public TestAddressFragment() {
         presenter = new AddressPresenter();
-    }
-
-    public void onStart(){
-        presenter.onStart(this);
-    }
-
-    public void onPause(){
-        presenter.onPause();
+        presenter.register(this);
     }
 
     public AddressPresenter getPresenter() {
@@ -31,7 +24,16 @@ public class TestAddressView implements AddressView {
     }
 
     @Override
-    public void showAddress(Address address) {
+    public void showAddress(Address address, Boolean online) {
         System.out.println( "address: " + address.getName() + " populates in here" );
+    }
+
+    @Override
+    public void setActive(Boolean active, String action) {
+       if( active ){
+           presenter.active( action );
+       }else{
+           presenter.inactive();
+       }
     }
 }

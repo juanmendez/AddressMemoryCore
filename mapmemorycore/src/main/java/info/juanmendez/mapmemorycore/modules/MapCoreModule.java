@@ -7,8 +7,10 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import info.juanmendez.mapmemorycore.CoreApp;
+import info.juanmendez.mapmemorycore.dependencies.Navigation;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.dependencies.autocomplete.AutocompleteService;
+import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
 
 /**
  * Created by Juan Mendez on 6/24/2017.
@@ -45,6 +47,18 @@ public class MapCoreModule {
     @Provides
     public Application getApplication(){
         return app.getApplication();
+    }
+
+    @Singleton
+    @Provides
+    public NetworkService getNetworkService(){
+        return app.getNeworkService();
+    }
+
+    @Singleton
+    @Provides
+    public Navigation getNavigation(){
+        return app.getNavigation();
     }
 
     public static MapCoreComponent getComponent(){

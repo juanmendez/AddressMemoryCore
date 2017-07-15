@@ -1,9 +1,11 @@
 package info.juanmendez.mapmemorycore.vp.vpAddress;
 import javax.inject.Inject;
 
-import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
-import info.juanmendez.mapmemorycore.modules.MapCoreModule;
+import info.juanmendez.mapmemorycore.dependencies.Navigation;
 import info.juanmendez.mapmemorycore.dependencies.autocomplete.AutocompleteService;
+import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
+import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
+import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.vp.ViewPresenter;
 
 /**
@@ -11,8 +13,7 @@ import info.juanmendez.mapmemorycore.vp.ViewPresenter;
  * www.juanmendez.info
  * contact@juanmendez.info
  */
-
-public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressView> {
+public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressFragment>{
 
     @Inject
     AddressProvider addressProvider;
@@ -20,27 +21,37 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressV
     @Inject
     AutocompleteService autocompleteService;
 
-    AddressView view;
+    @Inject
+    NetworkService networkService;
+
+    @Inject
+    Navigation navigation;
+
+    AddressFragment view;
 
     public static final String VIEW_TAG = "addressView";
     public static final String EDIT_TAG = "editAddressView";
 
-    public AddressPresenter() {
-        MapCoreModule.getComponent().inject(this);
-    }
-
     @Override
-    public AddressPresenter onStart(AddressView view) {
+    public AddressPresenter register(AddressFragment view) {
         this.view = view;
+        MapCoreModule.getComponent().inject(this);
 
-        if( addressProvider.getSelectedAddress() != null ){
-            view.showAddress( addressProvider.getSelectedAddress() );
-        }
         return this;
     }
 
     @Override
-    public AddressPresenter onPause() {
-        return this;
+    public void active( String action ) {
+        networkService.connect(this, available -> {
+            view.showAddress( addressProvider.getSelectedAddress(), available );
+        });
     }
+
+    @Override
+    public void inactive() {
+        networkService.disconnect(this);
+    }
+
+
+
 }

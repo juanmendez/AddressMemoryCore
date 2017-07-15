@@ -14,7 +14,7 @@ import io.realm.RealmResults;
  * contact@juanmendez.info
  */
 
-public class AddressesPresenter implements ViewPresenter<AddressesPresenter, AddressesView>{
+public class AddressesPresenter implements ViewPresenter<AddressesPresenter, AddressesFragment>{
 
     @Inject
     AddressProvider addressProvider;
@@ -22,22 +22,29 @@ public class AddressesPresenter implements ViewPresenter<AddressesPresenter, Add
     public static final String TAG = "addressesView";
 
     private RealmResults<Address> addresses;
-    private AddressesView view;
+    private AddressesFragment view;
 
     public AddressesPresenter() {
         MapCoreModule.getComponent().inject(this);
     }
 
+
     @Override
-    public AddressesPresenter onStart(AddressesView view) {
+    public AddressesPresenter register(AddressesFragment view) {
         this.view = view;
         view.injectAddresses( addressProvider.getAddresses() );
+
         return this;
     }
 
     @Override
-    public AddressesPresenter onPause() {
-        return this;
+    public void active(String action) {
+
+    }
+
+    @Override
+    public void inactive(){
+
     }
 
     public void selectAddress( Address address ){
@@ -47,4 +54,5 @@ public class AddressesPresenter implements ViewPresenter<AddressesPresenter, Add
     public void addAddress(){
         addressProvider.selectAddress( null );
     }
+
 }

@@ -5,9 +5,9 @@ import android.app.Application;
 import java.util.ArrayList;
 import java.util.List;
 
-import info.juanmendez.mapmemorycore.models.Address;
 import info.juanmendez.mapmemorycore.dependencies.autocomplete.AutocompleteResponse;
 import info.juanmendez.mapmemorycore.dependencies.autocomplete.AutocompleteService;
+import info.juanmendez.mapmemorycore.models.Address;
 
 
 /**
@@ -24,13 +24,7 @@ public class TestAutocompleteService implements AutocompleteService {
     }
 
     @Override
-    public void suggestAddress(AutocompleteResponse response, String address) {
-        List<Address> addressList = new ArrayList<>();
-        response.onAddressResults( addressList );
-    }
-
-    @Override
-    public void suggestAddress(AutocompleteResponse response, long lat, long lon) {
+    public void suggestAddress(String query, long lat, long lon, AutocompleteResponse response) {
         List<Address> addressList = new ArrayList<>();
         response.onAddressResults( addressList );
     }

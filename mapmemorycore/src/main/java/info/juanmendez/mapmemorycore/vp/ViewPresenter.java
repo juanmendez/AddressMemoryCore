@@ -8,6 +8,18 @@ package info.juanmendez.mapmemorycore.vp;
 
 public interface ViewPresenter<P,T>{
 
-    public P onStart(T view);
-    public P onPause();
+    /**
+     * view gets registered as soon as it is created
+     * @param view
+     * @return
+     */
+    P register(T view);
+
+    /**
+     * we don't need to keep in mind what is onStart and onPause
+     * instead we use active/inactive
+     * @param action
+     */
+    void active( String action);
+    void inactive();
 }

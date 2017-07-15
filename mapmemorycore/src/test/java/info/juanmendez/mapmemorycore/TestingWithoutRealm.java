@@ -6,7 +6,7 @@ import org.powermock.reflect.Whitebox;
 
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
-import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressView;
+import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressFragment;
 import info.juanmendez.mapmemorycore.models.Address;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 
@@ -35,8 +35,7 @@ public class TestingWithoutRealm {
 
     @Test
     public void testAddressProvider(){
-        TestAddressView addressView = new TestAddressView();
-        addressView.onStart();
+        TestAddressFragment addressView = new TestAddressFragment();
 
         //through MVP, get your hands on the presenter, and subsequently get its dagger dependency
         AddressProvider provider = Whitebox.getInternalState( addressView.getPresenter(), "addressProvider" );

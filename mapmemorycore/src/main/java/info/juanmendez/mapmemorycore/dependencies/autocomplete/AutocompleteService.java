@@ -9,16 +9,9 @@ package info.juanmendez.mapmemorycore.dependencies.autocomplete;
 public interface AutocompleteService {
     /**
      * call to get list of addresses based on query
+     *
+     * @param query query to search for addresses returned
      * @param response handles response
-     * @param address query to search for addresses returned
      */
-    void suggestAddress( AutocompleteResponse response, String address );
-
-
-    /**
-     * call to get list of addresses based on geolocation
-     * @param response handles response
-     * @param lat/lon geolocation to query for addresses
-     */
-    void suggestAddress( AutocompleteResponse response, long lat, long lon );
+    void suggestAddress( String query, long lat, long lon, AutocompleteResponse response );
 }

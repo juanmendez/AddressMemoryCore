@@ -4,7 +4,7 @@ import java.util.List;
 
 import info.juanmendez.mapmemorycore.models.Address;
 import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesPresenter;
-import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesView;
+import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesFragment;
 
 
 /**
@@ -13,21 +13,14 @@ import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesView;
  * contact@juanmendez.info
  */
 
-public class TestAddressesView implements AddressesView {
+public class TestAddressesFragment implements AddressesFragment {
 
     AddressesPresenter presenter;
     List<Address> addresses;
 
-    public TestAddressesView() {
+    public TestAddressesFragment() {
         presenter = new AddressesPresenter();
-    }
-
-    public void onStart(){
-        presenter.onStart(this);
-    }
-
-    public void onPause(){
-        presenter.onPause();
+        presenter.register(this);
     }
 
     @Override
@@ -42,5 +35,14 @@ public class TestAddressesView implements AddressesView {
 
     public List<Address> getAddresses() {
         return addresses;
+    }
+
+    @Override
+    public void setActive(Boolean active, String action) {
+        if( active ){
+            presenter.active(action);
+        }else{
+            presenter.inactive();
+        }
     }
 }

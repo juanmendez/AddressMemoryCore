@@ -9,8 +9,8 @@ import java.util.List;
 
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.mamemorycore.TestRealmApp;
-import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressView;
-import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddresses.TestAddressesView;
+import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressFragment;
+import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddresses.TestAddressesFragment;
 import info.juanmendez.mapmemorycore.models.Address;
 import info.juanmendez.mapmemorycore.models.AddressFields;
 import info.juanmendez.mapmemorycore.models.SubmitError;
@@ -101,10 +101,9 @@ public class TestingWithRealm extends MockRealmTester {
         /**
          * lets build addressesView
          */
-        TestAddressesView addressesView = new TestAddressesView();
+        TestAddressesFragment addressesView = new TestAddressesFragment();
         provider = Whitebox.getInternalState( addressesView.getPresenter(), "addressProvider" );
 
-        addressesView.onStart();
         addresses = addressesView.getAddresses();
 
         assertEquals(0, provider.countAddresses());
@@ -139,8 +138,8 @@ public class TestingWithRealm extends MockRealmTester {
         });
 
         //lets see rotation..
-        addressesView.onPause();
-        addressesView.onStart();
+        addressesView.setActive(false, null);
+        addressesView.setActive(true, null );
 
         assertEquals( provider.countAddresses(), 1 );
 
@@ -165,10 +164,9 @@ public class TestingWithRealm extends MockRealmTester {
         /**
          * lets build addressesView
          */
-        TestAddressesView addressesView = new TestAddressesView();
+        TestAddressesFragment addressesView = new TestAddressesFragment();
         provider = Whitebox.getInternalState( addressesView.getPresenter(), "addressProvider" );
 
-        addressesView.onStart();
         addresses = addressesView.getAddresses();
 
         insertAddresses( provider );
@@ -177,11 +175,6 @@ public class TestingWithRealm extends MockRealmTester {
         //we are going to select the first address from provider.
         address = provider.getAddress(1);
         provider.selectAddress( address );
-
-
-        //programmatically we are going to start the next view
-        TestAddressView addressView = new TestAddressView();
-        addressView.onStart();
 
     }
 
@@ -225,7 +218,7 @@ public class TestingWithRealm extends MockRealmTester {
         /**
          * lets build addressesView
          */
-        TestAddressView addressView = new TestAddressView();
+        TestAddressFragment addressView = new TestAddressFragment();
         provider = Whitebox.getInternalState( addressView.getPresenter(), "addressProvider" );
 
 

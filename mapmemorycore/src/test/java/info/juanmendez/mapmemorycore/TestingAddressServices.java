@@ -24,6 +24,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.doAnswer;
 import static org.powermock.api.mockito.PowerMockito.spy;
@@ -54,20 +55,22 @@ public class TestingAddressServices {
     public void textNetwork(){
 
         TestAddressFragment fragmentSpied = spy(new TestAddressFragment());
+
+        //spying means using fragmentSpied reference in our presenter.
         AddressPresenter presenter = fragmentSpied.getPresenter();
         Whitebox.setInternalState(presenter, "view", fragmentSpied );
 
-        //we are going to see if user is on edit mode!
         Navigation navigation = (Navigation) Whitebox.getInternalState(presenter, "navigation");
-        NetworkService networkService = (NetworkService)   Whitebox.getInternalState(presenter, "networkService");
-
+        NetworkService networkServiceMocked = (NetworkService)   Whitebox.getInternalState(presenter, "networkService");
         AddressService addressServiceMocked = (AddressService) Whitebox.getInternalState(presenter, "addressService");
+
+        doReturn(true).when(networkServiceMocked).isConnected();
 
         doAnswer(invocation -> {
             NetworkResponse response = invocation.getArgumentAt(1, NetworkResponse.class);
             response.onStatusChanged(true);
             return null;
-        }).when( networkService ).connect(Mockito.anyObject(), any(NetworkResponse.class));
+        }).when( networkServiceMocked ).connect(Mockito.anyObject(), any(NetworkResponse.class));
 
         fragmentSpied.setActive(true, null);
         verify( fragmentSpied ).onAddressResult(any(), anyBoolean());
@@ -100,6 +103,9 @@ public class TestingAddressServices {
     }
 
 
+    /**
+     * test geolocation with successful and error response
+     */
     @Test
     public void testGeolocation(){
 
@@ -107,11 +113,11 @@ public class TestingAddressServices {
         AddressPresenter presenter = fragmentSpied.getPresenter();
         Whitebox.setInternalState(presenter, "view", fragmentSpied );
 
-        //we are going to see if user is on edit mode!
         Navigation navigation = (Navigation) Whitebox.getInternalState(presenter, "navigation");
-        NetworkService networkService = (NetworkService)   Whitebox.getInternalState(presenter, "networkService");
-
+        NetworkService networkServiceMocked = (NetworkService)   Whitebox.getInternalState(presenter, "networkService");
         AddressService addressServiceMocked = (AddressService) Whitebox.getInternalState(presenter, "addressService");
+
+        doReturn(true).when(networkServiceMocked).isConnected();
 
         doAnswer(invocation -> {
             AddressResponse response = invocation.getArgumentAt(0, AddressResponse.class );
@@ -131,11 +137,11 @@ public class TestingAddressServices {
 
         //view requests addresses by geolocation
         presenter.requestAddressByGeolocation();
-
         verify( fragmentSpied  ).onAddressError( any(Error.class) );
     }
 
 
+    //util
     List<Address> getAddresses(){
 
         List<Address> addresses = new ArrayList<>();

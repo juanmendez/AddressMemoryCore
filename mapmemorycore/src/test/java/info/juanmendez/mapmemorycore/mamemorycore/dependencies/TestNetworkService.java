@@ -14,6 +14,11 @@ public class TestNetworkService implements NetworkService {
     NetworkResponse response;
 
     @Override
+    public boolean isConnected() {
+        return true;
+    }
+
+    @Override
     public void connect( Object key, NetworkResponse response) {
         this.response = response;
     }

@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
  *
  * I first tested with the realm transactions, and I have to say there is still a bit of lagging
  * but it made use of testing and writing them without using Android at all. So both of these flavor providers
- * work in parallel and can be switched while testing. The good news is RealmAddressProvider is set to work
+ * work in parallel and can be switched while testing. The good news is DroidAddressProvider is set to work
  * with our Android environment.
  */
 

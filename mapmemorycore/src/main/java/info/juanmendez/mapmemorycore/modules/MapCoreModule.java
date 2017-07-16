@@ -8,8 +8,8 @@ import dagger.Module;
 import dagger.Provides;
 import info.juanmendez.mapmemorycore.CoreApp;
 import info.juanmendez.mapmemorycore.dependencies.Navigation;
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.AutocompleteService;
 import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
 
 /**
@@ -39,8 +39,8 @@ public class MapCoreModule {
     }
 
     @Provides
-    public AutocompleteService autocompleteService(){
-        return  app.getAutocomplete();
+    public AddressService autocompleteService(){
+        return  app.getAddressService();
     }
 
     @Singleton

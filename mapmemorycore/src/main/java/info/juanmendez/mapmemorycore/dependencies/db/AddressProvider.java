@@ -30,7 +30,6 @@ public interface AddressProvider {
     //update address
     Address updateAddress(Address address);
     void updateAddressAsync(Address address, Realm.Transaction.OnSuccess successHandler, Realm.Transaction.OnError errorHandler );
-
     void deleteAddressAsync(long addressId, Realm.Transaction.OnSuccess successHandler, Realm.Transaction.OnError errorHandler );
 
     //utils

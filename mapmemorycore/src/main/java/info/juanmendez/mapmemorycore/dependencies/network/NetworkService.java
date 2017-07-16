@@ -7,6 +7,7 @@ package info.juanmendez.mapmemorycore.dependencies.network;
  */
 
 public interface NetworkService {
+    boolean isConnected();
     void connect( Object key, NetworkResponse response );
     void disconnect( Object key );
 }

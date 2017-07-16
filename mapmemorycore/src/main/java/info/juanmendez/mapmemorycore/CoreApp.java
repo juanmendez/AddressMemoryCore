@@ -4,7 +4,7 @@ import android.app.Application;
 
 import info.juanmendez.mapmemorycore.dependencies.Navigation;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.AutocompleteService;
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
 import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
 
 /**
@@ -16,7 +16,7 @@ import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
 public interface CoreApp {
     Application getApplication();
     AddressProvider getAddressProvider();
-    AutocompleteService getAutocomplete();
+    AddressService getAddressService();
     NetworkService getNeworkService();
     Navigation getNavigation();
 }

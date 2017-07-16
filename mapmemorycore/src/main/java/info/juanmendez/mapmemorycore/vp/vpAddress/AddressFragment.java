@@ -1,5 +1,7 @@
 package info.juanmendez.mapmemorycore.vp.vpAddress;
 
+import java.util.List;
+
 import info.juanmendez.mapmemorycore.models.Address;
 import info.juanmendez.mapmemorycore.vp.FragmentNav;
 
@@ -15,5 +17,7 @@ public interface AddressFragment extends FragmentNav {
      * @param address
      * @param online
      */
-    void showAddress(Address address, Boolean online);
+    void onAddressResult(Address address, Boolean online);
+    void onAddressError(Error error );
+    void onAddressesSuggested(List<Address> addresses );
 }

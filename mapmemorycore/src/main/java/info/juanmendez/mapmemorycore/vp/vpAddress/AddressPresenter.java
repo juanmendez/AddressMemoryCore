@@ -1,10 +1,16 @@
 package info.juanmendez.mapmemorycore.vp.vpAddress;
+
+import java.util.List;
+
 import javax.inject.Inject;
 
 import info.juanmendez.mapmemorycore.dependencies.Navigation;
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.AutocompleteService;
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressResponse;
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressesResponse;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
+import info.juanmendez.mapmemorycore.models.Address;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.vp.ViewPresenter;
 
@@ -19,7 +25,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
     AddressProvider addressProvider;
 
     @Inject
-    AutocompleteService autocompleteService;
+    AddressService addressService;
 
     @Inject
     NetworkService networkService;
@@ -29,21 +35,21 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
 
     AddressFragment view;
 
-    public static final String VIEW_TAG = "addressView";
-    public static final String EDIT_TAG = "editAddressView";
+    public static final String ADDRESS_VIEW_TAG = "viewAddressTag";
+    public static final String ADDDRESS_EDIT_TAG = "editAddressTag";
 
     @Override
     public AddressPresenter register(AddressFragment view) {
         this.view = view;
         MapCoreModule.getComponent().inject(this);
-
         return this;
     }
 
     @Override
     public void active( String action ) {
+
         networkService.connect(this, available -> {
-            view.showAddress( addressProvider.getSelectedAddress(), available );
+            view.onAddressResult( new Address(0), available );
         });
     }
 
@@ -52,6 +58,42 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
         networkService.disconnect(this);
     }
 
+    /**
+     * View is requesting to pull address based on geolocation
+     * this is done in an asynchronous way
+     */
+    public void requestAddressByGeolocation(){
+        if( networkService.isConnected() ){
+            addressService.geolocateAddress(new AddressResponse() {
+                @Override
+                public void onAddressResult(Address address) {
+                    view.onAddressResult( address, true );
+                }
 
+                @Override
+                public void onAddressError(Error error) {
+                    view.onAddressError(error);
+                }
+            });
+        }
+    }
 
+    /**
+     * View is requesting addresses by query which is replied asynchronously
+     */
+    public void requestAddressSuggestions( String query ){
+        if( networkService.isConnected() ){
+            addressService.suggestAddress(query, new AddressesResponse() {
+                @Override
+                public void onAddressResults(List<Address> addresses) {
+                    view.onAddressesSuggested( addresses );
+                }
+
+                @Override
+                public void onAddressError(Error error) {
+                    view.onAddressError( error );
+                }
+            });
+        }
+    }
 }

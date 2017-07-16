@@ -28,7 +28,7 @@ import static junit.framework.TestCase.assertNotNull;
 
 /**
  * These tests show how to write final Realm transactions using Mocking-Realm through TDD.
- * We are using Dagger, and our transactions are happening in RealmAddressProvider which is
+ * We are using Dagger, and our transactions are happening in DroidAddressProvider which is
  * implementing AddressProvider and which is stated as our dependency in Dagger.
  */
 @PrepareForTest({TestRealmApp.class})

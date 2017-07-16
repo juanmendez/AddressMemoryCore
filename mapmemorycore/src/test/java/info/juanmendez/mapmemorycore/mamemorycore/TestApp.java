@@ -7,12 +7,12 @@ import org.powermock.api.mockito.PowerMockito;
 
 import info.juanmendez.mapmemorycore.CoreApp;
 import info.juanmendez.mapmemorycore.dependencies.Navigation;
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.AutocompleteService;
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
 import info.juanmendez.mapmemorycore.mamemorycore.dependencies.TestAddressProvider;
-import info.juanmendez.mapmemorycore.mamemorycore.dependencies.TestAutocompleteService;
-import info.juanmendez.mapmemorycore.mamemorycore.dependencies.TestNetworkService;
+
+import static org.powermock.api.mockito.PowerMockito.mock;
 
 
 /**
@@ -44,17 +44,17 @@ public class TestApp implements CoreApp {
     }
 
     @Override
-    public AutocompleteService getAutocomplete() {
-        return new TestAutocompleteService(application);
+    public AddressService getAddressService() {
+        return mock( AddressService.class );
     }
 
     @Override
     public NetworkService getNeworkService() {
-        return new TestNetworkService();
+        return mock( NetworkService.class );
     }
 
     @Override
     public Navigation getNavigation() {
-        return Mockito.mock( Navigation.class );
+        return mock( Navigation.class );
     }
 }

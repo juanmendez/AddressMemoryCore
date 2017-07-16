@@ -1,7 +1,7 @@
 package info.juanmendez.mapmemorycore.mamemorycore;
 
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
-import info.juanmendez.mapmemorycore.dependencies.db.RealmAddressProvider;
+import info.juanmendez.mapmemorycore.dependencies.db.DroidAddressProvider;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -35,6 +35,6 @@ public class TestRealmApp extends TestApp {
 
     @Override
     public AddressProvider getAddressProvider() {
-        return new RealmAddressProvider(application, realm);
+        return new DroidAddressProvider(application, realm);
     }
 }

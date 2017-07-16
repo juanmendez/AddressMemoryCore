@@ -14,8 +14,7 @@ public class AddressFields {
     public static final String ADDRESS1 = "address1";
     public static final String ADDRESS2 = "address2";
 
-    public static final String  LAT = "lat";
-    public static final String  LON = "lon";
+    public static final String  LL = "latLon";
     public static final String  URL = "url";
     public static final String  PHOTOURL = "photoUrl";
 

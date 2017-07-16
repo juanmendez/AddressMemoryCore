@@ -1,5 +1,7 @@
 package info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress;
 
+import java.util.List;
+
 import info.juanmendez.mapmemorycore.models.Address;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressFragment;
@@ -24,8 +26,18 @@ public class TestAddressFragment implements AddressFragment {
     }
 
     @Override
-    public void showAddress(Address address, Boolean online) {
-        System.out.println( "address: " + address.getName() + " populates in here" );
+    public void onAddressResult(Address address, Boolean online) {
+
+    }
+
+    @Override
+    public void onAddressError(Error error) {
+
+    }
+
+    @Override
+    public void onAddressesSuggested(List<Address> addresses) {
+
     }
 
     @Override

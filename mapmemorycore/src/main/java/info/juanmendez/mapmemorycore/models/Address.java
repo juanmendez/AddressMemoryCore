@@ -35,8 +35,8 @@ public class Address extends RealmObject{
     //this is a google id if we were to get it from autocomplete
     String mapId;
 
-    long lat;
-    long lon;
+    double lat;
+    double lon;
     String url;
     String photoUrl;
 
@@ -78,19 +78,19 @@ public class Address extends RealmObject{
         this.address2 = address2;
     }
 
-    public long getLat() {
+    public double getLat() {
         return lat;
     }
 
-    public void setLat(long lat) {
+    public void setLat(double lat) {
         this.lat = lat;
     }
 
-    public long getLon() {
+    public double getLon() {
         return lon;
     }
 
-    public void setLon(long lon) {
+    public void setLon(double lon) {
         this.lon = lon;
     }
 
@@ -132,5 +132,16 @@ public class Address extends RealmObject{
 
     public void setTimesVisited(int timesVisited) {
         this.timesVisited = timesVisited;
+    }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "name='" + name + '\'' +
+                ", address1='" + address1 + '\'' +
+                ", address2='" + address2 + '\'' +
+                ", lat=" + lat +
+                ", lon=" + lon +
+                '}';
     }
 }

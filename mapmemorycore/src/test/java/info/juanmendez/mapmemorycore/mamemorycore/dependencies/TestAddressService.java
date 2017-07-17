@@ -1,5 +1,6 @@
 package info.juanmendez.mapmemorycore.mamemorycore.dependencies;
 
+import android.app.Activity;
 import android.app.Application;
 
 import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressResponse;
@@ -18,6 +19,21 @@ public class TestAddressService implements AddressService {
 
     public TestAddressService(Application application) {
         this.application = application;
+    }
+
+    @Override
+    public void register(Activity activity) {
+
+    }
+
+    @Override
+    public void onStart() {
+
+    }
+
+    @Override
+    public void onStop() {
+
     }
 
     @Override

@@ -1,10 +1,14 @@
 package info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress;
 
+import android.app.Activity;
+
 import java.util.List;
 
 import info.juanmendez.mapmemorycore.models.Address;
-import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressFragment;
+import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
+
+import static org.powermock.api.mockito.PowerMockito.mock;
 
 
 /**
@@ -12,7 +16,6 @@ import info.juanmendez.mapmemorycore.vp.vpAddress.AddressFragment;
  * www.juanmendez.info
  * contact@juanmendez.info
  */
-
 public class TestAddressFragment implements AddressFragment {
     AddressPresenter presenter;
 
@@ -47,5 +50,10 @@ public class TestAddressFragment implements AddressFragment {
        }else{
            presenter.inactive();
        }
+    }
+
+    @Override
+    public Activity getActivity() {
+        return mock(Activity.class);
     }
 }

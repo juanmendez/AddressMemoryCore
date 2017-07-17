@@ -39,7 +39,7 @@ public class MapCoreModule {
     }
 
     @Provides
-    public AddressService autocompleteService(){
+    public AddressService getAddressService(){
         return  app.getAddressService();
     }
 

@@ -26,6 +26,10 @@ public class SubmitError{
         return field==null || field.trim().isEmpty();
     }
 
+    public static Boolean initialized(double field ){
+        return field != 0d;
+    }
+
     public static Boolean initialized(long field ){
         return field != 0l;
     }

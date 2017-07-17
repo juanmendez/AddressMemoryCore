@@ -42,6 +42,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
     public AddressPresenter register(AddressFragment view) {
         this.view = view;
         MapCoreModule.getComponent().inject(this);
+        addressService.register( view.getActivity() );
         return this;
     }
 
@@ -51,11 +52,14 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
         networkService.connect(this, available -> {
             view.onAddressResult( new Address(0), available );
         });
+
+        addressService.onStart();
     }
 
     @Override
     public void inactive() {
         networkService.disconnect(this);
+        addressService.onStop();
     }
 
     /**

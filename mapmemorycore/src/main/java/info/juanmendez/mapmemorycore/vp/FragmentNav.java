@@ -1,5 +1,7 @@
 package info.juanmendez.mapmemorycore.vp;
 
+import android.app.Activity;
+
 /**
  * Created by Juan Mendez on 7/15/2017.
  * www.juanmendez.info
@@ -8,4 +10,5 @@ package info.juanmendez.mapmemorycore.vp;
 
 public interface FragmentNav {
     void setActive( Boolean active, String action);
+    Activity getActivity();
 }

@@ -1,10 +1,14 @@
 package info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddresses;
 
+import android.app.Activity;
+
 import java.util.List;
 
 import info.juanmendez.mapmemorycore.models.Address;
-import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesPresenter;
 import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesFragment;
+import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesPresenter;
+
+import static org.powermock.api.mockito.PowerMockito.mock;
 
 
 /**
@@ -44,5 +48,10 @@ public class TestAddressesFragment implements AddressesFragment {
         }else{
             presenter.inactive();
         }
+    }
+
+    @Override
+    public Activity getActivity() {
+        return mock(Activity.class);
     }
 }

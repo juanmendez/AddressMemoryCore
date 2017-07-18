@@ -49,7 +49,6 @@ public class MapCoreModule {
         return app.getApplication();
     }
 
-    @Singleton
     @Provides
     public NetworkService getNetworkService(){
         return app.getNeworkService();

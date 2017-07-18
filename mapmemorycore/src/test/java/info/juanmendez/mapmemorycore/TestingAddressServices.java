@@ -2,7 +2,6 @@ package info.juanmendez.mapmemorycore;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.mockito.internal.util.reflection.Whitebox;
 
 import java.util.ArrayList;
@@ -67,10 +66,10 @@ public class TestingAddressServices {
         doReturn(true).when(networkServiceMocked).isConnected();
 
         doAnswer(invocation -> {
-            NetworkResponse response = invocation.getArgumentAt(1, NetworkResponse.class);
+            NetworkResponse response = invocation.getArgumentAt(0, NetworkResponse.class);
             response.onStatusChanged(true);
             return null;
-        }).when( networkServiceMocked ).connect(Mockito.anyObject(), any(NetworkResponse.class));
+        }).when( networkServiceMocked ).connect(any(NetworkResponse.class));
 
         fragmentSpied.setActive(true, null);
         verify( fragmentSpied ).onAddressResult(any(), anyBoolean());

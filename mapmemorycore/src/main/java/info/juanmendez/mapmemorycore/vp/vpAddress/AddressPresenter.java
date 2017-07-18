@@ -49,7 +49,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
     @Override
     public void active( String action ) {
 
-        networkService.connect(this, available -> {
+        networkService.connect(available -> {
             view.onAddressResult( new Address(0), available );
         });
 
@@ -58,7 +58,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
 
     @Override
     public void inactive() {
-        networkService.disconnect(this);
+        networkService.disconnect();
         addressService.onStop();
     }
 

@@ -2,4 +2,5 @@
 <resources>
     <string name="required_field">Field is required</string>
     <string name="address_gone">This address1 does not exist</string>
+    <string name="server_down_geolocation">Can\'t get the address where you\'re located</string>
 </resources>

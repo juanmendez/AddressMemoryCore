@@ -79,6 +79,8 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
                     view.onAddressError(error);
                 }
             });
+        }else{
+            view.onAddressError( new Error("networkService has no connection"));
         }
     }
 

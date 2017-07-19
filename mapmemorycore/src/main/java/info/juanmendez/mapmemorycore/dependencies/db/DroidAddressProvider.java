@@ -93,8 +93,8 @@ public class DroidAddressProvider implements AddressProvider {
                 response.onAddressResult(addressArray[0]);
             }
 
-        }, error -> {
-            response.onAddressError(new Error(error.getMessage()));
+        }, exception -> {
+            response.onAddressError(new Error(exception.getMessage()));
         });
     }
 
@@ -126,7 +126,7 @@ public class DroidAddressProvider implements AddressProvider {
                 response.onAddressResult(addressArray[0]);
             }
 
-        }, error -> { response.onAddressError(new Error(error.getMessage()));}  );
+        }, exception -> { response.onAddressError(new Error(exception.getMessage()));}  );
     }
 
     public long getNextPrimaryKey(){

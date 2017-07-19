@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import info.juanmendez.mapmemorycore.R;
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressResponse;
 import info.juanmendez.mapmemorycore.models.Address;
 import info.juanmendez.mapmemorycore.models.AddressFields;
 import info.juanmendez.mapmemorycore.models.SubmitError;
@@ -81,11 +82,20 @@ public class DroidAddressProvider implements AddressProvider {
     }
 
 
-    public void updateAddressAsync(Address address, Realm.Transaction.OnSuccess successHandler, Realm.Transaction.OnError errorHandler ){
+    public void updateAddressAsync(Address address, AddressResponse response ) {
+
+        final Address[] addressArray = new Address[1];
 
         realm.executeTransactionAsync(thisRealm -> {
-            thisRealm.copyToRealmOrUpdate( address );
-        }, successHandler, errorHandler );
+            addressArray[0] = thisRealm.copyToRealmOrUpdate(address);
+        }, () -> {
+            if (addressArray.length != 0) {
+                response.onAddressResult(addressArray[0]);
+            }
+
+        }, error -> {
+            response.onAddressError(new Error(error.getMessage()));
+        });
     }
 
     public Address updateAddress(Address address){
@@ -99,16 +109,24 @@ public class DroidAddressProvider implements AddressProvider {
         return updatedAddress;
     }
 
-    public void deleteAddressAsync(long addressId, Realm.Transaction.OnSuccess successHandler, Realm.Transaction.OnError errorHandler ){
-        realm.executeTransactionAsync(thisRealm -> {
-            RealmResults<Address> addresses = thisRealm.where( Address.class ).equalTo( "addressId", addressId ).findAll();
+    public void deleteAddressAsync(long addressId, AddressResponse response ){
 
-            if( !addresses.isEmpty() ){
-                addresses.deleteAllFromRealm();
+        final Address[] addressArray = new Address[1];
+
+        realm.executeTransactionAsync(thisRealm -> {
+            addressArray[0] = thisRealm.where( Address.class ).equalTo( "addressId", addressId ).findFirst();
+
+            if( addressArray.length != 0  ){
+                addressArray[0].deleteFromRealm();
             }else{
-                throw new RealmException("DroidAddressProvider.deleteAddressAsync couldn't delete any element with addressId " + addressId );
+                throw new RealmException("Couldn't find an element to delete");
             }
-        }, successHandler, errorHandler  );
+        }, () -> {
+            if( addressArray.length != 0 ){
+                response.onAddressResult(addressArray[0]);
+            }
+
+        }, error -> { response.onAddressError(new Error(error.getMessage()));}  );
     }
 
     public long getNextPrimaryKey(){

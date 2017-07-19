@@ -7,6 +7,7 @@ import org.powermock.reflect.Whitebox;
 
 import java.util.List;
 
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressResponse;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.mamemorycore.TestRealmApp;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressFragment;
@@ -71,17 +72,17 @@ public class TestingWithRealm extends MockRealmTester {
         address.setAddress1("0 N. State");
         address.setAddress2( "Chicago, 60641" );
 
-        provider.updateAddressAsync( address, () -> {
-            assertTrue( true );
-        }, error -> {
-            assertTrue( false );
-        } );
+        provider.updateAddressAsync(address, new AddressResponse() {
+            @Override
+            public void onAddressResult(Address address) {
+                assertTrue( true );
+            }
 
-        provider.deleteAddressAsync( 1, () -> {
-            assertTrue( true );
-        }, error -> {
-            assertTrue( false );
-        } );
+            @Override
+            public void onAddressError(Error error) {
+                assertTrue( false );
+            }
+        });
     }
 
     /**
@@ -130,11 +131,16 @@ public class TestingWithRealm extends MockRealmTester {
         assertEquals( provider.countAddresses(), 2 );
 
         //good, good.. now I want to delete the first item..
-        provider.deleteAddressAsync(1, () -> {
-            //should be just one.
-            assertEquals( provider.countAddresses(), 1 );
-        }, error -> {
+        provider.deleteAddressAsync(1, new AddressResponse() {
+            @Override
+            public void onAddressResult(Address address) {
+                assertEquals( provider.countAddresses(), 1 );
+            }
 
+            @Override
+            public void onAddressError(Error error) {
+
+            }
         });
 
         //lets see rotation..

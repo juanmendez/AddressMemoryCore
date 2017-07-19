@@ -2,9 +2,9 @@ package info.juanmendez.mapmemorycore.dependencies.db;
 
 import java.util.List;
 
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressResponse;
 import info.juanmendez.mapmemorycore.models.Address;
 import info.juanmendez.mapmemorycore.models.SubmitError;
-import io.realm.Realm;
 import rx.Observable;
 
 /**
@@ -29,8 +29,8 @@ public interface AddressProvider {
 
     //update address
     Address updateAddress(Address address);
-    void updateAddressAsync(Address address, Realm.Transaction.OnSuccess successHandler, Realm.Transaction.OnError errorHandler );
-    void deleteAddressAsync(long addressId, Realm.Transaction.OnSuccess successHandler, Realm.Transaction.OnError errorHandler );
+    void updateAddressAsync(Address address, AddressResponse response );
+    void deleteAddressAsync(long addressId, AddressResponse response );
 
     //utils
     long getNextPrimaryKey();

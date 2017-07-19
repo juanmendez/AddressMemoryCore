@@ -71,7 +71,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
             addressService.geolocateAddress(new AddressResponse() {
                 @Override
                 public void onAddressResult(Address address) {
-                    view.onAddressResult( address, true );
+                    view.onAddressResult( address, networkService.isConnected() );
                 }
 
                 @Override

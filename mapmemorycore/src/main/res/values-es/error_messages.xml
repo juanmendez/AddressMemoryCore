@@ -2,5 +2,6 @@
 <resources>
     <string name="required_field">Llene este campo</string>
     <string name="address_gone">Esta dirección no existe</string>
-    <string name="server_down_geolocation">No hay conección para obtener la dirección donde esta ubicado</string>
+    <string name="server_down_geolocation">No hay conección para mostrar donde esta ubicado</string>
+    <string name="geolocate">Obtener dirección por ubicación</string>
 </resources>

@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressResponse;
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.Response;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressFragment;
@@ -46,14 +46,14 @@ public class TestingWithoutRealm {
 
         assertEquals(provider.countAddresses(), 4);
 
-        provider.deleteAddressAsync(1, new AddressResponse() {
+        provider.deleteAddressAsync(1, new Response<Address>() {
             @Override
-            public void onAddressResult(Address address) {
+            public void onResult(Address result) {
                 assertEquals( provider.countAddresses(), 3 );
             }
 
             @Override
-            public void onAddressError(Error error) {
+            public void onError(Exception exception) {
 
             }
         });

@@ -5,12 +5,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 import info.juanmendez.mapmemorycore.dependencies.Navigation;
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressResponse;
 import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressesResponse;
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.Response;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
 import info.juanmendez.mapmemorycore.models.Address;
+import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.vp.ViewPresenter;
 
@@ -68,19 +68,19 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
      */
     public void requestAddressByGeolocation(){
         if( networkService.isConnected() ){
-            addressService.geolocateAddress(new AddressResponse() {
+            addressService.geolocateAddress(new Response<Address>() {
                 @Override
-                public void onAddressResult(Address address) {
-                    view.onAddressResult( address, networkService.isConnected() );
+                public void onResult(Address result) {
+                    view.onAddressResult( result, networkService.isConnected() );
                 }
 
                 @Override
-                public void onAddressError(Error error) {
-                    view.onAddressError(error);
+                public void onError(Exception exception) {
+                    view.onAddressError(exception);
                 }
             });
         }else{
-            view.onAddressError( new Error("networkService has no connection"));
+            view.onAddressError( new MapMemoryException("networkService has no connection"));
         }
     }
 
@@ -89,15 +89,15 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
      */
     public void requestAddressSuggestions( String query ){
         if( networkService.isConnected() ){
-            addressService.suggestAddress(query, new AddressesResponse() {
+            addressService.suggestAddress(query, new Response<List<Address>>() {
                 @Override
-                public void onAddressResults(List<Address> addresses) {
-                    view.onAddressesSuggested( addresses );
+                public void onResult(List<Address> results ) {
+                    view.onAddressesSuggested( results );
                 }
 
                 @Override
-                public void onAddressError(Error error) {
-                    view.onAddressError( error );
+                public void onError(Exception exception) {
+                    view.onAddressError( exception );
                 }
             });
         }

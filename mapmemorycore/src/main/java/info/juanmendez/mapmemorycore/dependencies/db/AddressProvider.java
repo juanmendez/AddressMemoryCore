@@ -2,7 +2,7 @@ package info.juanmendez.mapmemorycore.dependencies.db;
 
 import java.util.List;
 
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressResponse;
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.Response;
 import info.juanmendez.mapmemorycore.models.Address;
 import info.juanmendez.mapmemorycore.models.SubmitError;
 import rx.Observable;
@@ -29,8 +29,8 @@ public interface AddressProvider {
 
     //update address
     Address updateAddress(Address address);
-    void updateAddressAsync(Address address, AddressResponse response );
-    void deleteAddressAsync(long addressId, AddressResponse response );
+    void updateAddressAsync(Address address, Response<Address> response );
+    void deleteAddressAsync(long addressId, Response<Address> response );
 
     //utils
     long getNextPrimaryKey();

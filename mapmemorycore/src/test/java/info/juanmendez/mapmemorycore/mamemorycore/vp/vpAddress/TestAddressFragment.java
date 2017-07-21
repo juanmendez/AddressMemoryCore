@@ -10,7 +10,6 @@ import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
 
 import static org.powermock.api.mockito.PowerMockito.mock;
 
-
 /**
  * Created by Juan Mendez on 6/28/2017.
  * www.juanmendez.info
@@ -34,7 +33,7 @@ public class TestAddressFragment implements AddressFragment {
     }
 
     @Override
-    public void onAddressError(Error error) {
+    public void onAddressError(Exception error) {
 
     }
 

@@ -18,6 +18,6 @@ public interface AddressFragment extends FragmentNav {
      * @param online
      */
     void onAddressResult(Address address, Boolean online);
-    void onAddressError(Error error );
+    void onAddressError(Exception exception );
     void onAddressesSuggested(List<Address> addresses );
 }

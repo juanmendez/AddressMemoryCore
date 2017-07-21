@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import info.juanmendez.mapmemorycore.dependencies.Navigation;
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressResponse;
 import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressesResponse;
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.Response;
 import info.juanmendez.mapmemorycore.dependencies.network.NetworkResponse;
 import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
 import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressFragment;
 import info.juanmendez.mapmemorycore.models.Address;
+import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
 
@@ -59,7 +59,6 @@ public class TestingAddressServices {
         AddressPresenter presenter = fragmentSpied.getPresenter();
         Whitebox.setInternalState(presenter, "view", fragmentSpied );
 
-        Navigation navigation = (Navigation) Whitebox.getInternalState(presenter, "navigation");
         NetworkService networkServiceMocked = (NetworkService)   Whitebox.getInternalState(presenter, "networkService");
         AddressService addressServiceMocked = (AddressService) Whitebox.getInternalState(presenter, "addressService");
 
@@ -78,10 +77,10 @@ public class TestingAddressServices {
         List<Address> addresses = getAddresses();
 
         doAnswer(invocation -> {
-            AddressesResponse response = invocation.getArgumentAt(1, AddressesResponse.class );
-            response.onAddressResults( addresses );
+            Response<List<Address>> response = invocation.getArgumentAt(1, Response.class );
+            response.onResult( addresses );
             return null;
-        }).when(addressServiceMocked).suggestAddress(anyString(), any(AddressesResponse.class));
+        }).when(addressServiceMocked).suggestAddress(anyString(), any(Response.class));
 
 
         //view requests suggested addresses
@@ -90,15 +89,15 @@ public class TestingAddressServices {
 
 
         doAnswer(invocation -> {
-            AddressesResponse response = invocation.getArgumentAt(1, AddressesResponse.class );
-            response.onAddressError( new Error("You could be offline!"));
+            Response<Address> response = invocation.getArgumentAt(1, Response.class );
+            response.onError( new MapMemoryException("You could be offline!"));
             return null;
-        }).when(addressServiceMocked).suggestAddress(anyString(), any(AddressesResponse.class));
+        }).when(addressServiceMocked).suggestAddress(anyString(), any(Response.class));
 
 
         //view requests suggested addresses
         presenter.requestAddressSuggestions("0 N. State");
-        verify( fragmentSpied ).onAddressError( any(Error.class));
+        verify( fragmentSpied ).onAddressError( any(Exception.class));
     }
 
 
@@ -119,24 +118,24 @@ public class TestingAddressServices {
         doReturn(true).when(networkServiceMocked).isConnected();
 
         doAnswer(invocation -> {
-            AddressResponse response = invocation.getArgumentAt(0, AddressResponse.class );
-            response.onAddressResult( getAddresses().get(0) );
+            Response<Address> response = invocation.getArgumentAt(0, Response.class );
+            response.onResult( getAddresses().get(0) );
             return null;
-        }).when(addressServiceMocked).geolocateAddress(any(AddressResponse.class));
+        }).when(addressServiceMocked).geolocateAddress(any(Response.class));
 
-        //view requests addresses by geolocation
+        //view suggested address by geolocation
         presenter.requestAddressByGeolocation();
         verify( fragmentSpied ).onAddressResult( any(Address.class), anyBoolean());
 
         doAnswer(invocation -> {
-            AddressResponse response = invocation.getArgumentAt(0, AddressResponse.class );
-            response.onAddressError(new Error("oops"));
+            Response<Address> response = invocation.getArgumentAt(0, Response.class );
+            response.onError(new MapMemoryException("oops"));
             return null;
-        }).when(addressServiceMocked).geolocateAddress(any(AddressResponse.class));
+        }).when(addressServiceMocked).geolocateAddress(any(Response.class));
 
         //view requests addresses by geolocation
         presenter.requestAddressByGeolocation();
-        verify( fragmentSpied  ).onAddressError( any(Error.class) );
+        verify( fragmentSpied  ).onAddressError( any(Exception.class) );
     }
 
 

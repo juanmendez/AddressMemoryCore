@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import info.juanmendez.mapmemorycore.R;
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressResponse;
+import info.juanmendez.mapmemorycore.models.MapMemoryException;
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.Response;
 import info.juanmendez.mapmemorycore.models.Address;
 import info.juanmendez.mapmemorycore.models.AddressFields;
 import info.juanmendez.mapmemorycore.models.SubmitError;
@@ -82,7 +83,7 @@ public class DroidAddressProvider implements AddressProvider {
     }
 
 
-    public void updateAddressAsync(Address address, AddressResponse response ) {
+    public void updateAddressAsync(Address address, Response<Address> response ) {
 
         final Address[] addressArray = new Address[1];
 
@@ -90,11 +91,11 @@ public class DroidAddressProvider implements AddressProvider {
             addressArray[0] = thisRealm.copyToRealmOrUpdate(address);
         }, () -> {
             if (addressArray.length != 0) {
-                response.onAddressResult(addressArray[0]);
+                response.onResult(addressArray[0]);
             }
 
         }, exception -> {
-            response.onAddressError(new Error(exception.getMessage()));
+            response.onError(new MapMemoryException(exception.getMessage()));
         });
     }
 
@@ -109,7 +110,7 @@ public class DroidAddressProvider implements AddressProvider {
         return updatedAddress;
     }
 
-    public void deleteAddressAsync(long addressId, AddressResponse response ){
+    public void deleteAddressAsync(long addressId, Response<Address> response ){
 
         final Address[] addressArray = new Address[1];
 
@@ -123,10 +124,10 @@ public class DroidAddressProvider implements AddressProvider {
             }
         }, () -> {
             if( addressArray.length != 0 ){
-                response.onAddressResult(addressArray[0]);
+                response.onResult(addressArray[0]);
             }
 
-        }, exception -> { response.onAddressError(new Error(exception.getMessage()));}  );
+        }, exception -> { response.onError(new MapMemoryException(exception.getMessage()));}  );
     }
 
     public long getNextPrimaryKey(){

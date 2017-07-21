@@ -3,9 +3,10 @@ package info.juanmendez.mapmemorycore.mamemorycore.dependencies;
 import java.util.ArrayList;
 import java.util.List;
 
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressResponse;
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.Response;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.models.Address;
+import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.models.SubmitError;
 import rx.Observable;
 
@@ -81,25 +82,25 @@ public class TestAddressProvider implements AddressProvider {
     }
 
     @Override
-    public void updateAddressAsync(Address address, AddressResponse response) {
+    public void updateAddressAsync(Address address, Response<Address> response) {
         Address updated = updateAddress( address );
 
         if( updated != null ){
-            response.onAddressResult(updated);
+            response.onResult(updated);
         }else{
-            response.onAddressError( new Error("couldn't update address asynchronously"));
+            response.onError( new MapMemoryException("couldn't update address asynchronously"));
         }
     }
 
     @Override
-    public void deleteAddressAsync(long addressId, AddressResponse response) {
+    public void deleteAddressAsync(long addressId, Response<Address> response) {
         Address address = getAddress( addressId);
 
         if( address != null ){
             addresses.remove(address);
-            response.onAddressResult(address);
+            response.onResult(address);
         }else{
-            response.onAddressError( new Error("couldn't delete address asynchronously"));
+            response.onError( new MapMemoryException("couldn't delete address asynchronously"));
         }
     }
 

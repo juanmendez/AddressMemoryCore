@@ -4,9 +4,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import info.juanmendez.mapmemorycore.dependencies.Navigation;
+import info.juanmendez.mapmemorycore.dependencies.android.Navigation;
 import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.Response;
+import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
 import info.juanmendez.mapmemorycore.models.Address;
@@ -49,8 +49,16 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
     @Override
     public void active( String action ) {
 
-        networkService.connect(available -> {
-            view.onAddressResult( new Address(0), available );
+        networkService.connect(new Response<Boolean>() {
+            @Override
+            public void onResult(Boolean result) {
+                view.onAddressResult( new Address(0), result );
+            }
+
+            @Override
+            public void onError(Exception exception) {
+
+            }
         });
 
         addressService.onStart();

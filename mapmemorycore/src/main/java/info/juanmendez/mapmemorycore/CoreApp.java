@@ -2,7 +2,7 @@ package info.juanmendez.mapmemorycore;
 
 import android.app.Application;
 
-import info.juanmendez.mapmemorycore.dependencies.Navigation;
+import info.juanmendez.mapmemorycore.dependencies.android.Navigation;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
 import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;

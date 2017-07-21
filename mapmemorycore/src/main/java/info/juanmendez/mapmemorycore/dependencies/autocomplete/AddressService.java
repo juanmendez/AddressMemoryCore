@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import java.util.List;
 
+import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.models.Address;
 
 /**

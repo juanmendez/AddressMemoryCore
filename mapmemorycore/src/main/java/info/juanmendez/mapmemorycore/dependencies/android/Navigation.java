@@ -1,4 +1,4 @@
-package info.juanmendez.mapmemorycore.dependencies;
+package info.juanmendez.mapmemorycore.dependencies.android;
 
 /**
  * Created by Juan Mendez on 7/14/2017.

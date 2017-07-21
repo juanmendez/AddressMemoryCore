@@ -7,7 +7,7 @@ import org.powermock.reflect.Whitebox;
 
 import java.util.List;
 
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.Response;
+import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.mamemorycore.TestRealmApp;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressFragment;

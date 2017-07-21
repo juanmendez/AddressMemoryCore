@@ -2,7 +2,7 @@ package info.juanmendez.mapmemorycore.dependencies.db;
 
 import java.util.List;
 
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.Response;
+import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.models.Address;
 import info.juanmendez.mapmemorycore.models.SubmitError;
 import rx.Observable;

@@ -3,7 +3,7 @@ package info.juanmendez.mapmemorycore.mamemorycore.dependencies;
 import java.util.ArrayList;
 import java.util.List;
 
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.Response;
+import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.models.Address;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;

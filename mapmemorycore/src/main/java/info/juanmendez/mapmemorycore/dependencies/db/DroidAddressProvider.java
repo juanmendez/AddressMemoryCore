@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import info.juanmendez.mapmemorycore.R;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.Response;
+import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.models.Address;
 import info.juanmendez.mapmemorycore.models.AddressFields;
 import info.juanmendez.mapmemorycore.models.SubmitError;

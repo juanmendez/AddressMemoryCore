@@ -6,7 +6,7 @@ import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 
 import info.juanmendez.mapmemorycore.CoreApp;
-import info.juanmendez.mapmemorycore.dependencies.Navigation;
+import info.juanmendez.mapmemorycore.dependencies.android.Navigation;
 import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;

@@ -7,10 +7,9 @@ import org.mockito.internal.util.reflection.Whitebox;
 import java.util.ArrayList;
 import java.util.List;
 
-import info.juanmendez.mapmemorycore.dependencies.Navigation;
+import info.juanmendez.mapmemorycore.dependencies.android.Navigation;
 import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.Response;
-import info.juanmendez.mapmemorycore.dependencies.network.NetworkResponse;
+import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
 import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressFragment;
@@ -65,10 +64,10 @@ public class TestingAddressServices {
         doReturn(true).when(networkServiceMocked).isConnected();
 
         doAnswer(invocation -> {
-            NetworkResponse response = invocation.getArgumentAt(0, NetworkResponse.class);
-            response.onStatusChanged(true);
+            Response<Boolean> response = invocation.getArgumentAt(0, Response.class);
+            response.onResult(true);
             return null;
-        }).when( networkServiceMocked ).connect(any(NetworkResponse.class));
+        }).when( networkServiceMocked ).connect(any(Response.class));
 
         fragmentSpied.setActive(true, null);
         verify( fragmentSpied ).onAddressResult(any(), anyBoolean());

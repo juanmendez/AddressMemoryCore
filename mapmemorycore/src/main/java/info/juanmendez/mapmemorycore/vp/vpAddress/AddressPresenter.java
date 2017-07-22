@@ -96,7 +96,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
      * View is requesting addresses by query which is replied asynchronously
      */
     public void requestAddressSuggestions( String query ){
-        if( networkService.isConnected() ){
+        if( networkService.isConnected() && !query.isEmpty() ){
             addressService.suggestAddress(query, new Response<List<Address>>() {
                 @Override
                 public void onResult(List<Address> results ) {
@@ -108,6 +108,11 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
                     view.onAddressError( exception );
                 }
             });
+        }else{
+            if( !networkService.isConnected() )
+                view.onAddressError( new MapMemoryException("networkService has no connection"));
+            else if( query.isEmpty() )
+                view.onAddressError( new MapMemoryException("query is empty"));
         }
     }
 }

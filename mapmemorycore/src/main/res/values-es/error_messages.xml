@@ -4,4 +4,5 @@
     <string name="geolocate">Obtener dirección por ubicación</string>
     <string name="required_field">Llene este campo</string>
     <string name="server_down_geolocation">No hay conección para mostrar donde esta ubicado</string>
+    <string name="geolocate_persistance">Intente otra vez si en caso la dirección no es precisa</string>
 </resources>

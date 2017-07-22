@@ -7,15 +7,15 @@ import org.mockito.internal.util.reflection.Whitebox;
 import java.util.ArrayList;
 import java.util.List;
 
-import info.juanmendez.mapmemorycore.dependencies.android.Navigation;
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
 import info.juanmendez.mapmemorycore.dependencies.Response;
+import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
 import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
 import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressFragment;
 import info.juanmendez.mapmemorycore.models.Address;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
+import info.juanmendez.mapmemorycore.vp.vpAddress.AddressFragment;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
 
 import static org.mockito.Matchers.any;
@@ -23,8 +23,10 @@ import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.doAnswer;
+import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.spy;
 
 
@@ -106,11 +108,11 @@ public class TestingAddressServices {
     @Test
     public void testGeolocation(){
 
-        TestAddressFragment fragmentSpied = spy(new TestAddressFragment());
-        AddressPresenter presenter = fragmentSpied.getPresenter();
-        Whitebox.setInternalState(presenter, "view", fragmentSpied );
+        AddressFragment fragment = mock( AddressFragment.class );
+        AddressPresenter presenter = new AddressPresenter();
+        presenter.register( fragment );
 
-        Navigation navigation = (Navigation) Whitebox.getInternalState(presenter, "navigation");
+        //Navigation navigation = (Navigation) Whitebox.getInternalState(presenter, "navigation");
         NetworkService networkServiceMocked = (NetworkService)   Whitebox.getInternalState(presenter, "networkService");
         AddressService addressServiceMocked = (AddressService) Whitebox.getInternalState(presenter, "addressService");
 
@@ -124,7 +126,7 @@ public class TestingAddressServices {
 
         //view suggested address by geolocation
         presenter.requestAddressByGeolocation();
-        verify( fragmentSpied ).onAddressResult( any(Address.class), anyBoolean());
+        verify( fragment ).onAddressResult( any(Address.class), anyBoolean());
 
         doAnswer(invocation -> {
             Response<Address> response = invocation.getArgumentAt(0, Response.class );
@@ -134,9 +136,44 @@ public class TestingAddressServices {
 
         //view requests addresses by geolocation
         presenter.requestAddressByGeolocation();
-        verify( fragmentSpied  ).onAddressError( any(Exception.class) );
+        verify( fragment  ).onAddressError( any(Exception.class) );
     }
 
+    @Test
+    public void testSuggestion(){
+
+        AddressFragment fragment = mock( AddressFragment.class );
+        AddressPresenter presenter = new AddressPresenter();
+        presenter.register( fragment );
+
+        NetworkService networkServiceMocked = (NetworkService)   Whitebox.getInternalState(presenter, "networkService");
+        AddressService addressServiceMocked = (AddressService) Whitebox.getInternalState(presenter, "addressService");
+
+        doReturn(true).when(networkServiceMocked).isConnected();
+
+        doAnswer( invocation -> {
+            Response<List<Address>> response = invocation.getArgumentAt(1, Response.class );
+            response.onResult(new ArrayList<Address>());
+
+            return null;
+        }).when( addressServiceMocked ).suggestAddress( anyString(), any(Response.class) );
+
+        presenter.requestAddressSuggestions( "3463 N. Natch" );
+        verify( fragment ).onAddressesSuggested(anyList());
+
+
+        //we want to make an exception happen during addressService.suggestAddress
+        //by providing an empty query.
+        presenter.requestAddressSuggestions( "" );
+        verify( fragment ).onAddressError(any(Exception.class));
+
+        reset(fragment);
+
+        //ok we want to catch an error if there is no connection
+        doReturn(false).when(networkServiceMocked).isConnected();
+        presenter.requestAddressSuggestions( "3463 N. Natch" );
+        verify( fragment ).onAddressError(any(Exception.class));
+    }
 
     //util
     List<Address> getAddresses(){

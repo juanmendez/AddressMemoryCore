@@ -4,4 +4,5 @@
     <string name="geolocate">Get address by location</string>
     <string name="required_field">Field is required</string>
     <string name="server_down_geolocation">Can\'t get the address where you\'re located</string>
+    <string name="geolocate_persistance">Press again if address is not accurate</string>
 </resources>

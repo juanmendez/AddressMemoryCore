@@ -12,7 +12,7 @@ import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.mamemorycore.TestRealmApp;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressFragment;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddresses.TestAddressesFragment;
-import info.juanmendez.mapmemorycore.models.Address;
+import info.juanmendez.mapmemorycore.models.MapAddress;
 import info.juanmendez.mapmemorycore.models.AddressFields;
 import info.juanmendez.mapmemorycore.models.SubmitError;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
@@ -39,7 +39,7 @@ public class TestingWithRealm extends MockRealmTester {
     public void before() throws Exception {
 
         MockRealm.prepare();
-        MockRealm.addAnnotations( RealmAnnotation.build(Address.class)
+        MockRealm.addAnnotations( RealmAnnotation.build(MapAddress.class)
                 .primaryField(AddressFields.ADDRESSID)
                 .indexedFields(AddressFields.NAME, AddressFields.DATEUPDATED, AddressFields.TIMESVISITED));
 
@@ -50,8 +50,8 @@ public class TestingWithRealm extends MockRealmTester {
     public void testAddressProvider(){
 
         MockRealm.clearData();
-        RealmResults<Address> addresses;
-        Address address;
+        RealmResults<MapAddress> addresses;
+        MapAddress address;
 
         assertNotNull( MapCoreModule.getComponent() );
 
@@ -65,16 +65,16 @@ public class TestingWithRealm extends MockRealmTester {
         address = provider.getAddress(2);
         assertNull( address );
 
-        provider.updateAddress( new Address(1));
+        provider.updateAddress( new MapAddress(1));
 
         address = provider.getAddress(1);
         address.setName( "testAddressProvider");
         address.setAddress1("0 N. State");
         address.setAddress2( "Chicago, 60641" );
 
-        provider.updateAddressAsync(address, new Response<Address>() {
+        provider.updateAddressAsync(address, new Response<MapAddress>() {
             @Override
-            public void onResult(Address result) {
+            public void onResult(MapAddress result) {
                 assertTrue( true );
             }
 
@@ -95,9 +95,9 @@ public class TestingWithRealm extends MockRealmTester {
     public void testAddressesView(){
         MockRealm.clearData();
 
-        List<Address> addresses;
+        List<MapAddress> addresses;
         AddressProvider provider;
-        Address address;
+        MapAddress address;
 
         /**
          * lets build addressesView
@@ -110,7 +110,7 @@ public class TestingWithRealm extends MockRealmTester {
         assertEquals(0, provider.countAddresses());
 
         //lets add an address, and see if addressesView has updated its addresses
-        address = new Address(provider.getNextPrimaryKey());
+        address = new MapAddress(provider.getNextPrimaryKey());
         address.setName( "testAddressesView1");
         address.setAddress1("0 N. State");
         address.setAddress2( "Chicago, 60641" );
@@ -123,7 +123,7 @@ public class TestingWithRealm extends MockRealmTester {
 
 
         //lets add another address, and see if it has also updated.
-        address = new Address(provider.getNextPrimaryKey());
+        address = new MapAddress(provider.getNextPrimaryKey());
         address.setName( "testAddressesView2");
         address.setAddress1("0 N. State");
         address.setAddress2( "Chicago, 60641" );
@@ -131,9 +131,9 @@ public class TestingWithRealm extends MockRealmTester {
         assertEquals( provider.countAddresses(), 2 );
 
         //good, good.. now I want to delete the first item..
-        provider.deleteAddressAsync(1, new Response<Address>() {
+        provider.deleteAddressAsync(1, new Response<MapAddress>() {
             @Override
-            public void onResult(Address result) {
+            public void onResult(MapAddress result) {
                 assertEquals( provider.countAddresses(), 1 );
             }
 
@@ -163,9 +163,9 @@ public class TestingWithRealm extends MockRealmTester {
 
         MockRealm.clearData();
 
-        List<Address> addresses;
+        List<MapAddress> addresses;
         AddressProvider provider;
-        Address address;
+        MapAddress address;
 
         /**
          * lets build addressesView
@@ -186,28 +186,28 @@ public class TestingWithRealm extends MockRealmTester {
 
     void insertAddresses( AddressProvider provider ){
 
-        Address address;
+        MapAddress address;
 
         //lets add an address, and see if addressesView has updated its addresses
-        address = new Address(provider.getNextPrimaryKey());
+        address = new MapAddress(provider.getNextPrimaryKey());
         address.setName( "1");
         address.setAddress1("0 N. State");
         address.setAddress2( "Chicago, 60641" );
         provider.updateAddress( address );
 
-        address = new Address(provider.getNextPrimaryKey());
+        address = new MapAddress(provider.getNextPrimaryKey());
         address.setName( "2");
         address.setAddress1("1 N. State");
         address.setAddress2( "Chicago, 60641" );
         provider.updateAddress( address );
 
-        address = new Address(provider.getNextPrimaryKey());
+        address = new MapAddress(provider.getNextPrimaryKey());
         address.setName( "3");
         address.setAddress1("2 N. State");
         address.setAddress2( "Chicago, 60641" );
         provider.updateAddress( address );
 
-        address = new Address(provider.getNextPrimaryKey());
+        address = new MapAddress(provider.getNextPrimaryKey());
         address.setName( "4");
         address.setAddress1("3 N. State");
         address.setAddress2( "Chicago, 60641" );
@@ -219,7 +219,7 @@ public class TestingWithRealm extends MockRealmTester {
         MockRealm.clearData();
 
         AddressProvider provider;
-        Address address;
+        MapAddress address;
 
         /**
          * lets build addressesView
@@ -229,7 +229,7 @@ public class TestingWithRealm extends MockRealmTester {
 
 
         //lets start inserting an address with errors
-        address = new Address();
+        address = new MapAddress();
         address.setAddress1(" ");
         List<SubmitError> errors = provider.validate( address);
 
@@ -247,7 +247,7 @@ public class TestingWithRealm extends MockRealmTester {
          * what happens if we try to validate an address whose id
          * is not in the db.
          */
-        errors = provider.validate( new Address(2));
+        errors = provider.validate( new MapAddress(2));
         assertTrue( errors.size()==1 );
     }
 }

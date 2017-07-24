@@ -10,7 +10,7 @@ import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
 import info.juanmendez.mapmemorycore.dependencies.photo.PhotoService;
-import info.juanmendez.mapmemorycore.models.Address;
+import info.juanmendez.mapmemorycore.models.MapAddress;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.vp.ViewPresenter;
@@ -39,7 +39,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
     Navigation navigation;
 
     AddressFragment view;
-    Address addressEdited;
+    MapAddress addressEdited;
 
 
     public static final String ADDRESS_VIEW_TAG = "viewAddressTag";
@@ -50,7 +50,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
     public AddressPresenter register(AddressFragment view) {
         this.view = view;
         MapCoreModule.getComponent().inject(this);
-        addressService.register( view.getActivity() );
+
         return this;
     }
 
@@ -61,7 +61,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
         networkService.connect(new Response<Boolean>() {
             @Override
             public void onResult(Boolean result) {
-                view.onAddressResult( new Address(0), result );
+                view.onAddressResult( new MapAddress(0), result );
             }
 
             @Override
@@ -70,7 +70,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
             }
         });
 
-        addressService.onStart();
+        addressService.onStart( view.getActivity() );
     }
 
     @Override
@@ -86,9 +86,9 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
      */
     public void requestAddressByGeolocation(){
         if( networkService.isConnected() ){
-            addressService.geolocateAddress(new Response<Address>() {
+            addressService.geolocateAddress(new Response<MapAddress>() {
                 @Override
-                public void onResult(Address result) {
+                public void onResult(MapAddress result) {
                     view.onAddressResult( result, networkService.isConnected() );
                 }
 
@@ -107,9 +107,9 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
      */
     public void requestAddressSuggestions( String query ){
         if( networkService.isConnected() && !query.isEmpty() ){
-            addressService.suggestAddress(query, new Response<List<Address>>() {
+            addressService.suggestAddress(query, new Response<List<MapAddress>>() {
                 @Override
-                public void onResult(List<Address> results ) {
+                public void onResult(List<MapAddress> results ) {
                     view.onAddressesSuggested( results );
                 }
 

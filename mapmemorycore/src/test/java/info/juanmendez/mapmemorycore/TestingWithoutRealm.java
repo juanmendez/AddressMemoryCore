@@ -8,7 +8,7 @@ import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressFragment;
-import info.juanmendez.mapmemorycore.models.Address;
+import info.juanmendez.mapmemorycore.models.MapAddress;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 
 import static org.junit.Assert.assertEquals;
@@ -46,9 +46,9 @@ public class TestingWithoutRealm {
 
         assertEquals(provider.countAddresses(), 4);
 
-        provider.deleteAddressAsync(1, new Response<Address>() {
+        provider.deleteAddressAsync(1, new Response<MapAddress>() {
             @Override
-            public void onResult(Address result) {
+            public void onResult(MapAddress result) {
                 assertEquals( provider.countAddresses(), 3 );
             }
 
@@ -61,27 +61,27 @@ public class TestingWithoutRealm {
 
     void insertAddresses( AddressProvider provider ){
 
-        Address address;
+        MapAddress address;
         //lets add an address, and see if addressesView has updated its addresses
-        address = new Address(provider.getNextPrimaryKey());
+        address = new MapAddress(provider.getNextPrimaryKey());
         address.setName( "1");
         address.setAddress1("0 N. State");
         address.setAddress2( "Chicago, 60641" );
         provider.updateAddress( address );
 
-        address = new Address(provider.getNextPrimaryKey());
+        address = new MapAddress(provider.getNextPrimaryKey());
         address.setName( "2");
         address.setAddress1("1 N. State");
         address.setAddress2( "Chicago, 60641" );
         provider.updateAddress( address );
 
-        address = new Address(provider.getNextPrimaryKey());
+        address = new MapAddress(provider.getNextPrimaryKey());
         address.setName( "3");
         address.setAddress1("2 N. State");
         address.setAddress2( "Chicago, 60641" );
         provider.updateAddress( address );
 
-        address = new Address(provider.getNextPrimaryKey());
+        address = new MapAddress(provider.getNextPrimaryKey());
         address.setName( "4");
         address.setAddress1("3 N. State");
         address.setAddress2( "Chicago, 60641" );

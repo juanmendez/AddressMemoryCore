@@ -2,7 +2,7 @@ package info.juanmendez.mapmemorycore.vp.vpAddresses;
 
 import java.util.List;
 
-import info.juanmendez.mapmemorycore.models.Address;
+import info.juanmendez.mapmemorycore.models.MapAddress;
 import info.juanmendez.mapmemorycore.vp.FragmentNav;
 
 /**
@@ -12,5 +12,5 @@ import info.juanmendez.mapmemorycore.vp.FragmentNav;
  */
 
 public interface AddressesFragment extends FragmentNav {
-    void injectAddresses(List<Address> addresses );
+    void injectAddresses(List<MapAddress> addresses );
 }

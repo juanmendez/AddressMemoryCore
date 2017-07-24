@@ -5,7 +5,7 @@ import android.app.Activity;
 import java.io.File;
 import java.util.List;
 
-import info.juanmendez.mapmemorycore.models.Address;
+import info.juanmendez.mapmemorycore.models.MapAddress;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressFragment;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
 
@@ -29,7 +29,7 @@ public class TestAddressFragment implements AddressFragment {
     }
 
     @Override
-    public void onAddressResult(Address address, Boolean online) {
+    public void onAddressResult(MapAddress address, Boolean online) {
 
     }
 
@@ -39,7 +39,7 @@ public class TestAddressFragment implements AddressFragment {
     }
 
     @Override
-    public void onAddressesSuggested(List<Address> addresses) {
+    public void onAddressesSuggested(List<MapAddress> addresses) {
 
     }
 

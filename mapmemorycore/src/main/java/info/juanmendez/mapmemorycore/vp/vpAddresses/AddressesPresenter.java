@@ -3,7 +3,7 @@ package info.juanmendez.mapmemorycore.vp.vpAddresses;
 import javax.inject.Inject;
 
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
-import info.juanmendez.mapmemorycore.models.Address;
+import info.juanmendez.mapmemorycore.models.MapAddress;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.vp.ViewPresenter;
 import io.realm.RealmResults;
@@ -21,7 +21,7 @@ public class AddressesPresenter implements ViewPresenter<AddressesPresenter, Add
 
     public static final String TAG = "addressesView";
 
-    private RealmResults<Address> addresses;
+    private RealmResults<MapAddress> addresses;
     private AddressesFragment view;
 
     public AddressesPresenter() {
@@ -47,7 +47,7 @@ public class AddressesPresenter implements ViewPresenter<AddressesPresenter, Add
 
     }
 
-    public void selectAddress( Address address ){
+    public void selectAddress( MapAddress address ){
         addressProvider.selectAddress( address );
     }
 

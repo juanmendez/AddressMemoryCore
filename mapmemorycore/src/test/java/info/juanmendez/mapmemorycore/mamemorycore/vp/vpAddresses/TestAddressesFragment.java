@@ -4,7 +4,7 @@ import android.app.Activity;
 
 import java.util.List;
 
-import info.juanmendez.mapmemorycore.models.Address;
+import info.juanmendez.mapmemorycore.models.MapAddress;
 import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesFragment;
 import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesPresenter;
 
@@ -20,7 +20,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
 public class TestAddressesFragment implements AddressesFragment {
 
     AddressesPresenter presenter;
-    List<Address> addresses;
+    List<MapAddress> addresses;
 
     public TestAddressesFragment() {
         presenter = new AddressesPresenter();
@@ -28,7 +28,7 @@ public class TestAddressesFragment implements AddressesFragment {
     }
 
     @Override
-    public void injectAddresses(List<Address> addresses) {
+    public void injectAddresses(List<MapAddress> addresses) {
         this.addresses = addresses;
         System.out.println( "refresh addresses, len: " + addresses.size() );
     }
@@ -37,7 +37,7 @@ public class TestAddressesFragment implements AddressesFragment {
         return presenter;
     }
 
-    public List<Address> getAddresses() {
+    public List<MapAddress> getAddresses() {
         return addresses;
     }
 

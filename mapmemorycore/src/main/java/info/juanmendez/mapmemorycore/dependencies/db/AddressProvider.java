@@ -3,7 +3,7 @@ package info.juanmendez.mapmemorycore.dependencies.db;
 import java.util.List;
 
 import info.juanmendez.mapmemorycore.dependencies.Response;
-import info.juanmendez.mapmemorycore.models.Address;
+import info.juanmendez.mapmemorycore.models.MapAddress;
 import info.juanmendez.mapmemorycore.models.SubmitError;
 import rx.Observable;
 
@@ -16,24 +16,24 @@ import rx.Observable;
 public interface AddressProvider {
 
     //getter-setter selectedAddress
-    Address getSelectedAddress();
-    void selectAddress(Address selectedAddress);
+    MapAddress getSelectedAddress();
+    void selectAddress(MapAddress selectedAddress);
 
     //get addresses
-    List<Address> getAddresses();
-    Observable<List<Address>> getAddressesAsync();
+    List<MapAddress> getAddresses();
+    Observable<List<MapAddress>> getAddressesAsync();
 
     //get address
-    Address getAddress( long addressId );
-    Observable<Address> getAddressAsync(long addressId);
+    MapAddress getAddress(long addressId );
+    Observable<MapAddress> getAddressAsync(long addressId);
 
     //update address
-    Address updateAddress(Address address);
-    void updateAddressAsync(Address address, Response<Address> response );
-    void deleteAddressAsync(long addressId, Response<Address> response );
+    MapAddress updateAddress(MapAddress address);
+    void updateAddressAsync(MapAddress address, Response<MapAddress> response );
+    void deleteAddressAsync(long addressId, Response<MapAddress> response );
 
     //utils
     long getNextPrimaryKey();
     long countAddresses();
-    List<SubmitError> validate(Address address );
+    List<SubmitError> validate(MapAddress address );
 }

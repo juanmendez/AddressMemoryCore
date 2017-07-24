@@ -14,7 +14,7 @@ import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
 import info.juanmendez.mapmemorycore.dependencies.photo.PhotoService;
 import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressFragment;
-import info.juanmendez.mapmemorycore.models.Address;
+import info.juanmendez.mapmemorycore.models.MapAddress;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressFragment;
@@ -81,10 +81,10 @@ public class TestingAddressServices {
         verify( fragmentSpied ).onAddressResult(any(), anyBoolean());
 
 
-        List<Address> addresses = getAddresses();
+        List<MapAddress> addresses = getAddresses();
 
         doAnswer(invocation -> {
-            Response<List<Address>> response = invocation.getArgumentAt(1, Response.class );
+            Response<List<MapAddress>> response = invocation.getArgumentAt(1, Response.class );
             response.onResult( addresses );
             return null;
         }).when(addressServiceMocked).suggestAddress(anyString(), any(Response.class));
@@ -96,7 +96,7 @@ public class TestingAddressServices {
 
 
         doAnswer(invocation -> {
-            Response<Address> response = invocation.getArgumentAt(1, Response.class );
+            Response<MapAddress> response = invocation.getArgumentAt(1, Response.class );
             response.onError( new MapMemoryException("You could be offline!"));
             return null;
         }).when(addressServiceMocked).suggestAddress(anyString(), any(Response.class));
@@ -125,18 +125,18 @@ public class TestingAddressServices {
         doReturn(true).when(networkServiceMocked).isConnected();
 
         doAnswer(invocation -> {
-            Response<Address> response = invocation.getArgumentAt(0, Response.class );
+            Response<MapAddress> response = invocation.getArgumentAt(0, Response.class );
             response.onResult( getAddresses().get(0) );
             return null;
         }).when(addressServiceMocked).geolocateAddress(any(Response.class));
 
         //view suggested address by geolocation
         presenter.requestAddressByGeolocation();
-        verify( fragment ).onAddressResult( any(Address.class), anyBoolean());
+        verify( fragment ).onAddressResult( any(MapAddress.class), anyBoolean());
 
         reset(fragment);
         doAnswer(invocation -> {
-            Response<Address> response = invocation.getArgumentAt(0, Response.class );
+            Response<MapAddress> response = invocation.getArgumentAt(0, Response.class );
             response.onError(new MapMemoryException("oops"));
             return null;
         }).when(addressServiceMocked).geolocateAddress(any(Response.class));
@@ -159,8 +159,8 @@ public class TestingAddressServices {
         doReturn(true).when(networkServiceMocked).isConnected();
 
         doAnswer( invocation -> {
-            Response<List<Address>> response = invocation.getArgumentAt(1, Response.class );
-            response.onResult(new ArrayList<Address>());
+            Response<List<MapAddress>> response = invocation.getArgumentAt(1, Response.class );
+            response.onResult(getAddresses());
 
             return null;
         }).when( addressServiceMocked ).suggestAddress( anyString(), any(Response.class) );
@@ -225,31 +225,31 @@ public class TestingAddressServices {
     }
 
     //util
-    List<Address> getAddresses(){
+    List<MapAddress> getAddresses(){
 
-        List<Address> addresses = new ArrayList<>();
+        List<MapAddress> addresses = new ArrayList<>();
 
-        Address address;
+        MapAddress address;
         //lets add an address, and see if addressesView has updated its addresses
-        address = new Address();
+        address = new MapAddress();
         address.setName( "1");
         address.setAddress1("0 N. State");
         address.setAddress2( "Chicago, 60641" );
         addresses.add( address );
 
-        address = new Address();
+        address = new MapAddress();
         address.setName( "2");
         address.setAddress1("1 N. State");
         address.setAddress2( "Chicago, 60641" );
         addresses.add( address );
 
-        address = new Address();
+        address = new MapAddress();
         address.setName( "3");
         address.setAddress1("2 N. State");
         address.setAddress2( "Chicago, 60641" );
         addresses.add( address );
 
-        address = new Address();
+        address = new MapAddress();
         address.setName( "4");
         address.setAddress1("3 N. State");
         address.setAddress2( "Chicago, 60641" );

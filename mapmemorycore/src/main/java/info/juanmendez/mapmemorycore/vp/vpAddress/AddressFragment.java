@@ -1,5 +1,6 @@
 package info.juanmendez.mapmemorycore.vp.vpAddress;
 
+import java.io.File;
 import java.util.List;
 
 import info.juanmendez.mapmemorycore.models.Address;
@@ -20,4 +21,6 @@ public interface AddressFragment extends FragmentNav {
     void onAddressResult(Address address, Boolean online);
     void onAddressError(Exception exception );
     void onAddressesSuggested(List<Address> addresses );
+
+    void onPhotoSelected( File photo );
 }

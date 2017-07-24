@@ -11,6 +11,7 @@ import info.juanmendez.mapmemorycore.dependencies.android.Navigation;
 import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
+import info.juanmendez.mapmemorycore.dependencies.photo.PhotoService;
 
 /**
  * Created by Juan Mendez on 6/24/2017.
@@ -47,6 +48,11 @@ public class MapCoreModule {
     @Provides
     public Application getApplication(){
         return app.getApplication();
+    }
+
+    @Provides
+    public PhotoService getPhotoService(){
+        return app.getPhotoService();
     }
 
     @Provides

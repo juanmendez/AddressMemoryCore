@@ -4,12 +4,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.internal.util.reflection.Whitebox;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
 import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
+import info.juanmendez.mapmemorycore.dependencies.photo.PhotoService;
 import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressFragment;
 import info.juanmendez.mapmemorycore.models.Address;
@@ -17,7 +19,11 @@ import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressFragment;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
+import rx.Observable;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyList;
@@ -128,6 +134,7 @@ public class TestingAddressServices {
         presenter.requestAddressByGeolocation();
         verify( fragment ).onAddressResult( any(Address.class), anyBoolean());
 
+        reset(fragment);
         doAnswer(invocation -> {
             Response<Address> response = invocation.getArgumentAt(0, Response.class );
             response.onError(new MapMemoryException("oops"));
@@ -173,6 +180,48 @@ public class TestingAddressServices {
         doReturn(false).when(networkServiceMocked).isConnected();
         presenter.requestAddressSuggestions( "3463 N. Natch" );
         verify( fragment ).onAddressError(any(Exception.class));
+    }
+
+    @Test
+    public void testPhotoService(){
+        AddressFragment fragmentMocked = mock( AddressFragment.class );
+        AddressPresenter presenter = new AddressPresenter();
+        presenter.register( fragmentMocked );
+
+        PhotoService photoService = (PhotoService) Whitebox.getInternalState(presenter, "photoService");
+        String fileLocation = "absolute_path";
+
+        assertNotNull( photoService );
+
+        doAnswer(invocation -> {
+            File file = mock(File.class);
+            doReturn( fileLocation ).when( file ).getAbsolutePath();
+
+           return Observable.just( file);
+
+        }).when( photoService).pickPhoto();
+
+        doAnswer(invocation -> {
+            File file = mock(File.class);
+            doReturn( fileLocation ).when( file ).getAbsolutePath();
+
+            return Observable.just( file);
+
+        }).when( photoService).takePhoto();
+
+        photoService.pickPhoto().subscribe(file -> {
+            assertNotNull( file );
+            assertEquals( file.getAbsolutePath(), fileLocation );
+        }, throwable -> {
+            assertNull( throwable );
+        });
+
+        presenter.requestPickPhoto();
+        verify( fragmentMocked ).onPhotoSelected( any(File.class ));
+
+        reset(fragmentMocked);
+        presenter.requestTakePhoto();
+        verify( fragmentMocked ).onPhotoSelected( any(File.class ));
     }
 
     //util

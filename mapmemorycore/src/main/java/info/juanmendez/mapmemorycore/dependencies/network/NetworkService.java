@@ -10,6 +10,7 @@ import info.juanmendez.mapmemorycore.dependencies.Response;
 
 public interface NetworkService {
     boolean isConnected();
+    void reset();
     void connect( Response<Boolean> response );
     void disconnect();
 }

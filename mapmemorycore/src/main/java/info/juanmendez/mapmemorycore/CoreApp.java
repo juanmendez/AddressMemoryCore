@@ -6,6 +6,7 @@ import info.juanmendez.mapmemorycore.dependencies.android.Navigation;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
 import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
+import info.juanmendez.mapmemorycore.dependencies.photo.PhotoService;
 
 /**
  * Created by Juan Mendez on 6/25/2017.
@@ -19,4 +20,5 @@ public interface CoreApp {
     AddressService getAddressService();
     NetworkService getNeworkService();
     Navigation getNavigation();
+    PhotoService getPhotoService();
 }

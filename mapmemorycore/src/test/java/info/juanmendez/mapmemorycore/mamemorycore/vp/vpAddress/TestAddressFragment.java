@@ -2,6 +2,7 @@ package info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress;
 
 import android.app.Activity;
 
+import java.io.File;
 import java.util.List;
 
 import info.juanmendez.mapmemorycore.models.Address;
@@ -39,6 +40,11 @@ public class TestAddressFragment implements AddressFragment {
 
     @Override
     public void onAddressesSuggested(List<Address> addresses) {
+
+    }
+
+    @Override
+    public void onPhotoSelected(File photo) {
 
     }
 

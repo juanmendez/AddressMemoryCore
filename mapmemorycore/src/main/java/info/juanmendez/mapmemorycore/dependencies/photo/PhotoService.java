@@ -1,5 +1,7 @@
 package info.juanmendez.mapmemorycore.dependencies.photo;
 
+import android.app.Activity;
+
 import java.io.File;
 
 import rx.Observable;
@@ -9,10 +11,11 @@ import rx.Observable;
  * www.juanmendez.info
  * contact@juanmendez.info
  *
- * Enables user to pick a photo
+ * Enables user to pick or take a photo. This interface is a reference of using
+ * RxPaparazzo in the android project. So it returns observables of File generic type
  */
 
 public interface PhotoService {
-    Observable<File> takePhoto();
-    Observable<File> pickPhoto();
+    Observable<File> takePhoto(Activity activity);
+    Observable<File> pickPhoto(Activity activity);
 }

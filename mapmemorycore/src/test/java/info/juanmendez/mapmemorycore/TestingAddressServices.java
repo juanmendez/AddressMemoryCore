@@ -1,5 +1,7 @@
 package info.juanmendez.mapmemorycore;
 
+import android.app.Activity;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.internal.util.reflection.Whitebox;
@@ -199,7 +201,7 @@ public class TestingAddressServices {
 
            return Observable.just( file);
 
-        }).when( photoService).pickPhoto();
+        }).when( photoService).pickPhoto(any(Activity.class));
 
         doAnswer(invocation -> {
             File file = mock(File.class);
@@ -207,9 +209,9 @@ public class TestingAddressServices {
 
             return Observable.just( file);
 
-        }).when( photoService).takePhoto();
+        }).when( photoService).takePhoto(any(Activity.class));
 
-        photoService.pickPhoto().subscribe(file -> {
+        photoService.pickPhoto(fragmentMocked.getActivity()).subscribe(file -> {
             assertNotNull( file );
             assertEquals( file.getAbsolutePath(), fileLocation );
         }, throwable -> {

@@ -50,6 +50,7 @@ public class MapCoreModule {
         return app.getApplication();
     }
 
+    @Singleton
     @Provides
     public PhotoService getPhotoService(){
         return app.getPhotoService();

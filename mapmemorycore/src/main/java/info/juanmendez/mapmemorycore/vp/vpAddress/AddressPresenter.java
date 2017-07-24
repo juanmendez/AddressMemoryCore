@@ -77,7 +77,6 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
     public void inactive() {
         networkService.disconnect();
         addressService.onStop();
-        cancelPhotoSubscription();
     }
 
     /**
@@ -128,30 +127,19 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
 
     //view requests to pick photo from public gallery
     public void requestPickPhoto(){
-        fileSubscription = photoService.pickPhoto().subscribe(file -> {
+        fileSubscription = photoService.pickPhoto(view.getActivity()).subscribe(file -> {
             view.onPhotoSelected( file );
         }, throwable -> {
 
-        }, () -> {
-            cancelPhotoSubscription();
         });
     }
 
     //view requests to take a photo
     public void requestTakePhoto(){
-        fileSubscription = photoService.takePhoto().subscribe(file -> {
+        fileSubscription = photoService.takePhoto(view.getActivity()).subscribe(file -> {
             view.onPhotoSelected( file );
         }, throwable -> {
 
-        }, () -> {
-            cancelPhotoSubscription();
         });
-    }
-
-    private void cancelPhotoSubscription(){
-        if( fileSubscription != null && !fileSubscription.isUnsubscribed() ){
-            fileSubscription.unsubscribe();
-            fileSubscription = null;
-        }
     }
 }

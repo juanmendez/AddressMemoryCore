@@ -53,7 +53,7 @@ public class TestingAddressServices {
     AddressPresenter presenter;
     NetworkService networkServiceMocked;
     AddressService addressServiceMocked;
-    PhotoService photoService;
+    PhotoService photoServiceMocked;
 
 
     @Before
@@ -66,7 +66,7 @@ public class TestingAddressServices {
 
         networkServiceMocked = (NetworkService)   Whitebox.getInternalState(presenter, "networkService");
         addressServiceMocked = (AddressService) Whitebox.getInternalState(presenter, "addressService");
-        photoService = (PhotoService) Whitebox.getInternalState(presenter, "photoService");
+        photoServiceMocked = (PhotoService) Whitebox.getInternalState(presenter, "photoService");
 
         applySuccessfulResults();
     }
@@ -156,7 +156,7 @@ public class TestingAddressServices {
         String fileLocation = "absolute_path";
 
 
-        photoService.pickPhoto(fragmentMocked.getActivity()).subscribe(file -> {
+        photoServiceMocked.pickPhoto(fragmentMocked.getActivity()).subscribe(file -> {
             assertNotNull( file );
             assertEquals( file.getAbsolutePath(), fileLocation );
         }, throwable -> {
@@ -226,7 +226,7 @@ public class TestingAddressServices {
 
             return Observable.just( file);
 
-        }).when( photoService).pickPhoto(any(Activity.class));
+        }).when(photoServiceMocked).pickPhoto(any(Activity.class));
 
         doAnswer(invocation -> {
             File file = mock(File.class);
@@ -234,7 +234,7 @@ public class TestingAddressServices {
 
             return Observable.just( file);
 
-        }).when( photoService).takePhoto(any(Activity.class));
+        }).when(photoServiceMocked).takePhoto(any(Activity.class));
 
         doAnswer( invocation -> {
             Response<List<MapAddress>> response = invocation.getArgumentAt(1, Response.class );

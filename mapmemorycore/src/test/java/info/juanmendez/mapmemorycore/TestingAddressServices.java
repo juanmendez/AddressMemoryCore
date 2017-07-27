@@ -7,7 +7,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.internal.util.reflection.Whitebox;
+import org.powermock.reflect.Whitebox;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,11 +15,13 @@ import java.util.List;
 
 import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
+import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
 import info.juanmendez.mapmemorycore.dependencies.photo.PhotoService;
 import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
-import info.juanmendez.mapmemorycore.models.MapAddress;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
+import info.juanmendez.mapmemorycore.models.ShortAddress;
+import info.juanmendez.mapmemorycore.models.SubmitError;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressFragment;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
@@ -40,6 +42,7 @@ import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.doAnswer;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.spy;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 
 /**
@@ -94,7 +97,7 @@ public class TestingAddressServices {
 
         //make it reply with an exception
         doAnswer(invocation -> {
-            Response<MapAddress> response = invocation.getArgumentAt(1, Response.class );
+            Response<ShortAddress> response = invocation.getArgumentAt(1, Response.class );
             response.onError( new MapMemoryException("You could be offline!"));
             return null;
         }).when(addressServiceMocked).suggestAddress(anyString(), any(Response.class));
@@ -115,13 +118,13 @@ public class TestingAddressServices {
 
         //view suggested address by geolocation
         presenter.requestAddressByGeolocation();
-        verify( fragmentMocked ).onAddressResult( any(MapAddress.class), anyBoolean());
+        verify( fragmentMocked ).onAddressResult( any(ShortAddress.class), anyBoolean());
 
         reset(fragmentMocked);
 
         //make it response with an error
         doAnswer(invocation -> {
-            Response<MapAddress> response = invocation.getArgumentAt(0, Response.class );
+            Response<ShortAddress> response = invocation.getArgumentAt(0, Response.class );
             response.onError(new MapMemoryException("oops"));
             return null;
         }).when(addressServiceMocked).geolocateAddress(any(Response.class));
@@ -134,9 +137,22 @@ public class TestingAddressServices {
     @Test
     public void testSuggestion(){
 
+        /**
+         * the user looks for suggested addresses, selects one
+         * and it is verified if the presenter's editAddress is the first one from
+         * getAddresses()
+         */
+        doAnswer(invocation -> {
+            List<ShortAddress> addresses = invocation.getArgumentAt(0, List.class );
+
+            //lets pick the first address..
+            presenter.setAddressEdited( addresses.get(0));
+            return null;
+        }).when( fragmentMocked ).onAddressesSuggested(anyList());
+
         presenter.requestAddressSuggestions( "3463 N. Natch" );
         verify( fragmentMocked ).onAddressesSuggested(anyList());
-
+        assertEquals( ((ShortAddress)Whitebox.getInternalState(presenter, "addressEdited")).getAddressId(), getAddresses().get(0).getAddressId() );
 
         //we want to make an exception happen during addressService.suggestAddress
         //by providing an empty query.
@@ -179,21 +195,95 @@ public class TestingAddressServices {
 
         //user picks a photo, and finds her address through geolocation
         presenter.requestPickPhoto();
-        presenter.requestAddressByGeolocation();
         verify( fragmentMocked ).onPhotoSelected(argThat(fileMatcher(fileLocation)));
-        verify( fragmentMocked ).onAddressResult( any(MapAddress.class), eq(true));
+
+        presenter.requestAddressByGeolocation();
+        verify( fragmentMocked ).onAddressResult( any(ShortAddress.class), eq(true));
 
         AddressPresenter spiedPresenter = spy(presenter);
         doAnswer(invocation -> {
-            Response<MapAddress> response = invocation.getArgumentAt(0, Response.class );
-            response.onResult(new MapAddress());
+            Response<ShortAddress> response = invocation.getArgumentAt(0, Response.class );
+            response.onResult(new ShortAddress());
             return null;
         }).when(spiedPresenter).submitAddress(any(Response.class));
 
-        Response<MapAddress> spied = mock( Response.class );
+        Response<ShortAddress> response = mock( Response.class );
 
-        spiedPresenter.submitAddress(spied);
-        verify( spied ).onResult(any(MapAddress.class));
+        spiedPresenter.submitAddress(response);
+        verify( response ).onResult(any(ShortAddress.class));
+    }
+
+    @Test
+    public void testSubmittingAddressWithError(){
+
+        String fileLocation = "absolute_path";
+        String errorCode = "funkyError";
+
+        AddressProvider provider = mock( AddressProvider.class );
+
+        doAnswer( invocation -> {
+            List<SubmitError> errors = new ArrayList<SubmitError>();
+            errors.add( new SubmitError(errorCode, "lucky"));
+            return errors;
+        }).when( provider ).validate(any(ShortAddress.class));
+
+
+
+        Whitebox.setInternalState( presenter, "addressProvider", provider );
+
+
+        //user picks a photo, and finds her address through geolocation
+        presenter.requestPickPhoto();
+        verify( fragmentMocked ).onPhotoSelected(argThat(fileMatcher(fileLocation)));
+
+        Response<ShortAddress> response = mock( Response.class );
+        reset( response );
+
+        presenter.submitAddress( response );
+        verify( response ).onError(any(MapMemoryException.class));
+
+        reset(provider);
+
+        when( provider.validate(any(ShortAddress.class)) ).thenReturn( new ArrayList<SubmitError>());
+
+        doAnswer(invocation -> {
+            ShortAddress address = invocation.getArgumentAt(0, ShortAddress.class );
+            Response<ShortAddress>  thisResponse = invocation.getArgumentAt(1, Response.class );
+            thisResponse.onResult( address );
+            return null;
+        }).when(provider).updateAddressAsync(any(ShortAddress.class), any(Response.class));
+
+        verify( response ).onResult(any(ShortAddress.class));
+    }
+
+    @Test
+    public void testSubmittingAddress(){
+
+        String fileLocation = "absolute_path";
+
+        AddressProvider provider = mock( AddressProvider.class );
+
+        when( provider.validate(any(ShortAddress.class)) ).thenReturn( new ArrayList<SubmitError>());
+
+        doAnswer(invocation -> {
+            ShortAddress address = invocation.getArgumentAt(0, ShortAddress.class );
+            Response<ShortAddress>  thisResponse = invocation.getArgumentAt(1, Response.class );
+            thisResponse.onResult( address );
+            return null;
+        }).when(provider).updateAddressAsync(any(ShortAddress.class), any(Response.class));
+
+        Whitebox.setInternalState( presenter, "addressProvider", provider );
+
+        //user picks a photo, and finds her address through geolocation
+        presenter.requestPickPhoto();
+        verify( fragmentMocked ).onPhotoSelected(argThat(fileMatcher(fileLocation)));
+
+        Response<ShortAddress> response = mock( Response.class );
+        presenter.submitAddress( response );
+
+        verify( response ).onResult(any(ShortAddress.class));
+        ShortAddress addressEdited = Whitebox.getInternalState(presenter, "addressEdited");
+        assertEquals(addressEdited.getPhotoLocation(), fileLocation );
     }
 
     Matcher<File> fileMatcher(final String location) {
@@ -237,14 +327,14 @@ public class TestingAddressServices {
         }).when(photoServiceMocked).takePhoto(any(Activity.class));
 
         doAnswer( invocation -> {
-            Response<List<MapAddress>> response = invocation.getArgumentAt(1, Response.class );
+            Response<List<ShortAddress>> response = invocation.getArgumentAt(1, Response.class );
             response.onResult(getAddresses());
 
             return null;
         }).when( addressServiceMocked ).suggestAddress( anyString(), any(Response.class) );
 
         doAnswer( invocation -> {
-            Response<MapAddress> response = invocation.getArgumentAt(0, Response.class );
+            Response<ShortAddress> response = invocation.getArgumentAt(0, Response.class );
             response.onResult(getAddresses().get(0));
 
             return null;
@@ -252,31 +342,31 @@ public class TestingAddressServices {
     }
 
     //util
-    List<MapAddress> getAddresses(){
+    List<ShortAddress> getAddresses(){
 
-        List<MapAddress> addresses = new ArrayList<>();
+        List<ShortAddress> addresses = new ArrayList<>();
 
-        MapAddress address;
+        ShortAddress address;
         //lets add an address, and see if addressesView has updated its addresses
-        address = new MapAddress();
+        address = new ShortAddress();
         address.setName( "1");
         address.setAddress1("0 N. State");
         address.setAddress2( "Chicago, 60641" );
         addresses.add( address );
 
-        address = new MapAddress();
+        address = new ShortAddress();
         address.setName( "2");
         address.setAddress1("1 N. State");
         address.setAddress2( "Chicago, 60641" );
         addresses.add( address );
 
-        address = new MapAddress();
+        address = new ShortAddress();
         address.setName( "3");
         address.setAddress1("2 N. State");
         address.setAddress2( "Chicago, 60641" );
         addresses.add( address );
 
-        address = new MapAddress();
+        address = new ShortAddress();
         address.setName( "4");
         address.setAddress1("3 N. State");
         address.setAddress2( "Chicago, 60641" );

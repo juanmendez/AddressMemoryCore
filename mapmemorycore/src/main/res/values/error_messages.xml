@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="address_gone">This address does not exist</string>
+
+    <!--related to google-services-->
     <string name="geolocate">Get address by location</string>
-    <string name="required_field">Field is required</string>
     <string name="server_down_geolocation">Can\'t get the address where you\'re located</string>
     <string name="geolocate_persistance">Press again if address is not accurate</string>
+
+
+    <!--related to address-->
+    <string name="address_gone">This address does not exist</string>
+    <string name="submitting_address_error">Address is not valid upon submit</string>
+
+
+    <!--common-->
+    <string name="required_field">Field is required</string>
 </resources>

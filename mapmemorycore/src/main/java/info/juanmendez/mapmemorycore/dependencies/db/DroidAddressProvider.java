@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import info.juanmendez.mapmemorycore.R;
-import info.juanmendez.mapmemorycore.models.MapAddress;
+import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.models.AddressFields;
@@ -27,65 +27,65 @@ public class DroidAddressProvider implements AddressProvider {
 
     Realm realm;
     Application application;
-    MapAddress selectedAddress;
+    ShortAddress selectedAddress;
 
     public DroidAddressProvider(Application application, Realm realm) {
         this.application = application;
         this.realm = realm;
     }
 
-    public MapAddress getSelectedAddress() {
+    public ShortAddress getSelectedAddress() {
         return selectedAddress;
     }
 
-    public void selectAddress(MapAddress selectedAddress) {
+    public void selectAddress(ShortAddress selectedAddress) {
         this.selectedAddress = selectedAddress;
     }
 
 
-    public List<MapAddress> getAddresses(){
-        RealmResults<MapAddress> addresses;
+    public List<ShortAddress> getAddresses(){
+        RealmResults<ShortAddress> addresses;
 
         realm.beginTransaction();
-            addresses = realm.where( MapAddress.class ).findAll();
+            addresses = realm.where( ShortAddress.class ).findAll();
         realm.commitTransaction();
 
         return addresses;
     }
 
-    public Observable<List<MapAddress>> getAddressesAsync() {
+    public Observable<List<ShortAddress>> getAddressesAsync() {
 
-        RealmResults<MapAddress> addresses;
+        RealmResults<ShortAddress> addresses;
 
         realm.beginTransaction();
-        addresses = realm.where( MapAddress.class ).findAllAsync();
+        addresses = realm.where( ShortAddress.class ).findAllAsync();
         realm.commitTransaction();
 
-        return addresses.asObservable().map(results -> (List<MapAddress>)results);
+        return addresses.asObservable().map(results -> (List<ShortAddress>)results);
     }
 
-    public Observable<MapAddress> getAddressAsync(long addressId){
+    public Observable<ShortAddress> getAddressAsync(long addressId){
 
-        return realm.where( MapAddress.class )
+        return realm.where( ShortAddress.class )
                 .equalTo( "addressId", addressId )
                 .findFirstAsync().asObservable();
     }
 
-    public MapAddress getAddress(long addressId ){
+    public ShortAddress getAddress(long addressId ){
 
-        MapAddress address;
+        ShortAddress address;
 
         realm.beginTransaction();
-        address = realm.where( MapAddress.class ).equalTo( "addressId", addressId ).findFirst();
+        address = realm.where( ShortAddress.class ).equalTo( "addressId", addressId ).findFirst();
         realm.commitTransaction();
 
         return address;
     }
 
 
-    public void updateAddressAsync(MapAddress address, Response<MapAddress> response ) {
+    public void updateAddressAsync(ShortAddress address, Response<ShortAddress> response ) {
 
-        final MapAddress[] addressArray = new MapAddress[1];
+        final ShortAddress[] addressArray = new ShortAddress[1];
 
         realm.executeTransactionAsync(thisRealm -> {
             addressArray[0] = thisRealm.copyToRealmOrUpdate(address);
@@ -99,9 +99,9 @@ public class DroidAddressProvider implements AddressProvider {
         });
     }
 
-    public MapAddress updateAddress(MapAddress address){
+    public ShortAddress updateAddress(ShortAddress address){
 
-        MapAddress updatedAddress;
+        ShortAddress updatedAddress;
 
         realm.beginTransaction();
            updatedAddress = realm.copyToRealmOrUpdate( address );
@@ -110,12 +110,12 @@ public class DroidAddressProvider implements AddressProvider {
         return updatedAddress;
     }
 
-    public void deleteAddressAsync(long addressId, Response<MapAddress> response ){
+    public void deleteAddressAsync(long addressId, Response<ShortAddress> response ){
 
-        final MapAddress[] addressArray = new MapAddress[1];
+        final ShortAddress[] addressArray = new ShortAddress[1];
 
         realm.executeTransactionAsync(thisRealm -> {
-            addressArray[0] = thisRealm.where( MapAddress.class ).equalTo( "addressId", addressId ).findFirst();
+            addressArray[0] = thisRealm.where( ShortAddress.class ).equalTo( "addressId", addressId ).findFirst();
 
             if( addressArray.length != 0  ){
                 addressArray[0].deleteFromRealm();
@@ -134,7 +134,7 @@ public class DroidAddressProvider implements AddressProvider {
         AtomicLong primaryKeyValue;
 
         try {
-            primaryKeyValue = new AtomicLong(realm.where(MapAddress.class).max("addressId").longValue());
+            primaryKeyValue = new AtomicLong(realm.where(ShortAddress.class).max("addressId").longValue());
         } catch (Exception e) {
             return 1;
         }
@@ -143,16 +143,16 @@ public class DroidAddressProvider implements AddressProvider {
     }
 
     public long countAddresses(){
-        return realm.where(MapAddress.class).count();
+        return realm.where(ShortAddress.class).count();
     }
 
-    public List<SubmitError> validate(MapAddress address ){
+    public List<SubmitError> validate(ShortAddress address ){
         List<SubmitError> errors = new ArrayList<>();
 
 
         if( SubmitError.initialized( address.getAddressId() ) ){
 
-            MapAddress savedAddress =  getAddress( address.getAddressId() );
+            ShortAddress savedAddress =  getAddress( address.getAddressId() );
 
             //This is the only invalid field needed.
             if( savedAddress == null ){

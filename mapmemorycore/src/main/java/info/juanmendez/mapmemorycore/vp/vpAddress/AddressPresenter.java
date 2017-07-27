@@ -10,8 +10,9 @@ import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
 import info.juanmendez.mapmemorycore.dependencies.photo.PhotoService;
-import info.juanmendez.mapmemorycore.models.MapAddress;
+import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
+import info.juanmendez.mapmemorycore.models.SubmitError;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.vp.ViewPresenter;
 import rx.Subscription;
@@ -36,7 +37,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
     PhotoService photoService;
 
     AddressFragment view;
-    MapAddress addressEdited = new MapAddress();
+    ShortAddress addressEdited = new ShortAddress();
     File photoSelected;
 
     public static final String ADDRESS_VIEW_TAG = "viewAddressTag";
@@ -57,7 +58,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
         networkService.connect(new Response<Boolean>() {
             @Override
             public void onResult(Boolean result) {
-                view.onAddressResult( new MapAddress(0), result );
+                view.onAddressResult( new ShortAddress(0), result );
             }
 
             @Override
@@ -75,8 +76,38 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
         addressService.onStop();
     }
 
-    public void submitAddress(Response<MapAddress> response) {
+    public void setAddressEdited(ShortAddress addressEdited) {
+        this.addressEdited = addressEdited;
 
+        if( photoSelected != null && !photoSelected.getAbsolutePath().isEmpty() ){
+            this.addressEdited.setPhotoLocation( photoSelected.getAbsolutePath() );
+        }
+    }
+
+    public void submitAddress(Response<ShortAddress> response) {
+
+        List<SubmitError> errors = addressProvider.validate( addressEdited );
+
+        if( errors.isEmpty() ){
+            if( !photoSelected.getAbsolutePath().isEmpty() ){
+                addressEdited.setPhotoLocation( photoSelected.getAbsolutePath() );
+            }
+
+            addressProvider.updateAddressAsync(addressEdited, new Response<ShortAddress>() {
+                @Override
+                public void onResult(ShortAddress result) {
+                    response.onResult( result );
+                }
+
+                @Override
+                public void onError(Exception exception) {
+                    response.onError( exception );
+                }
+            });
+
+        }else{
+            response.onError( MapMemoryException.build("On Submit there are errors").setErrors( errors ) );
+        }
     }
 
     /**
@@ -85,9 +116,9 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
      */
     public void requestAddressByGeolocation(){
         if( networkService.isConnected() ){
-            addressService.geolocateAddress(new Response<MapAddress>() {
+            addressService.geolocateAddress(new Response<ShortAddress>() {
                 @Override
-                public void onResult(MapAddress result) {
+                public void onResult(ShortAddress result) {
                     addressEdited = result;
                     view.onAddressResult( result, networkService.isConnected() );
                 }
@@ -107,9 +138,9 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
      */
     public void requestAddressSuggestions( String query ){
         if( networkService.isConnected() && !query.isEmpty() ){
-            addressService.suggestAddress(query, new Response<List<MapAddress>>() {
+            addressService.suggestAddress(query, new Response<List<ShortAddress>>() {
                 @Override
-                public void onResult(List<MapAddress> results ) {
+                public void onResult(List<ShortAddress> results ) {
                     view.onAddressesSuggested( results );
                 }
 

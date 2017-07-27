@@ -5,7 +5,7 @@ import java.util.List;
 
 import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
-import info.juanmendez.mapmemorycore.models.MapAddress;
+import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.models.SubmitError;
 import rx.Observable;
@@ -19,35 +19,35 @@ import rx.Observable;
 
 public class TestAddressProvider implements AddressProvider {
 
-    List<MapAddress> addresses = new ArrayList<>();
-    MapAddress selectedAddress;
+    List<ShortAddress> addresses = new ArrayList<>();
+    ShortAddress selectedAddress;
 
     int totalAdded=0;
 
     @Override
-    public MapAddress getSelectedAddress() {
+    public ShortAddress getSelectedAddress() {
         return selectedAddress;
     }
 
     @Override
-    public void selectAddress(MapAddress selectedAddress) {
+    public void selectAddress(ShortAddress selectedAddress) {
         this.selectedAddress = selectedAddress;
     }
 
     @Override
-    public List<MapAddress> getAddresses() {
+    public List<ShortAddress> getAddresses() {
         return addresses;
     }
 
     @Override
-    public Observable<List<MapAddress>> getAddressesAsync() {
+    public Observable<List<ShortAddress>> getAddressesAsync() {
         return null;
     }
 
     @Override
-    public MapAddress getAddress(long addressId) {
+    public ShortAddress getAddress(long addressId) {
 
-        for(MapAddress address: addresses ){
+        for(ShortAddress address: addresses ){
 
             if( addressId == address.getAddressId() )
                 return address;
@@ -57,15 +57,15 @@ public class TestAddressProvider implements AddressProvider {
     }
 
     @Override
-    public Observable<MapAddress> getAddressAsync(long addressId) {
+    public Observable<ShortAddress> getAddressAsync(long addressId) {
         return null;
     }
 
     @Override
-    public MapAddress updateAddress(MapAddress updated) {
+    public ShortAddress updateAddress(ShortAddress updated) {
 
         //here we update
-        for(MapAddress address: addresses ){
+        for(ShortAddress address: addresses ){
 
             if( updated.getAddressId() == address.getAddressId() ){
                 int location = addresses.indexOf(address);
@@ -82,8 +82,8 @@ public class TestAddressProvider implements AddressProvider {
     }
 
     @Override
-    public void updateAddressAsync(MapAddress address, Response<MapAddress> response) {
-        MapAddress updated = updateAddress( address );
+    public void updateAddressAsync(ShortAddress address, Response<ShortAddress> response) {
+        ShortAddress updated = updateAddress( address );
 
         if( updated != null ){
             response.onResult(updated);
@@ -93,8 +93,8 @@ public class TestAddressProvider implements AddressProvider {
     }
 
     @Override
-    public void deleteAddressAsync(long addressId, Response<MapAddress> response) {
-        MapAddress address = getAddress( addressId);
+    public void deleteAddressAsync(long addressId, Response<ShortAddress> response) {
+        ShortAddress address = getAddress( addressId);
 
         if( address != null ){
             addresses.remove(address);
@@ -115,7 +115,7 @@ public class TestAddressProvider implements AddressProvider {
     }
 
     @Override
-    public List<SubmitError> validate(MapAddress address) {
+    public List<SubmitError> validate(ShortAddress address) {
         return null;
     }
 }

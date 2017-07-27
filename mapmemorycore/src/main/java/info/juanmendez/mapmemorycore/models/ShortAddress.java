@@ -13,7 +13,7 @@ import io.realm.annotations.PrimaryKey;
  */
 
 
-public class MapAddress extends RealmObject{
+public class ShortAddress extends RealmObject{
 
     @PrimaryKey
     private long addressId;
@@ -38,15 +38,15 @@ public class MapAddress extends RealmObject{
     double lat;
     double lon;
     String url;
-    String photoUrl;
+    String photoLocation;
 
-    public MapAddress() {
+    public ShortAddress() {
         if( dateUpdated == null ){
             dateUpdated = new Date();
         }
     }
 
-    public MapAddress(long addressId) {
+    public ShortAddress(long addressId) {
         this.addressId = addressId;
     }
 
@@ -102,12 +102,12 @@ public class MapAddress extends RealmObject{
         this.url = url;
     }
 
-    public String getPhotoUrl() {
-        return photoUrl;
+    public String getPhotoLocation() {
+        return photoLocation;
     }
 
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
+    public void setPhotoLocation(String photoLocation) {
+        this.photoLocation = photoLocation;
     }
 
     public String getMapId() {
@@ -136,7 +136,7 @@ public class MapAddress extends RealmObject{
 
     @Override
     public String toString() {
-        return "MapAddress{" +
+        return "ShortAddress{" +
                 "name='" + name + '\'' +
                 ", address1='" + address1 + '\'' +
                 ", address2='" + address2 + '\'' +

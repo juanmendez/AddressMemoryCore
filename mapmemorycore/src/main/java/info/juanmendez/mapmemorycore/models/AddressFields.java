@@ -16,7 +16,7 @@ public class AddressFields {
 
     public static final String  LL = "latLon";
     public static final String  URL = "url";
-    public static final String  PHOTOURL = "photoUrl";
+    public static final String  PHOTOURL = "photoLocation";
 
     public static final String DATEUPDATED = "dateUpdated";
     public static final String TIMESVISITED = "timesVisited";

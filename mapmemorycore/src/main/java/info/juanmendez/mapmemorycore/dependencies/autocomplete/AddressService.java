@@ -5,7 +5,7 @@ import android.app.Activity;
 import java.util.List;
 
 import info.juanmendez.mapmemorycore.dependencies.Response;
-import info.juanmendez.mapmemorycore.models.MapAddress;
+import info.juanmendez.mapmemorycore.models.ShortAddress;
 
 /**
  * Created by Juan Mendez on 7/7/2017.
@@ -18,6 +18,6 @@ public interface AddressService {
     void onStart( Activity activity );
     void onStop();
 
-    void suggestAddress( String query, Response<List<MapAddress>> response );
-    void geolocateAddress( Response<MapAddress> response );
+    void suggestAddress( String query, Response<List<ShortAddress>> response );
+    void geolocateAddress( Response<ShortAddress> response );
 }

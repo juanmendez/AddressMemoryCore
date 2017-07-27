@@ -75,7 +75,6 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
         addressService.onStop();
     }
 
-    @Override
     public void submitAddress(Response<MapAddress> response) {
 
     }

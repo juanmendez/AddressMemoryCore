@@ -2,6 +2,7 @@ package info.juanmendez.mapmemorycore.vp.vpAddresses;
 
 import javax.inject.Inject;
 
+import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.models.MapAddress;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
@@ -47,6 +48,11 @@ public class AddressesPresenter implements ViewPresenter<AddressesPresenter, Add
 
     }
 
+    @Override
+    public void submitAddress(Response<MapAddress> response) {
+
+    }
+
     public void selectAddress( MapAddress address ){
         addressProvider.selectAddress( address );
     }
@@ -54,5 +60,7 @@ public class AddressesPresenter implements ViewPresenter<AddressesPresenter, Add
     public void addAddress(){
         addressProvider.selectAddress( null );
     }
+
+
 
 }

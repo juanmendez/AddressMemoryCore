@@ -7,7 +7,6 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import info.juanmendez.mapmemorycore.CoreApp;
-import info.juanmendez.mapmemorycore.dependencies.android.Navigation;
 import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
@@ -58,13 +57,7 @@ public class MapCoreModule {
 
     @Provides
     public NetworkService getNetworkService(){
-        return app.getNeworkService();
-    }
-
-    @Singleton
-    @Provides
-    public Navigation getNavigation(){
-        return app.getNavigation();
+        return app.getNetworkService();
     }
 
     public static MapCoreComponent getComponent(){

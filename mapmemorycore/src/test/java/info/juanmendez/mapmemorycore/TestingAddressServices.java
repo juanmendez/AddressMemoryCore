@@ -2,6 +2,9 @@ package info.juanmendez.mapmemorycore;
 
 import android.app.Activity;
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.internal.util.reflection.Whitebox;
@@ -15,7 +18,6 @@ import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
 import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
 import info.juanmendez.mapmemorycore.dependencies.photo.PhotoService;
 import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
-import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressFragment;
 import info.juanmendez.mapmemorycore.models.MapAddress;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
@@ -30,6 +32,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
@@ -45,9 +49,26 @@ import static org.powermock.api.mockito.PowerMockito.spy;
  */
 public class TestingAddressServices {
 
+    AddressFragment fragmentMocked;
+    AddressPresenter presenter;
+    NetworkService networkServiceMocked;
+    AddressService addressServiceMocked;
+    PhotoService photoService;
+
+
     @Before
     public void before() throws Exception {
         MapCoreModule.setApp( new TestApp() );
+
+        fragmentMocked = mock( AddressFragment.class );
+        presenter = new AddressPresenter();
+        presenter.register( fragmentMocked );
+
+        networkServiceMocked = (NetworkService)   Whitebox.getInternalState(presenter, "networkService");
+        addressServiceMocked = (AddressService) Whitebox.getInternalState(presenter, "addressService");
+        photoService = (PhotoService) Whitebox.getInternalState(presenter, "photoService");
+
+        applySuccessfulResults();
     }
 
     /**
@@ -62,41 +83,16 @@ public class TestingAddressServices {
     @Test
     public void textNetwork(){
 
-        TestAddressFragment fragmentSpied = spy(new TestAddressFragment());
-
-        //spying means using fragmentSpied reference in our presenter.
-        AddressPresenter presenter = fragmentSpied.getPresenter();
-        Whitebox.setInternalState(presenter, "view", fragmentSpied );
-
-        NetworkService networkServiceMocked = (NetworkService)   Whitebox.getInternalState(presenter, "networkService");
-        AddressService addressServiceMocked = (AddressService) Whitebox.getInternalState(presenter, "addressService");
-
-        doReturn(true).when(networkServiceMocked).isConnected();
-
-        doAnswer(invocation -> {
-            Response<Boolean> response = invocation.getArgumentAt(0, Response.class);
-            response.onResult(true);
-            return null;
-        }).when( networkServiceMocked ).connect(any(Response.class));
-
-        fragmentSpied.setActive(true, null);
-        verify( fragmentSpied ).onAddressResult(any(), anyBoolean());
-
-
-        List<MapAddress> addresses = getAddresses();
-
-        doAnswer(invocation -> {
-            Response<List<MapAddress>> response = invocation.getArgumentAt(1, Response.class );
-            response.onResult( addresses );
-            return null;
-        }).when(addressServiceMocked).suggestAddress(anyString(), any(Response.class));
+        presenter.active("");
+        verify( fragmentMocked ).onAddressResult(any(), anyBoolean());
 
 
         //view requests suggested addresses
         presenter.requestAddressSuggestions("0 N. State");
-        verify( fragmentSpied ).onAddressesSuggested(anyList());
+        verify( fragmentMocked ).onAddressesSuggested(anyList());
 
 
+        //make it reply with an exception
         doAnswer(invocation -> {
             Response<MapAddress> response = invocation.getArgumentAt(1, Response.class );
             response.onError( new MapMemoryException("You could be offline!"));
@@ -106,7 +102,8 @@ public class TestingAddressServices {
 
         //view requests suggested addresses
         presenter.requestAddressSuggestions("0 N. State");
-        verify( fragmentSpied ).onAddressError( any(Exception.class));
+        verify( fragmentMocked ).onAddressError( any(Exception.class));
+
     }
 
 
@@ -116,27 +113,13 @@ public class TestingAddressServices {
     @Test
     public void testGeolocation(){
 
-        AddressFragment fragment = mock( AddressFragment.class );
-        AddressPresenter presenter = new AddressPresenter();
-        presenter.register( fragment );
-
-        //Navigation navigation = (Navigation) Whitebox.getInternalState(presenter, "navigation");
-        NetworkService networkServiceMocked = (NetworkService)   Whitebox.getInternalState(presenter, "networkService");
-        AddressService addressServiceMocked = (AddressService) Whitebox.getInternalState(presenter, "addressService");
-
-        doReturn(true).when(networkServiceMocked).isConnected();
-
-        doAnswer(invocation -> {
-            Response<MapAddress> response = invocation.getArgumentAt(0, Response.class );
-            response.onResult( getAddresses().get(0) );
-            return null;
-        }).when(addressServiceMocked).geolocateAddress(any(Response.class));
-
         //view suggested address by geolocation
         presenter.requestAddressByGeolocation();
-        verify( fragment ).onAddressResult( any(MapAddress.class), anyBoolean());
+        verify( fragmentMocked ).onAddressResult( any(MapAddress.class), anyBoolean());
 
-        reset(fragment);
+        reset(fragmentMocked);
+
+        //make it response with an error
         doAnswer(invocation -> {
             Response<MapAddress> response = invocation.getArgumentAt(0, Response.class );
             response.onError(new MapMemoryException("oops"));
@@ -145,71 +128,33 @@ public class TestingAddressServices {
 
         //view requests addresses by geolocation
         presenter.requestAddressByGeolocation();
-        verify( fragment  ).onAddressError( any(Exception.class) );
+        verify( fragmentMocked  ).onAddressError( any(Exception.class) );
     }
 
     @Test
     public void testSuggestion(){
 
-        AddressFragment fragment = mock( AddressFragment.class );
-        AddressPresenter presenter = new AddressPresenter();
-        presenter.register( fragment );
-
-        NetworkService networkServiceMocked = (NetworkService)   Whitebox.getInternalState(presenter, "networkService");
-        AddressService addressServiceMocked = (AddressService) Whitebox.getInternalState(presenter, "addressService");
-
-        doReturn(true).when(networkServiceMocked).isConnected();
-
-        doAnswer( invocation -> {
-            Response<List<MapAddress>> response = invocation.getArgumentAt(1, Response.class );
-            response.onResult(getAddresses());
-
-            return null;
-        }).when( addressServiceMocked ).suggestAddress( anyString(), any(Response.class) );
-
         presenter.requestAddressSuggestions( "3463 N. Natch" );
-        verify( fragment ).onAddressesSuggested(anyList());
+        verify( fragmentMocked ).onAddressesSuggested(anyList());
 
 
         //we want to make an exception happen during addressService.suggestAddress
         //by providing an empty query.
         presenter.requestAddressSuggestions( "" );
-        verify( fragment ).onAddressError(any(Exception.class));
+        verify( fragmentMocked ).onAddressError(any(Exception.class));
 
-        reset(fragment);
+        reset(fragmentMocked);
 
         //ok we want to catch an error if there is no connection
         doReturn(false).when(networkServiceMocked).isConnected();
         presenter.requestAddressSuggestions( "3463 N. Natch" );
-        verify( fragment ).onAddressError(any(Exception.class));
+        verify( fragmentMocked ).onAddressError(any(Exception.class));
     }
 
     @Test
     public void testPhotoService(){
-        AddressFragment fragmentMocked = mock( AddressFragment.class );
-        AddressPresenter presenter = new AddressPresenter();
-        presenter.register( fragmentMocked );
-
-        PhotoService photoService = (PhotoService) Whitebox.getInternalState(presenter, "photoService");
         String fileLocation = "absolute_path";
 
-        assertNotNull( photoService );
-
-        doAnswer(invocation -> {
-            File file = mock(File.class);
-            doReturn( fileLocation ).when( file ).getAbsolutePath();
-
-           return Observable.just( file);
-
-        }).when( photoService).pickPhoto(any(Activity.class));
-
-        doAnswer(invocation -> {
-            File file = mock(File.class);
-            doReturn( fileLocation ).when( file ).getAbsolutePath();
-
-            return Observable.just( file);
-
-        }).when( photoService).takePhoto(any(Activity.class));
 
         photoService.pickPhoto(fragmentMocked.getActivity()).subscribe(file -> {
             assertNotNull( file );
@@ -224,6 +169,86 @@ public class TestingAddressServices {
         reset(fragmentMocked);
         presenter.requestTakePhoto();
         verify( fragmentMocked ).onPhotoSelected( any(File.class ));
+    }
+
+
+    @Test
+    public void testCreatingAddress(){
+
+        String fileLocation = "absolute_path";
+
+        //user picks a photo, and finds her address through geolocation
+        presenter.requestPickPhoto();
+        presenter.requestAddressByGeolocation();
+        verify( fragmentMocked ).onPhotoSelected(argThat(fileMatcher(fileLocation)));
+        verify( fragmentMocked ).onAddressResult( any(MapAddress.class), eq(true));
+
+        AddressPresenter spiedPresenter = spy(presenter);
+        doAnswer(invocation -> {
+            Response<MapAddress> response = invocation.getArgumentAt(0, Response.class );
+            response.onResult(new MapAddress());
+            return null;
+        }).when(spiedPresenter).submitAddress(any(Response.class));
+
+        Response<MapAddress> spied = mock( Response.class );
+
+        spiedPresenter.submitAddress(spied);
+        verify( spied ).onResult(any(MapAddress.class));
+    }
+
+    Matcher<File> fileMatcher(final String location) {
+        return new TypeSafeMatcher<File>() {
+            public boolean matchesSafely(File item) {
+                return location.equals(item.getAbsolutePath());
+            }
+            public void describeTo(Description description) {
+                description.appendText("checks if file's path is " + location);
+            }
+        };
+    }
+
+
+    void applySuccessfulResults(){
+
+        String fileLocation = "absolute_path";
+
+        doReturn(true).when(networkServiceMocked).isConnected();
+
+        doAnswer(invocation -> {
+            Response<Boolean> response = invocation.getArgumentAt(0, Response.class);
+            response.onResult(true);
+            return null;
+        }).when( networkServiceMocked ).connect(any(Response.class));
+
+        doAnswer(invocation -> {
+            File file = mock(File.class);
+            doReturn( fileLocation ).when( file ).getAbsolutePath();
+
+            return Observable.just( file);
+
+        }).when( photoService).pickPhoto(any(Activity.class));
+
+        doAnswer(invocation -> {
+            File file = mock(File.class);
+            doReturn( fileLocation ).when( file ).getAbsolutePath();
+
+            return Observable.just( file);
+
+        }).when( photoService).takePhoto(any(Activity.class));
+
+        doAnswer( invocation -> {
+            Response<List<MapAddress>> response = invocation.getArgumentAt(1, Response.class );
+            response.onResult(getAddresses());
+
+            return null;
+        }).when( addressServiceMocked ).suggestAddress( anyString(), any(Response.class) );
+
+        doAnswer( invocation -> {
+            Response<MapAddress> response = invocation.getArgumentAt(0, Response.class );
+            response.onResult(getAddresses().get(0));
+
+            return null;
+        }).when( addressServiceMocked ).geolocateAddress( any(Response.class) );
     }
 
     //util

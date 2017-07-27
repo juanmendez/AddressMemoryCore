@@ -1,11 +1,11 @@
 package info.juanmendez.mapmemorycore.vp.vpAddress;
 
+import java.io.File;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import info.juanmendez.mapmemorycore.dependencies.Response;
-import info.juanmendez.mapmemorycore.dependencies.android.Navigation;
 import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
@@ -35,12 +35,9 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
     @Inject
     PhotoService photoService;
 
-    @Inject
-    Navigation navigation;
-
     AddressFragment view;
-    MapAddress addressEdited;
-
+    MapAddress addressEdited = new MapAddress();
+    File photoSelected;
 
     public static final String ADDRESS_VIEW_TAG = "viewAddressTag";
     public static final String ADDDRESS_EDIT_TAG = "editAddressTag";
@@ -50,7 +47,6 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
     public AddressPresenter register(AddressFragment view) {
         this.view = view;
         MapCoreModule.getComponent().inject(this);
-
         return this;
     }
 
@@ -79,6 +75,11 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
         addressService.onStop();
     }
 
+    @Override
+    public void submitAddress(Response<MapAddress> response) {
+
+    }
+
     /**
      * View is requesting to pull address based on geolocation
      * this is done in an asynchronous way
@@ -88,6 +89,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
             addressService.geolocateAddress(new Response<MapAddress>() {
                 @Override
                 public void onResult(MapAddress result) {
+                    addressEdited = result;
                     view.onAddressResult( result, networkService.isConnected() );
                 }
 
@@ -128,6 +130,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
     //view requests to pick photo from public gallery
     public void requestPickPhoto(){
         fileSubscription = photoService.pickPhoto(view.getActivity()).subscribe(file -> {
+            photoSelected = file;
             view.onPhotoSelected( file );
         }, throwable -> {
 
@@ -137,9 +140,12 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
     //view requests to take a photo
     public void requestTakePhoto(){
         fileSubscription = photoService.takePhoto(view.getActivity()).subscribe(file -> {
+            photoSelected = file;
             view.onPhotoSelected( file );
         }, throwable -> {
 
         });
     }
+
+
 }

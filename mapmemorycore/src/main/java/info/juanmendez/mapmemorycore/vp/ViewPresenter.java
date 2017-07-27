@@ -1,5 +1,8 @@
 package info.juanmendez.mapmemorycore.vp;
 
+import info.juanmendez.mapmemorycore.dependencies.Response;
+import info.juanmendez.mapmemorycore.models.MapAddress;
+
 /**
  * Created by Juan Mendez on 6/26/2017.
  * www.juanmendez.info
@@ -22,4 +25,6 @@ public interface ViewPresenter<P,T>{
      */
     void active( String action);
     void inactive();
+
+    void submitAddress( Response<MapAddress> response );
 }

@@ -29,7 +29,12 @@ public class TestAddressFragment implements AddressFragment {
     }
 
     @Override
-    public void onAddressResult(ShortAddress address, Boolean online) {
+    public void onNetworkStatus(Boolean online) {
+
+    }
+
+    @Override
+    public void onAddressResult(ShortAddress address) {
 
     }
 
@@ -46,6 +51,11 @@ public class TestAddressFragment implements AddressFragment {
     @Override
     public void onPhotoSelected(File photo) {
 
+    }
+
+    @Override
+    public String getAction() {
+        return null;
     }
 
     @Override

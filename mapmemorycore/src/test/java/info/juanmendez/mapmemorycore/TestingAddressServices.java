@@ -31,7 +31,6 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.argThat;
@@ -87,7 +86,7 @@ public class TestingAddressServices {
     public void textNetwork(){
 
         presenter.active("");
-        verify( fragmentMocked ).onAddressResult(any(), anyBoolean());
+        verify( fragmentMocked ).onNetworkStatus(eq(true));
 
 
         //view requests suggested addresses
@@ -118,7 +117,7 @@ public class TestingAddressServices {
 
         //view suggested address by geolocation
         presenter.requestAddressByGeolocation();
-        verify( fragmentMocked ).onAddressResult( any(ShortAddress.class), anyBoolean());
+        verify( fragmentMocked ).onAddressResult( any(ShortAddress.class));
 
         reset(fragmentMocked);
 
@@ -198,7 +197,7 @@ public class TestingAddressServices {
         verify( fragmentMocked ).onPhotoSelected(argThat(fileMatcher(fileLocation)));
 
         presenter.requestAddressByGeolocation();
-        verify( fragmentMocked ).onAddressResult( any(ShortAddress.class), eq(true));
+        verify( fragmentMocked ).onAddressResult( any(ShortAddress.class));
 
         AddressPresenter spiedPresenter = spy(presenter);
         doAnswer(invocation -> {
@@ -243,6 +242,7 @@ public class TestingAddressServices {
         verify( response ).onError(any(MapMemoryException.class));
 
         reset(provider);
+        reset( response );
 
         when( provider.validate(any(ShortAddress.class)) ).thenReturn( new ArrayList<SubmitError>());
 

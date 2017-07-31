@@ -14,13 +14,11 @@ import info.juanmendez.mapmemorycore.vp.FragmentNav;
 
 public interface AddressFragment extends FragmentNav {
 
-    /**
-     * @param address
-     * @param online
-     */
-    void onAddressResult(ShortAddress address, Boolean online);
+    void onNetworkStatus( Boolean online );
+    void onAddressResult(ShortAddress address);
     void onAddressError(Exception exception );
     void onAddressesSuggested(List<ShortAddress> addresses );
 
     void onPhotoSelected( File photo );
+    String getAction();
 }

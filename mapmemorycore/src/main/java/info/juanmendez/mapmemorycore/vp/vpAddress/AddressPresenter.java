@@ -58,7 +58,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
         networkService.connect(new Response<Boolean>() {
             @Override
             public void onResult(Boolean result) {
-                view.onAddressResult( new ShortAddress(0), result );
+                view.onNetworkStatus( result );
             }
 
             @Override
@@ -120,7 +120,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
                 @Override
                 public void onResult(ShortAddress result) {
                     addressEdited = result;
-                    view.onAddressResult( result, networkService.isConnected() );
+                    view.onAddressResult( result );
                 }
 
                 @Override

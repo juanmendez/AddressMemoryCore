@@ -68,6 +68,12 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
         });
 
         addressService.onStart( view.getActivity() );
+
+        /**
+         * rotation also means to make sure photo is available
+         */
+        if( photoSelected != null )
+            view.onPhotoSelected( photoSelected );
     }
 
     @Override

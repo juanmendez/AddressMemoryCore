@@ -37,7 +37,6 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
     PhotoService photoService;
 
     AddressFragment view;
-    ShortAddress addressEdited = new ShortAddress();
     File photoSelected;
 
     public static final String ADDRESS_VIEW_TAG = "viewAddressTag";
@@ -83,16 +82,17 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
     }
 
     public void setAddressEdited(ShortAddress addressEdited) {
-        this.addressEdited = addressEdited;
+        addressProvider.selectAddress(addressEdited);
 
         if( photoSelected != null && !photoSelected.getAbsolutePath().isEmpty() ){
-            this.addressEdited.setPhotoLocation( photoSelected.getAbsolutePath() );
+            addressEdited.setPhotoLocation( photoSelected.getAbsolutePath() );
         }
     }
 
     public void submitAddress(Response<ShortAddress> response) {
 
-        List<SubmitError> errors = addressProvider.validate( addressEdited );
+        ShortAddress addressEdited = addressProvider.getSelectedAddress();
+        List<SubmitError> errors = addressProvider.validate( addressProvider.getSelectedAddress() );
 
         if( errors.isEmpty() ){
             if( !photoSelected.getAbsolutePath().isEmpty() ){
@@ -125,7 +125,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
             addressService.geolocateAddress(new Response<ShortAddress>() {
                 @Override
                 public void onResult(ShortAddress result) {
-                    addressEdited = result;
+                    addressProvider.selectAddress( result );
                     view.onAddressResult( result );
                 }
 
@@ -182,6 +182,4 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
 
         });
     }
-
-
 }

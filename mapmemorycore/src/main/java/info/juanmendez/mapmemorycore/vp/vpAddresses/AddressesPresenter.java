@@ -52,6 +52,6 @@ public class AddressesPresenter implements ViewPresenter<AddressesPresenter, Add
     }
 
     public void addAddress(){
-        addressProvider.selectAddress( null );
+        addressProvider.selectAddress( new ShortAddress() );
     }
 }

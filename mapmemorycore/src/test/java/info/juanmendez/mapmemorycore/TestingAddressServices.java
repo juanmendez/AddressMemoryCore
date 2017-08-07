@@ -28,8 +28,10 @@ import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
 import rx.Observable;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
@@ -51,25 +53,28 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 public class TestingAddressServices {
 
-    AddressFragment fragmentMocked;
+    AddressFragment viewMocked;
     AddressPresenter presenter;
     NetworkService networkServiceMocked;
     AddressService addressServiceMocked;
     PhotoService photoServiceMocked;
+    AddressProvider addressProvider;
 
 
     @Before
     public void before() throws Exception {
         MapCoreModule.setApp( new TestApp() );
 
-        fragmentMocked = mock( AddressFragment.class );
+        viewMocked = mock( AddressFragment.class );
         presenter = new AddressPresenter();
-        presenter.register( fragmentMocked );
+        presenter.register(viewMocked);
 
         networkServiceMocked = (NetworkService)   Whitebox.getInternalState(presenter, "networkService");
         addressServiceMocked = (AddressService) Whitebox.getInternalState(presenter, "addressService");
         photoServiceMocked = (PhotoService) Whitebox.getInternalState(presenter, "photoService");
+        addressProvider = (AddressProvider) Whitebox.getInternalState(presenter, "addressProvider");
 
+        //make each mocked object answer with positive results such as networkService.isConnected() returning true.
         applySuccessfulResults();
     }
 
@@ -86,12 +91,12 @@ public class TestingAddressServices {
     public void textNetwork(){
 
         presenter.active("");
-        verify( fragmentMocked ).onNetworkStatus(eq(true));
+        verify(viewMocked).onNetworkStatus(eq(true));
 
 
         //view requests suggested addresses
         presenter.requestAddressSuggestions("0 N. State");
-        verify( fragmentMocked ).onAddressesSuggested(anyList());
+        verify(viewMocked).onAddressesSuggested(anyList());
 
 
         //make it reply with an exception
@@ -104,7 +109,7 @@ public class TestingAddressServices {
 
         //view requests suggested addresses
         presenter.requestAddressSuggestions("0 N. State");
-        verify( fragmentMocked ).onAddressError( any(Exception.class));
+        verify(viewMocked).onAddressError( any(Exception.class));
 
     }
 
@@ -117,9 +122,9 @@ public class TestingAddressServices {
 
         //view suggested address by geolocation
         presenter.requestAddressByGeolocation();
-        verify( fragmentMocked ).onAddressResult( any(ShortAddress.class));
+        verify(viewMocked).onAddressResult( any(ShortAddress.class));
 
-        reset(fragmentMocked);
+        reset(viewMocked);
 
         //make it response with an error
         doAnswer(invocation -> {
@@ -130,7 +135,7 @@ public class TestingAddressServices {
 
         //view requests addresses by geolocation
         presenter.requestAddressByGeolocation();
-        verify( fragmentMocked  ).onAddressError( any(Exception.class) );
+        verify(viewMocked).onAddressError( any(Exception.class) );
     }
 
     @Test
@@ -147,23 +152,23 @@ public class TestingAddressServices {
             //lets pick the first address..
             presenter.setAddressEdited( addresses.get(0));
             return null;
-        }).when( fragmentMocked ).onAddressesSuggested(anyList());
+        }).when(viewMocked).onAddressesSuggested(anyList());
 
         presenter.requestAddressSuggestions( "3463 N. Natch" );
-        verify( fragmentMocked ).onAddressesSuggested(anyList());
+        verify(viewMocked).onAddressesSuggested(anyList());
         assertEquals( ((ShortAddress)Whitebox.getInternalState(presenter, "addressEdited")).getAddressId(), getAddresses().get(0).getAddressId() );
 
         //we want to make an exception happen during addressService.suggestAddress
         //by providing an empty query.
         presenter.requestAddressSuggestions( "" );
-        verify( fragmentMocked ).onAddressError(any(Exception.class));
+        verify(viewMocked).onAddressError(any(Exception.class));
 
-        reset(fragmentMocked);
+        reset(viewMocked);
 
         //ok we want to catch an error if there is no connection
         doReturn(false).when(networkServiceMocked).isConnected();
         presenter.requestAddressSuggestions( "3463 N. Natch" );
-        verify( fragmentMocked ).onAddressError(any(Exception.class));
+        verify(viewMocked).onAddressError(any(Exception.class));
     }
 
     @Test
@@ -171,7 +176,7 @@ public class TestingAddressServices {
         String fileLocation = "absolute_path";
 
 
-        photoServiceMocked.pickPhoto(fragmentMocked.getActivity()).subscribe(file -> {
+        photoServiceMocked.pickPhoto(viewMocked.getActivity()).subscribe(file -> {
             assertNotNull( file );
             assertEquals( file.getAbsolutePath(), fileLocation );
         }, throwable -> {
@@ -179,11 +184,11 @@ public class TestingAddressServices {
         });
 
         presenter.requestPickPhoto();
-        verify( fragmentMocked ).onPhotoSelected( any(File.class ));
+        verify(viewMocked).onPhotoSelected( any(File.class ));
 
-        reset(fragmentMocked);
+        reset(viewMocked);
         presenter.requestTakePhoto();
-        verify( fragmentMocked ).onPhotoSelected( any(File.class ));
+        verify(viewMocked).onPhotoSelected( any(File.class ));
     }
 
 
@@ -194,10 +199,10 @@ public class TestingAddressServices {
 
         //user picks a photo, and finds her address through geolocation
         presenter.requestPickPhoto();
-        verify( fragmentMocked ).onPhotoSelected(argThat(fileMatcher(fileLocation)));
+        verify(viewMocked).onPhotoSelected(argThat(fileMatcher(fileLocation)));
 
         presenter.requestAddressByGeolocation();
-        verify( fragmentMocked ).onAddressResult( any(ShortAddress.class));
+        verify(viewMocked).onAddressResult( any(ShortAddress.class));
 
         AddressPresenter spiedPresenter = spy(presenter);
         doAnswer(invocation -> {
@@ -233,7 +238,7 @@ public class TestingAddressServices {
 
         //user picks a photo, and finds her address through geolocation
         presenter.requestPickPhoto();
-        verify( fragmentMocked ).onPhotoSelected(argThat(fileMatcher(fileLocation)));
+        verify(viewMocked).onPhotoSelected(argThat(fileMatcher(fileLocation)));
 
         Response<ShortAddress> response = mock( Response.class );
         reset( response );
@@ -276,7 +281,7 @@ public class TestingAddressServices {
 
         //user picks a photo, and finds her address through geolocation
         presenter.requestPickPhoto();
-        verify( fragmentMocked ).onPhotoSelected(argThat(fileMatcher(fileLocation)));
+        verify(viewMocked).onPhotoSelected(argThat(fileMatcher(fileLocation)));
 
         Response<ShortAddress> response = mock( Response.class );
         presenter.submitAddress( response );
@@ -284,6 +289,75 @@ public class TestingAddressServices {
         verify( response ).onResult(any(ShortAddress.class));
         ShortAddress addressEdited = Whitebox.getInternalState(presenter, "addressEdited");
         assertEquals(addressEdited.getPhotoLocation(), fileLocation );
+    }
+
+    @Test
+    public void testSubmitButton(){
+        String fileLocation = "absolute_path";
+
+        addressProvider.selectAddress( new ShortAddress() );
+
+        //we forgot we need to jump to the edit_address view selecting a new address
+
+
+        //user takes photo
+        presenter.requestTakePhoto();
+        verify(viewMocked).onPhotoSelected(argThat(fileMatcher(fileLocation)));
+
+        Response<List<ShortAddress>> responseMocked = mock( Response.class );
+
+        //user sees the list of addresses, and picks the first item.
+        doAnswer(invocation -> {
+            List<ShortAddress> addresses = invocation.getArgumentAt(0, List.class );
+
+            //view tells presenter, it picks the first item in the list
+            presenter.setAddressEdited( addresses.get(0) );
+            return null;
+        }).when( responseMocked ).onResult( anyList() );
+
+        //can we submit, there is no address picked
+        assertFalse( presenter.shouldAllowToSubmit() );
+
+        //user has called up presenter, and presenter calls up addressService to
+        //suggest an item based on an address query.
+        addressServiceMocked.suggestAddress("300 N. State", responseMocked );
+        verify( responseMocked ).onResult( anyList() );
+
+        Response<ShortAddress> addressResponse = mock( Response.class );
+
+        //we have selected an address, is view allowed to submit?
+        assertTrue( presenter.shouldAllowToSubmit() );
+
+
+        /**
+         * in order to allow form to submit, the button must be enabled.
+         * That button is enabled by presenter.showAllowToSubmit()
+         * So if there is no network, the requirement is
+         * having address line 1 && 2 filled in.
+         */
+
+        //addressProvider has an empty address as selectedAddress
+        ShortAddress emptyAddress = new ShortAddress();
+        addressProvider.selectAddress( emptyAddress );
+
+        doReturn( false ).when( networkServiceMocked ).isConnected();
+
+        //can we submit with an empty address?
+        assertFalse( presenter.shouldAllowToSubmit() );
+
+        //what if the address now has address line 1, but no line 2?
+        emptyAddress.setAddress1( "00 N. State");
+
+        //can we submit with missing address line 2?
+        assertFalse( presenter.shouldAllowToSubmit() );
+
+        //ok, now we have two lines available.
+        emptyAddress.setAddress2( "Chicago, Il. 60600");
+        assertTrue( presenter.shouldAllowToSubmit() );
+
+
+        /*presenter.submitAddress( addressResponse );
+        verify( addressResponse ).onResult( any(ShortAddress.class));*/
     }
 
     Matcher<File> fileMatcher(final String location) {

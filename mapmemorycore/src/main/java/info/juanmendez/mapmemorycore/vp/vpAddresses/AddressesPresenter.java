@@ -28,7 +28,6 @@ public class AddressesPresenter implements ViewPresenter<AddressesPresenter, Add
         MapCoreModule.getComponent().inject(this);
     }
 
-
     @Override
     public AddressesPresenter register(AddressesFragment view) {
         this.view = view;

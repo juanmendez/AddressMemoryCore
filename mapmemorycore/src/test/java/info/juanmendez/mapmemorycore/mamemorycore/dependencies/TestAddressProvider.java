@@ -116,6 +116,6 @@ public class TestAddressProvider implements AddressProvider {
 
     @Override
     public List<SubmitError> validate(ShortAddress address) {
-        return null;
+        return new ArrayList<SubmitError>();
     }
 }

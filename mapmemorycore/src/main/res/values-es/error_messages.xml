@@ -10,9 +10,8 @@
     <!--related to address-->
     <string name="address_gone">Esta dirección no existe</string>
     <string name="submitting_address_error">La dirección se encuentra invalida</string>
-
+    <string name="address_name_repeated">Existe otra dirección con el mismo nombre</string>
 
     <!--common-->
     <string name="required_field">Llene este campo</string>
-
 </resources>

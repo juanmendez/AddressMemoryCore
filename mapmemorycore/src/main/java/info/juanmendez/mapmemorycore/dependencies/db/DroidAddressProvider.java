@@ -12,7 +12,9 @@ import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.models.AddressFields;
 import info.juanmendez.mapmemorycore.models.SubmitError;
+import io.realm.Case;
 import io.realm.Realm;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.exceptions.RealmException;
 import rx.Observable;
@@ -164,6 +166,24 @@ public class DroidAddressProvider implements AddressProvider {
         //lets do a check for name
         if( SubmitError.emptyOrNull(address.getName()) ){
             errors.add( new SubmitError(AddressFields.NAME, application.getString(R.string.required_field)));
+        }else{
+
+            RealmResults<ShortAddress> addresses;
+            realm.beginTransaction();
+
+            RealmQuery<ShortAddress> addressRealmQuery = realm.where(ShortAddress.class).equalTo( AddressFields.NAME, address.getName(), Case.INSENSITIVE );
+
+            if( SubmitError.initialized( address.getAddressId() )){
+                addressRealmQuery.notEqualTo( AddressFields.ADDRESSID, address.getAddressId() );
+            }
+
+            addresses = addressRealmQuery.findAll();
+            realm.commitTransaction();
+
+
+            if( !addresses.isEmpty() ){
+                errors.add( new SubmitError( AddressFields.NAME, application.getString(R.string.address_name_repeated)));
+            }
         }
 
         //if lat lon are provided we skip checking address and zipcode

@@ -10,10 +10,9 @@ import java.util.List;
 import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.mamemorycore.TestRealmApp;
-import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressFragment;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddresses.TestAddressesFragment;
-import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.AddressFields;
+import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.SubmitError;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesPresenter;
@@ -35,6 +34,9 @@ import static junit.framework.TestCase.assertNotNull;
 @PrepareForTest({TestRealmApp.class})
 public class TestingWithRealm extends MockRealmTester {
 
+    AddressesPresenter presenter;
+    AddressProvider provider;
+
     @Before
     public void before() throws Exception {
 
@@ -44,6 +46,11 @@ public class TestingWithRealm extends MockRealmTester {
                 .indexedFields(AddressFields.NAME, AddressFields.DATEUPDATED, AddressFields.TIMESVISITED));
 
         MapCoreModule.setApp( new TestRealmApp() );
+
+        presenter = new AddressesPresenter();
+
+        //Pull the injection, and test it!
+        provider = Whitebox.getInternalState( presenter, "addressProvider" );
     }
 
     @Test
@@ -55,11 +62,6 @@ public class TestingWithRealm extends MockRealmTester {
 
         assertNotNull( MapCoreModule.getComponent() );
 
-        //Injects component above.
-        AddressesPresenter presenter = new AddressesPresenter();
-
-        //Pull the injection, and test it!
-        AddressProvider provider = Whitebox.getInternalState( presenter, "addressProvider" );
         assertEquals(provider.countAddresses(), 0);
 
         address = provider.getAddress(2);
@@ -96,14 +98,12 @@ public class TestingWithRealm extends MockRealmTester {
         MockRealm.clearData();
 
         List<ShortAddress> addresses;
-        AddressProvider provider;
         ShortAddress address;
 
         /**
          * lets build addressesView
          */
         TestAddressesFragment addressesView = new TestAddressesFragment();
-        provider = Whitebox.getInternalState( addressesView.getPresenter(), "addressProvider" );
 
         addresses = addressesView.getAddresses();
 
@@ -164,16 +164,12 @@ public class TestingWithRealm extends MockRealmTester {
         MockRealm.clearData();
 
         List<ShortAddress> addresses;
-        AddressProvider provider;
         ShortAddress address;
 
         /**
          * lets build addressesView
          */
         TestAddressesFragment addressesView = new TestAddressesFragment();
-        provider = Whitebox.getInternalState( addressesView.getPresenter(), "addressProvider" );
-
-        addresses = addressesView.getAddresses();
 
         insertAddresses( provider );
         assertEquals( provider.countAddresses(), 4 );
@@ -190,25 +186,25 @@ public class TestingWithRealm extends MockRealmTester {
 
         //lets add an address, and see if addressesView has updated its addresses
         address = new ShortAddress(provider.getNextPrimaryKey());
-        address.setName( "1");
+        address.setName( "address-1");
         address.setAddress1("0 N. State");
         address.setAddress2( "Chicago, 60641" );
         provider.updateAddress( address );
 
         address = new ShortAddress(provider.getNextPrimaryKey());
-        address.setName( "2");
+        address.setName( "address-2");
         address.setAddress1("1 N. State");
         address.setAddress2( "Chicago, 60641" );
         provider.updateAddress( address );
 
         address = new ShortAddress(provider.getNextPrimaryKey());
-        address.setName( "3");
+        address.setName( "address-3");
         address.setAddress1("2 N. State");
         address.setAddress2( "Chicago, 60641" );
         provider.updateAddress( address );
 
         address = new ShortAddress(provider.getNextPrimaryKey());
-        address.setName( "4");
+        address.setName( "address-4");
         address.setAddress1("3 N. State");
         address.setAddress2( "Chicago, 60641" );
         provider.updateAddress( address );
@@ -217,16 +213,7 @@ public class TestingWithRealm extends MockRealmTester {
     @Test
     public void validateAddress(){
         MockRealm.clearData();
-
-        AddressProvider provider;
         ShortAddress address;
-
-        /**
-         * lets build addressesView
-         */
-        TestAddressFragment addressView = new TestAddressFragment();
-        provider = Whitebox.getInternalState( addressView.getPresenter(), "addressProvider" );
-
 
         //lets start inserting an address with errors
         address = new ShortAddress();
@@ -249,5 +236,47 @@ public class TestingWithRealm extends MockRealmTester {
          */
         errors = provider.validate( new ShortAddress(2));
         assertTrue( errors.size()==1 );
+    }
+
+    /**
+     * we want to prevent adding addresses which have the same name like others
+     */
+    @Test
+    public void invalidateExistingAddressName(){
+        MockRealm.clearData();
+        insertAddresses( provider );
+
+        ShortAddress address;
+
+        //we want to add a new address, with an existing name
+        address = new ShortAddress();
+        address.setName("address-1");
+        address.setAddress1( "00 N. State");
+        address.setAddress2( "Chicago, IL 60600");
+
+        List<SubmitError> errors = provider.validate( address );
+        assertEquals( errors.size(), 1);
+
+        //we want to update an existing address by updating
+        //with a name which is unique
+        address = new ShortAddress(1);
+        address.setName("address-2017");
+        address.setAddress1( "00 N. State");
+        address.setAddress2( "Chicago, IL 60600");
+
+        errors = provider.validate( address );
+        assertEquals( errors.size(), 0);
+
+
+        //we want toupdate our existing address
+        //with the name of another existing address
+        address = new ShortAddress(1);
+        address.setName("address-2");
+        address.setAddress1( "00 N. State");
+        address.setAddress2( "Chicago, IL 60600");
+
+        errors = provider.validate( address );
+        assertEquals( errors.size(), 1);
+
     }
 }

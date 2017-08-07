@@ -182,4 +182,20 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
 
         });
     }
+
+    public boolean shouldAllowToSubmit(){
+        ShortAddress address = addressProvider.getSelectedAddress();
+
+        if( address == null )
+            return false;
+
+        if( networkService.isConnected() ){
+            //we only require to show address line 1
+            return !(SubmitError.emptyOrNull(address.getAddress1()));
+        }else{
+            //we require both lines filled
+            return !(SubmitError.emptyOrNull(address.getAddress1())) && !(SubmitError.emptyOrNull(address.getAddress2()));
+        }
+
+    }
 }

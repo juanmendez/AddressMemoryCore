@@ -163,21 +163,23 @@ public class DroidAddressProvider implements AddressProvider {
             }
         }
 
-        //lets do a check for name
+        /**
+         * name is required, but if provided we need to ensure it is unique as well.
+         */
         if( SubmitError.emptyOrNull(address.getName()) ){
             errors.add( new SubmitError(AddressFields.NAME, application.getString(R.string.required_field)));
         }else{
-
             RealmResults<ShortAddress> addresses;
+
             realm.beginTransaction();
+                RealmQuery<ShortAddress> addressRealmQuery = realm.where(ShortAddress.class).equalTo( AddressFields.NAME, address.getName(), Case.INSENSITIVE );
 
-            RealmQuery<ShortAddress> addressRealmQuery = realm.where(ShortAddress.class).equalTo( AddressFields.NAME, address.getName(), Case.INSENSITIVE );
+                //if it's an update, the name must not match other siblings
+                if( SubmitError.initialized( address.getAddressId() )){
+                    addressRealmQuery.notEqualTo( AddressFields.ADDRESSID, address.getAddressId() );
+                }
 
-            if( SubmitError.initialized( address.getAddressId() )){
-                addressRealmQuery.notEqualTo( AddressFields.ADDRESSID, address.getAddressId() );
-            }
-
-            addresses = addressRealmQuery.findAll();
+                addresses = addressRealmQuery.findAll();
             realm.commitTransaction();
 
 

@@ -12,6 +12,7 @@ import info.juanmendez.mapmemorycore.models.AddressFields;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.SubmitError;
+import info.juanmendez.mapmemorycore.utils.ModelUtils;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmQuery;
@@ -67,7 +68,7 @@ public class DroidAddressProvider implements AddressProvider {
     public Observable<ShortAddress> getAddressAsync(long addressId){
 
         return realm.where( ShortAddress.class )
-                .equalTo( "addressId", addressId )
+                .equalTo( AddressFields.ADDRESSID, addressId )
                 .findFirstAsync().asObservable();
     }
 
@@ -76,13 +77,18 @@ public class DroidAddressProvider implements AddressProvider {
         ShortAddress address;
 
         realm.beginTransaction();
-        address = realm.where( ShortAddress.class ).equalTo( "addressId", addressId ).findFirst();
+        address = realm.where( ShortAddress.class ).equalTo( AddressFields.ADDRESSID, addressId ).findFirst();
         realm.commitTransaction();
 
         return address;
     }
 
-
+    /**
+     * Updates or adds a new address.
+     * The created or updated address gets cloned and assigned to response.onResult()
+     * @param address initial address provided to update or create
+     * @param response handles back the result from realm
+     */
     public void updateAddressAsync(ShortAddress address, Response<ShortAddress> response ) {
 
         //assign id if it's a new address
@@ -90,16 +96,22 @@ public class DroidAddressProvider implements AddressProvider {
             address.setAddressId( getNextPrimaryKey() );
         }
 
-
         realm.executeTransactionAsync(thisRealm -> {
             thisRealm.copyToRealmOrUpdate(address);
         }, () -> {
-            response.onResult( getAddress( address.getAddressId() ));
+            ShortAddress addressResult = getAddress( address.getAddressId());
+            response.onResult( ModelUtils.cloneAddress( addressResult ) );
         }, exception -> {
             response.onError(new MapMemoryException(exception.getMessage()));
         });
     }
 
+    /**
+     * Similar to the previous method, it returns a created updated address
+     * in synchronous mode.
+     * @param address
+     * @return  address is a cloned copy
+     */
     public ShortAddress updateAddress(ShortAddress address){
 
         //assign id if it's a new address
@@ -113,9 +125,15 @@ public class DroidAddressProvider implements AddressProvider {
            updatedAddress = realm.copyToRealmOrUpdate( address );
         realm.commitTransaction();
 
-        return updatedAddress;
+        return ModelUtils.cloneAddress( updatedAddress );
     }
 
+    /**
+     * deletes in asynchronous mode the address, and returns back the address found
+     * prior to being deleted
+     * @param addressId
+     * @param response
+     */
     public void deleteAddressAsync(long addressId, Response<ShortAddress> response ){
 
         final ShortAddress deletedAddress = getAddress( addressId );
@@ -132,11 +150,15 @@ public class DroidAddressProvider implements AddressProvider {
         }, exception -> { response.onError(new MapMemoryException(exception.getMessage()));}  );
     }
 
+    /**
+     * checks on getting the next addressId for address
+     * @return
+     */
     public long getNextPrimaryKey(){
         AtomicLong primaryKeyValue;
 
         try {
-            primaryKeyValue = new AtomicLong(realm.where(ShortAddress.class).max("addressId").longValue());
+            primaryKeyValue = new AtomicLong(realm.where(ShortAddress.class).max(AddressFields.ADDRESSID).longValue());
         } catch (Exception e) {
             return 1;
         }

@@ -95,13 +95,14 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
         List<SubmitError> errors = addressProvider.validate( addressProvider.getSelectedAddress() );
 
         if( errors.isEmpty() ){
-            if( !photoSelected.getAbsolutePath().isEmpty() ){
+            if( photoSelected != null && !photoSelected.getAbsolutePath().isEmpty() ){
                 addressEdited.setPhotoLocation( photoSelected.getAbsolutePath() );
             }
 
             addressProvider.updateAddressAsync(addressEdited, new Response<ShortAddress>() {
                 @Override
                 public void onResult(ShortAddress result) {
+                    addressProvider.selectAddress( result );
                     response.onResult( result );
                 }
 

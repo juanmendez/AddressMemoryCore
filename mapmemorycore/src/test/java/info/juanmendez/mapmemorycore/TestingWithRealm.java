@@ -2,6 +2,7 @@ package info.juanmendez.mapmemorycore;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.reflect.Whitebox;
 
@@ -20,11 +21,15 @@ import info.juanmendez.mockrealm.MockRealm;
 import info.juanmendez.mockrealm.models.RealmAnnotation;
 import info.juanmendez.mockrealm.test.MockRealmTester;
 import io.realm.RealmResults;
+import io.realm.exceptions.RealmException;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 
 /**
  * These tests show how to write final Realm transactions using Mocking-Realm through TDD.
@@ -180,36 +185,6 @@ public class TestingWithRealm extends MockRealmTester {
 
     }
 
-    void insertAddresses( AddressProvider provider ){
-
-        ShortAddress address;
-
-        //lets add an address, and see if addressesView has updated its addresses
-        address = new ShortAddress(provider.getNextPrimaryKey());
-        address.setName( "address-1");
-        address.setAddress1("0 N. State");
-        address.setAddress2( "Chicago, 60641" );
-        provider.updateAddress( address );
-
-        address = new ShortAddress(provider.getNextPrimaryKey());
-        address.setName( "address-2");
-        address.setAddress1("1 N. State");
-        address.setAddress2( "Chicago, 60641" );
-        provider.updateAddress( address );
-
-        address = new ShortAddress(provider.getNextPrimaryKey());
-        address.setName( "address-3");
-        address.setAddress1("2 N. State");
-        address.setAddress2( "Chicago, 60641" );
-        provider.updateAddress( address );
-
-        address = new ShortAddress(provider.getNextPrimaryKey());
-        address.setName( "address-4");
-        address.setAddress1("3 N. State");
-        address.setAddress2( "Chicago, 60641" );
-        provider.updateAddress( address );
-    }
-
     @Test
     public void validateAddress(){
         MockRealm.clearData();
@@ -277,6 +252,52 @@ public class TestingWithRealm extends MockRealmTester {
 
         errors = provider.validate( address );
         assertEquals( errors.size(), 1);
+    }
 
+    @Test
+    public void testDeletingAddress() {
+        MockRealm.clearData();
+        insertAddresses(provider);
+
+        ShortAddress firstAddress = provider.getAddress(1);
+        Response<ShortAddress> response = mock( Response.class );
+        provider.deleteAddressAsync( firstAddress.getAddressId(), response);
+
+        Mockito.verify(response).onResult(eq(firstAddress));
+
+        Mockito.reset( response );
+        provider.deleteAddressAsync( 2017, response );
+        Mockito.verify(response).onError(any(RealmException.class));
+
+    }
+
+    void insertAddresses( AddressProvider provider ){
+
+        ShortAddress address;
+
+        //lets add an address, and see if addressesView has updated its addresses
+        address = new ShortAddress(provider.getNextPrimaryKey());
+        address.setName( "address-1");
+        address.setAddress1("0 N. State");
+        address.setAddress2( "Chicago, 60641" );
+        provider.updateAddress( address );
+
+        address = new ShortAddress(provider.getNextPrimaryKey());
+        address.setName( "address-2");
+        address.setAddress1("1 N. State");
+        address.setAddress2( "Chicago, 60641" );
+        provider.updateAddress( address );
+
+        address = new ShortAddress(provider.getNextPrimaryKey());
+        address.setName( "address-3");
+        address.setAddress1("2 N. State");
+        address.setAddress2( "Chicago, 60641" );
+        provider.updateAddress( address );
+
+        address = new ShortAddress(provider.getNextPrimaryKey());
+        address.setName( "address-4");
+        address.setAddress1("3 N. State");
+        address.setAddress2( "Chicago, 60641" );
+        provider.updateAddress( address );
     }
 }

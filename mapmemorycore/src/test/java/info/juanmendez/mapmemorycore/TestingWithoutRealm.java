@@ -7,11 +7,16 @@ import org.powermock.reflect.Whitebox;
 import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
 import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
-import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress.TestAddressFragment;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
+import info.juanmendez.mapmemorycore.utils.ModelUtils;
+import info.juanmendez.mapmemorycore.vp.vpAddress.AddressFragment;
+import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.powermock.api.mockito.PowerMockito.mock;
 
 /**
  * Created by Juan Mendez on 7/9/2017.
@@ -29,20 +34,27 @@ import static org.junit.Assert.assertEquals;
 
 public class TestingWithoutRealm {
 
+    AddressFragment viewMocked;
+    AddressPresenter presenter;
+    AddressProvider provider;
+
     @Before
     public void before() throws Exception {
         MapCoreModule.setApp( new TestApp() );
+
+        viewMocked = mock( AddressFragment.class );
+        presenter = new AddressPresenter();
+        presenter.register(viewMocked);
+
+        //through MVP, get your hands on the presenter, and subsequently get its dagger dependency
+        provider = Whitebox.getInternalState( presenter, "addressProvider" );
+
+        //in another function just insert addresses
+        insertAddresses( provider );
     }
 
     @Test
     public void testAddressProvider(){
-        TestAddressFragment addressView = new TestAddressFragment();
-
-        //through MVP, get your hands on the presenter, and subsequently get its dagger dependency
-        AddressProvider provider = Whitebox.getInternalState( addressView.getPresenter(), "addressProvider" );
-
-        //in another function just insert addresses
-        insertAddresses( provider );
 
         assertEquals(provider.countAddresses(), 4);
 
@@ -59,6 +71,23 @@ public class TestingWithoutRealm {
         });
     }
 
+    @Test
+    public void testCloningAddresses(){
+        ShortAddress firstAddress = provider.getAddress(1);
+        assertNotNull( firstAddress );
+
+        ShortAddress cloned = ModelUtils.cloneAddress( firstAddress );
+
+        assertEquals( cloned.getAddressId(), firstAddress.getAddressId() );
+        assertEquals( cloned.getAddress1(), firstAddress.getAddress1() );
+        assertEquals( cloned.getAddress2(), firstAddress.getAddress2() );
+        assertEquals( cloned.getPhotoLocation(), firstAddress.getPhotoLocation() );
+
+        //check for non existing
+        assertEquals( cloned.getUrl(), firstAddress.getUrl() );
+        assertTrue( "same lat lon", cloned.getLat()==firstAddress.getLat());
+    }
+
     void insertAddresses( AddressProvider provider ){
 
         ShortAddress address;
@@ -67,6 +96,7 @@ public class TestingWithoutRealm {
         address.setName( "1");
         address.setAddress1("0 N. State");
         address.setAddress2( "Chicago, 60641" );
+        address.setPhotoLocation( "photo.jpg");
         provider.updateAddress( address );
 
         address = new ShortAddress(provider.getNextPrimaryKey());

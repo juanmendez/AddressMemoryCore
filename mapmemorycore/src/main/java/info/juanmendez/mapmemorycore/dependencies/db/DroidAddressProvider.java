@@ -7,16 +7,15 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import info.juanmendez.mapmemorycore.R;
-import info.juanmendez.mapmemorycore.models.ShortAddress;
-import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.models.AddressFields;
+import info.juanmendez.mapmemorycore.models.MapMemoryException;
+import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.SubmitError;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
-import io.realm.exceptions.RealmException;
 import rx.Observable;
 
 /**
@@ -43,7 +42,6 @@ public class DroidAddressProvider implements AddressProvider {
     public void selectAddress(ShortAddress selectedAddress) {
         this.selectedAddress = selectedAddress;
     }
-
 
     public List<ShortAddress> getAddresses(){
         RealmResults<ShortAddress> addresses;
@@ -87,21 +85,27 @@ public class DroidAddressProvider implements AddressProvider {
 
     public void updateAddressAsync(ShortAddress address, Response<ShortAddress> response ) {
 
-        final ShortAddress[] addressArray = new ShortAddress[1];
+        //assign id if it's a new address
+        if( address.getAddressId() == 0 ){
+            address.setAddressId( getNextPrimaryKey() );
+        }
+
 
         realm.executeTransactionAsync(thisRealm -> {
-            addressArray[0] = thisRealm.copyToRealmOrUpdate(address);
+            thisRealm.copyToRealmOrUpdate(address);
         }, () -> {
-            if (addressArray.length != 0) {
-                response.onResult(addressArray[0]);
-            }
-
+            response.onResult( getAddress( address.getAddressId() ));
         }, exception -> {
             response.onError(new MapMemoryException(exception.getMessage()));
         });
     }
 
     public ShortAddress updateAddress(ShortAddress address){
+
+        //assign id if it's a new address
+        if( address.getAddressId() == 0 ){
+            address.setAddressId( getNextPrimaryKey() );
+        }
 
         ShortAddress updatedAddress;
 
@@ -114,21 +118,17 @@ public class DroidAddressProvider implements AddressProvider {
 
     public void deleteAddressAsync(long addressId, Response<ShortAddress> response ){
 
-        final ShortAddress[] addressArray = new ShortAddress[1];
+        final ShortAddress deletedAddress = getAddress( addressId );
+
+        if( deletedAddress == null  ){
+            response.onError(new MapMemoryException("Couldn't find an element to delete"));
+            return;
+        }
 
         realm.executeTransactionAsync(thisRealm -> {
-            addressArray[0] = thisRealm.where( ShortAddress.class ).equalTo( "addressId", addressId ).findFirst();
-
-            if( addressArray.length != 0  ){
-                addressArray[0].deleteFromRealm();
-            }else{
-                throw new RealmException("Couldn't find an element to delete");
-            }
+            deletedAddress.deleteFromRealm();
         }, () -> {
-            if( addressArray.length != 0 ){
-                response.onResult(addressArray[0]);
-            }
-
+            response.onResult( deletedAddress );
         }, exception -> { response.onError(new MapMemoryException(exception.getMessage()));}  );
     }
 

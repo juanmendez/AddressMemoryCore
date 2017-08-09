@@ -50,6 +50,14 @@ public class ShortAddress extends RealmObject{
         this.addressId = addressId;
     }
 
+    public void setAddressId(long addressId) {
+        this.addressId = addressId;
+    }
+
+    public void setDateUpdated(Date dateUpdated) {
+        this.dateUpdated = dateUpdated;
+    }
+
     public long getAddressId() {
         return addressId;
     }
@@ -132,16 +140,5 @@ public class ShortAddress extends RealmObject{
 
     public void setTimesVisited(int timesVisited) {
         this.timesVisited = timesVisited;
-    }
-
-    @Override
-    public String toString() {
-        return "ShortAddress{" +
-                "name='" + name + '\'' +
-                ", address1='" + address1 + '\'' +
-                ", address2='" + address2 + '\'' +
-                ", lat=" + lat +
-                ", lon=" + lon +
-                '}';
     }
 }

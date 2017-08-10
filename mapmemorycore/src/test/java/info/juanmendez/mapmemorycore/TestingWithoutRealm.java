@@ -58,9 +58,9 @@ public class TestingWithoutRealm {
 
         assertEquals(provider.countAddresses(), 4);
 
-        provider.deleteAddressAsync(1, new Response<ShortAddress>() {
+        provider.deleteAddressAsync(1, new Response<Boolean>() {
             @Override
-            public void onResult(ShortAddress result) {
+            public void onResult(Boolean result) {
                 assertEquals( provider.countAddresses(), 3 );
             }
 

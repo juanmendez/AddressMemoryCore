@@ -136,9 +136,9 @@ public class TestingWithRealm extends MockRealmTester {
         assertEquals( provider.countAddresses(), 2 );
 
         //good, good.. now I want to delete the first item..
-        provider.deleteAddressAsync(1, new Response<ShortAddress>() {
+        provider.deleteAddressAsync(1, new Response<Boolean>() {
             @Override
-            public void onResult(ShortAddress result) {
+            public void onResult(Boolean result) {
                 assertEquals( provider.countAddresses(), 1 );
             }
 
@@ -260,10 +260,10 @@ public class TestingWithRealm extends MockRealmTester {
         insertAddresses(provider);
 
         ShortAddress firstAddress = provider.getAddress(1);
-        Response<ShortAddress> response = mock( Response.class );
+        Response<Boolean> response = mock( Response.class );
         provider.deleteAddressAsync( firstAddress.getAddressId(), response);
 
-        Mockito.verify(response).onResult(eq(firstAddress));
+        Mockito.verify(response).onResult(eq(true));
 
         Mockito.reset( response );
         provider.deleteAddressAsync( 2017, response );

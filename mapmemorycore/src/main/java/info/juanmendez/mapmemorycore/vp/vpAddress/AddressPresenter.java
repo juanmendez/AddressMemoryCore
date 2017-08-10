@@ -117,6 +117,12 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
         }
     }
 
+    public void deleteAddress( Response<Boolean> response ){
+
+        long addressId = addressProvider.getSelectedAddress().getAddressId();
+        addressProvider.deleteAddressAsync( addressId, response );
+    }
+
     /**
      * View is requesting to pull address based on geolocation
      * this is done in an asynchronous way

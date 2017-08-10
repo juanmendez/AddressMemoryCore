@@ -2,4 +2,5 @@
 <resources>
     <string name="labelAddAddress">Add Address</string>
     <string name="labelSave">Save address</string>
+    <string name="labelDelete">Delete address</string>
 </resources>

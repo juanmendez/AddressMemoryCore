@@ -134,19 +134,13 @@ public class DroidAddressProvider implements AddressProvider {
      * @param addressId
      * @param response
      */
-    public void deleteAddressAsync(long addressId, Response<ShortAddress> response ){
-
-        final ShortAddress deletedAddress = getAddress( addressId );
-
-        if( deletedAddress == null  ){
-            response.onError(new MapMemoryException("Couldn't find an element to delete"));
-            return;
-        }
+    public void deleteAddressAsync(long addressId, Response<Boolean> response ){
 
         realm.executeTransactionAsync(thisRealm -> {
+            ShortAddress deletedAddress = realm.where( ShortAddress.class ).equalTo( AddressFields.ADDRESSID, addressId ).findFirst();
             deletedAddress.deleteFromRealm();
         }, () -> {
-            response.onResult( deletedAddress );
+            response.onResult( true );
         }, exception -> { response.onError(new MapMemoryException(exception.getMessage()));}  );
     }
 

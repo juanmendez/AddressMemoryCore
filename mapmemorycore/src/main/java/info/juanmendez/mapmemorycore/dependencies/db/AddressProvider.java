@@ -30,7 +30,7 @@ public interface AddressProvider {
     //update address
     ShortAddress updateAddress(ShortAddress address);
     void updateAddressAsync(ShortAddress address, Response<ShortAddress> response );
-    void deleteAddressAsync(long addressId, Response<ShortAddress> response );
+    void deleteAddressAsync(long addressId, Response<Boolean> response );
 
     //utils
     long getNextPrimaryKey();

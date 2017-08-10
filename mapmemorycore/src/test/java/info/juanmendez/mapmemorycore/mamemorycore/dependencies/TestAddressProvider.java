@@ -93,12 +93,12 @@ public class TestAddressProvider implements AddressProvider {
     }
 
     @Override
-    public void deleteAddressAsync(long addressId, Response<ShortAddress> response) {
+    public void deleteAddressAsync(long addressId, Response<Boolean> response) {
         ShortAddress address = getAddress( addressId);
 
         if( address != null ){
             addresses.remove(address);
-            response.onResult(address);
+            response.onResult(true);
         }else{
             response.onError( new MapMemoryException("couldn't delete address asynchronously"));
         }

@@ -121,6 +121,9 @@ public class TestingAddressServices {
     @Test
     public void testNavigationTag(){
         assertEquals( navigationService.getNavigationTag(viewMocked), navigationTag );
+
+        doReturn( null ).when( navigationService ).getNavigationTag(eq(viewMocked));
+        assertNull( navigationService.getNavigationTag(viewMocked ));
     }
 
     /**

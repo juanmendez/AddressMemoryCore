@@ -51,6 +51,11 @@ public class TestAddressesFragment implements AddressesFragment {
     }
 
     @Override
+    public int getId() {
+        return 0;
+    }
+
+    @Override
     public Activity getActivity() {
         return mock(Activity.class);
     }

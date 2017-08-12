@@ -13,16 +13,18 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import info.juanmendez.mapmemorycore.dependencies.Response;
-import info.juanmendez.mapmemorycore.dependencies.AddressService;
 import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
+import info.juanmendez.mapmemorycore.dependencies.AddressService;
+import info.juanmendez.mapmemorycore.dependencies.NavigationService;
 import info.juanmendez.mapmemorycore.dependencies.NetworkService;
 import info.juanmendez.mapmemorycore.dependencies.PhotoService;
+import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.SubmitError;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
+import info.juanmendez.mapmemorycore.vp.FragmentNav;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressFragment;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
 import rx.Observable;
@@ -59,6 +61,8 @@ public class TestingAddressServices {
     AddressService addressServiceMocked;
     PhotoService photoServiceMocked;
     AddressProvider addressProvider;
+    NavigationService navigationService;
+    String navigationTag = "helloNavigation";
 
 
     @Before
@@ -73,6 +77,7 @@ public class TestingAddressServices {
         addressServiceMocked = (AddressService) Whitebox.getInternalState(presenter, "addressService");
         photoServiceMocked = (PhotoService) Whitebox.getInternalState(presenter, "photoService");
         addressProvider = (AddressProvider) Whitebox.getInternalState(presenter, "addressProvider");
+        navigationService = (NavigationService) Whitebox.getInternalState(presenter, "navigationService");
 
         //make each mocked object answer with positive results such as networkService.isConnected() returning true.
         applySuccessfulResults();
@@ -113,6 +118,10 @@ public class TestingAddressServices {
 
     }
 
+    @Test
+    public void testNavigationTag(){
+        assertEquals( navigationService.getNavigationTag(viewMocked), navigationTag );
+    }
 
     /**
      * test geolocation with successful and error response
@@ -413,6 +422,9 @@ public class TestingAddressServices {
 
             return null;
         }).when( addressServiceMocked ).geolocateAddress( any(Response.class) );
+
+
+        doReturn( navigationTag ).when( navigationService ).getNavigationTag(any(FragmentNav.class));
     }
 
     //util

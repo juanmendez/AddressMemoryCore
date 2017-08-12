@@ -1,10 +1,9 @@
-package info.juanmendez.mapmemorycore.dependencies.autocomplete;
+package info.juanmendez.mapmemorycore.dependencies;
 
 import android.app.Activity;
 
 import java.util.List;
 
-import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
 
 /**

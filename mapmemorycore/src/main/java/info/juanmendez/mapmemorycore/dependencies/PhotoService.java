@@ -1,4 +1,4 @@
-package info.juanmendez.mapmemorycore.dependencies.photo;
+package info.juanmendez.mapmemorycore.dependencies;
 
 import android.app.Activity;
 

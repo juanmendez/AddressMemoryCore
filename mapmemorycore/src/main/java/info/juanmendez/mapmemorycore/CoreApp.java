@@ -2,10 +2,11 @@ package info.juanmendez.mapmemorycore;
 
 import android.app.Application;
 
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
-import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
-import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
-import info.juanmendez.mapmemorycore.dependencies.photo.PhotoService;
+import info.juanmendez.mapmemorycore.dependencies.AddressService;
+import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
+import info.juanmendez.mapmemorycore.dependencies.NavigationService;
+import info.juanmendez.mapmemorycore.dependencies.NetworkService;
+import info.juanmendez.mapmemorycore.dependencies.PhotoService;
 
 /**
  * Created by Juan Mendez on 6/25/2017.
@@ -19,4 +20,5 @@ public interface CoreApp {
     AddressService getAddressService();
     NetworkService getNetworkService();
     PhotoService getPhotoService();
+    NavigationService getNavigationService();
 }

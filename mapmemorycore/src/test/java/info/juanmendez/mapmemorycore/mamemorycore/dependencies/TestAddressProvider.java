@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import info.juanmendez.mapmemorycore.dependencies.Response;
-import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
+import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.models.SubmitError;

@@ -5,10 +5,11 @@ import android.app.Application;
 import org.mockito.Mockito;
 
 import info.juanmendez.mapmemorycore.CoreApp;
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
-import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
-import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
-import info.juanmendez.mapmemorycore.dependencies.photo.PhotoService;
+import info.juanmendez.mapmemorycore.dependencies.AddressService;
+import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
+import info.juanmendez.mapmemorycore.dependencies.NavigationService;
+import info.juanmendez.mapmemorycore.dependencies.NetworkService;
+import info.juanmendez.mapmemorycore.dependencies.PhotoService;
 import info.juanmendez.mapmemorycore.mamemorycore.dependencies.TestAddressProvider;
 
 import static org.powermock.api.mockito.PowerMockito.doAnswer;
@@ -56,5 +57,10 @@ public class TestApp implements CoreApp {
     @Override
     public PhotoService getPhotoService() {
         return mock( PhotoService.class );
+    }
+
+    @Override
+    public NavigationService getNavigationService() {
+        return mock(NavigationService.class);
     }
 }

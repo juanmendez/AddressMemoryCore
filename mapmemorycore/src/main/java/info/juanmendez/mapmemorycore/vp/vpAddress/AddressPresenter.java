@@ -5,11 +5,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import info.juanmendez.mapmemorycore.dependencies.NavigationService;
 import info.juanmendez.mapmemorycore.dependencies.Response;
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
-import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
-import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
-import info.juanmendez.mapmemorycore.dependencies.photo.PhotoService;
+import info.juanmendez.mapmemorycore.dependencies.AddressService;
+import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
+import info.juanmendez.mapmemorycore.dependencies.NetworkService;
+import info.juanmendez.mapmemorycore.dependencies.PhotoService;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.models.SubmitError;
@@ -35,6 +36,9 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
 
     @Inject
     PhotoService photoService;
+
+    @Inject
+    NavigationService navigationService;
 
     AddressFragment view;
     File photoSelected;
@@ -67,18 +71,34 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
         });
 
         addressService.onStart( view.getActivity() );
-
-        /**
-         * rotation also means to make sure photo is available
-         */
-        if( photoSelected != null )
-            view.onPhotoSelected( photoSelected );
+        refreshView();
     }
 
     @Override
     public void inactive() {
         networkService.disconnect();
         addressService.onStop();
+    }
+    private void refreshView() {
+        if( photoSelected != null )
+            view.onPhotoSelected( photoSelected );
+
+        checkCanUpdate();
+        checkCanDelete();
+    }
+
+    private void checkCanUpdate(){
+        ShortAddress addressSelected = addressProvider.getSelectedAddress();
+        if( addressSelected != null ) {
+            view.canSubmit( addressProvider.validate(addressSelected).isEmpty() );
+        }
+    }
+
+    private void checkCanDelete(){
+        ShortAddress addressSelected = addressProvider.getSelectedAddress();
+        if( addressSelected != null ) {
+            view.canDelete( SubmitError.initialized(addressSelected.getAddressId()) );
+        }
     }
 
     public void setAddressEdited(ShortAddress addressEdited) {
@@ -104,6 +124,8 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
                 public void onResult(ShortAddress result) {
                     addressProvider.selectAddress( result );
                     response.onResult( result );
+                    checkCanDelete();
+                    checkCanUpdate();
                 }
 
                 @Override
@@ -134,6 +156,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
                 public void onResult(ShortAddress result) {
                     addressProvider.selectAddress( result );
                     view.onAddressResult( result );
+                    checkCanUpdate();
                 }
 
                 @Override
@@ -203,6 +226,5 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
             //we require both lines filled
             return !(SubmitError.emptyOrNull(address.getAddress1())) && !(SubmitError.emptyOrNull(address.getAddress2()));
         }
-
     }
 }

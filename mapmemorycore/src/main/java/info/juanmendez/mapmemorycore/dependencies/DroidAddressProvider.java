@@ -1,4 +1,4 @@
-package info.juanmendez.mapmemorycore.dependencies.db;
+package info.juanmendez.mapmemorycore.dependencies;
 
 import android.app.Application;
 
@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import info.juanmendez.mapmemorycore.R;
-import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.models.AddressFields;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
@@ -137,11 +136,13 @@ public class DroidAddressProvider implements AddressProvider {
     public void deleteAddressAsync(long addressId, Response<Boolean> response ){
 
         realm.executeTransactionAsync(thisRealm -> {
-            ShortAddress deletedAddress = realm.where( ShortAddress.class ).equalTo( AddressFields.ADDRESSID, addressId ).findFirst();
+            ShortAddress deletedAddress = thisRealm.where( ShortAddress.class ).equalTo( AddressFields.ADDRESSID, addressId ).findFirst();
             deletedAddress.deleteFromRealm();
         }, () -> {
             response.onResult( true );
-        }, exception -> { response.onError(new MapMemoryException(exception.getMessage()));}  );
+        }, exception -> {
+            response.onError(new MapMemoryException(application.getString(R.string.address_gone)));
+        });
     }
 
     /**

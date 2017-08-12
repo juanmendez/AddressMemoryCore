@@ -1,8 +1,7 @@
-package info.juanmendez.mapmemorycore.dependencies.db;
+package info.juanmendez.mapmemorycore.dependencies;
 
 import java.util.List;
 
-import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.SubmitError;
 import rx.Observable;

@@ -3,4 +3,7 @@
     <string name="labelAddAddress">Agregue nueva dirección</string>
     <string name="labelSave">Guardar dirección</string>
     <string name="labelDelete">Borrar dirección</string>
+
+    <string name="labelPickPhoto">Elija de galería</string>
+    <string name="labelTakePhoto">Tome foto</string>
 </resources>

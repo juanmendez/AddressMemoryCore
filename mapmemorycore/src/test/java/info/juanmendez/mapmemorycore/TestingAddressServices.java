@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import info.juanmendez.mapmemorycore.dependencies.Response;
-import info.juanmendez.mapmemorycore.dependencies.autocomplete.AddressService;
-import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
-import info.juanmendez.mapmemorycore.dependencies.network.NetworkService;
-import info.juanmendez.mapmemorycore.dependencies.photo.PhotoService;
+import info.juanmendez.mapmemorycore.dependencies.AddressService;
+import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
+import info.juanmendez.mapmemorycore.dependencies.NetworkService;
+import info.juanmendez.mapmemorycore.dependencies.PhotoService;
 import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.models.ShortAddress;

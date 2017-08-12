@@ -31,6 +31,9 @@ public interface AddressFragment extends FragmentNav {
     //tell fragment what is the current picture for the address
     void onPhotoSelected( File photo );
 
-    //fragment may have an action associated through navigation
-    String getAction();
+    //tell fragment if address can be deleted
+    void canDelete(Boolean allow);
+
+    //tell fragment if address can be submitted
+    void canSubmit(Boolean allow);
 }

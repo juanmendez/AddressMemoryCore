@@ -3,4 +3,7 @@
     <string name="labelAddAddress">Add Address</string>
     <string name="labelSave">Save address</string>
     <string name="labelDelete">Delete address</string>
+
+    <string name="labelPickPhoto">Choose from gallery</string>
+    <string name="labelTakePhoto">Take photo</string>
 </resources>

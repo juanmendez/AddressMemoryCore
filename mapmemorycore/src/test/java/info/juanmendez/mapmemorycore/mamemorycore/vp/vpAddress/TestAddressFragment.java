@@ -54,8 +54,13 @@ public class TestAddressFragment implements AddressFragment {
     }
 
     @Override
-    public String getAction() {
-        return null;
+    public void canDelete(Boolean allow) {
+
+    }
+
+    @Override
+    public void canSubmit(Boolean allow) {
+
     }
 
     @Override
@@ -65,6 +70,11 @@ public class TestAddressFragment implements AddressFragment {
        }else{
            presenter.inactive();
        }
+    }
+
+    @Override
+    public int getId() {
+        return 0;
     }
 
     @Override

@@ -10,5 +10,6 @@ import android.app.Activity;
 
 public interface FragmentNav {
     void setActive( Boolean active, String action);
+    int getId();
     Activity getActivity();
 }

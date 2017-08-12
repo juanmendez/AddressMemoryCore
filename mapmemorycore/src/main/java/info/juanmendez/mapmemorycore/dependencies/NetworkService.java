@@ -1,6 +1,4 @@
-package info.juanmendez.mapmemorycore.dependencies.network;
-
-import info.juanmendez.mapmemorycore.dependencies.Response;
+package info.juanmendez.mapmemorycore.dependencies;
 
 /**
  * Created by Juan Mendez on 7/14/2017.

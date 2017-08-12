@@ -1,7 +1,7 @@
 package info.juanmendez.mapmemorycore.mamemorycore;
 
-import info.juanmendez.mapmemorycore.dependencies.db.AddressProvider;
-import info.juanmendez.mapmemorycore.dependencies.db.DroidAddressProvider;
+import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
+import info.juanmendez.mapmemorycore.dependencies.DroidAddressProvider;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 

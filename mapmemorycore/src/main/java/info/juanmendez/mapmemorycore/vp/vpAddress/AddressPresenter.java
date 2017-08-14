@@ -5,16 +5,16 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import info.juanmendez.mapmemorycore.dependencies.NavigationService;
-import info.juanmendez.mapmemorycore.dependencies.Response;
-import info.juanmendez.mapmemorycore.dependencies.AddressService;
 import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
+import info.juanmendez.mapmemorycore.dependencies.AddressService;
+import info.juanmendez.mapmemorycore.dependencies.NavigationService;
 import info.juanmendez.mapmemorycore.dependencies.NetworkService;
-import info.juanmendez.mapmemorycore.dependencies.PhotoService;
-import info.juanmendez.mapmemorycore.models.ShortAddress;
+import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
+import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.SubmitError;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
+import info.juanmendez.mapmemorycore.utils.RxUtils;
 import info.juanmendez.mapmemorycore.vp.ViewPresenter;
 import rx.Subscription;
 
@@ -35,13 +35,9 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
     NetworkService networkService;
 
     @Inject
-    PhotoService photoService;
-
-    @Inject
     NavigationService navigationService;
 
     AddressFragment view;
-    File photoSelected;
 
     public static final String ADDRESS_VIEW_TAG = "viewAddressTag";
     public static final String ADDDRESS_EDIT_TAG = "editAddressTag";
@@ -78,10 +74,15 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
     public void inactive() {
         networkService.disconnect();
         addressService.onStop();
+
+        RxUtils.unsubscribe(fileSubscription);
     }
     private void refreshView() {
-        if( photoSelected != null )
-            view.onPhotoSelected( photoSelected );
+        ShortAddress selectedAddress = addressProvider.getSelectedAddress();
+
+        if( selectedAddress != null && !SubmitError.emptyOrNull(selectedAddress.getPhotoLocation()) ){
+            view.onPhotoSelected( new File( selectedAddress.getPhotoLocation()));
+        }
 
         checkCanUpdate();
         checkCanDelete();
@@ -101,13 +102,14 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
         }
     }
 
-    public void setAddressEdited(ShortAddress addressEdited) {
+    /*public void setAddressEdited(ShortAddress addressEdited) {
+
         addressProvider.selectAddress(addressEdited);
 
         if( photoSelected != null && !photoSelected.getAbsolutePath().isEmpty() ){
             addressEdited.setPhotoLocation( photoSelected.getAbsolutePath() );
         }
-    }
+    }*/
 
     public void submitAddress(Response<ShortAddress> response) {
 
@@ -115,9 +117,6 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
         List<SubmitError> errors = addressProvider.validate( addressProvider.getSelectedAddress() );
 
         if( errors.isEmpty() ){
-            if( photoSelected != null && !photoSelected.getAbsolutePath().isEmpty() ){
-                addressEdited.setPhotoLocation( photoSelected.getAbsolutePath() );
-            }
 
             addressProvider.updateAddressAsync(addressEdited, new Response<ShortAddress>() {
                 @Override
@@ -191,26 +190,6 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
             else if( query.isEmpty() )
                 view.onAddressError( new MapMemoryException("query is empty"));
         }
-    }
-
-    //view requests to pick photo from public gallery
-    public void requestPickPhoto(){
-        fileSubscription = photoService.pickPhoto(view.getActivity()).subscribe(file -> {
-            photoSelected = file;
-            view.onPhotoSelected( file );
-        }, throwable -> {
-
-        });
-    }
-
-    //view requests to take a photo
-    public void requestTakePhoto(){
-        fileSubscription = photoService.takePhoto(view.getActivity()).subscribe(file -> {
-            photoSelected = file;
-            view.onPhotoSelected( file );
-        }, throwable -> {
-
-        });
     }
 
     public void submitName( String name ){

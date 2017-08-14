@@ -10,4 +10,5 @@ import info.juanmendez.mapmemorycore.vp.FragmentNav;
 
 public interface NavigationService {
     String getNavigationTag( FragmentNav fragmentNav );
+    boolean goBack();
 }

@@ -328,7 +328,7 @@ public class TestingAddressServices {
         }).when( responseMocked ).onResult( anyList() );
 
         //can we submit, there is no address picked
-        assertFalse( presenter.shouldAllowToSubmit() );
+        assertFalse( presenter.submitAddress() );
 
         //user has called up presenter, and presenter calls up addressService to
         //suggest an item based on an address query.
@@ -338,7 +338,7 @@ public class TestingAddressServices {
         Response<ShortAddress> addressResponse = mock( Response.class );
 
         //we have selected an address, is view allowed to submit?
-        assertTrue( presenter.shouldAllowToSubmit() );
+        assertTrue( presenter.submitAddress() );
 
 
         /**
@@ -355,17 +355,17 @@ public class TestingAddressServices {
         doReturn( false ).when( networkServiceMocked ).isConnected();
 
         //can we submit with an empty address?
-        assertFalse( presenter.shouldAllowToSubmit() );
+        assertFalse( presenter.submitAddress() );
 
         //what if the address now has address line 1, but no line 2?
         emptyAddress.setAddress1( "00 N. State");
 
         //can we submit with missing address line 2?
-        assertFalse( presenter.shouldAllowToSubmit() );
+        assertFalse( presenter.submitAddress() );
 
         //ok, now we have two lines available.
         emptyAddress.setAddress2( "Chicago, Il. 60600");
-        assertTrue( presenter.shouldAllowToSubmit() );
+        assertTrue( presenter.submitAddress() );
 
 
         /*presenter.submitAddress( addressResponse );

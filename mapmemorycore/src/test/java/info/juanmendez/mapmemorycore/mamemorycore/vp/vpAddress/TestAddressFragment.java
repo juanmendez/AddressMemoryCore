@@ -78,6 +78,11 @@ public class TestAddressFragment implements AddressFragment {
     }
 
     @Override
+    public String getTag() {
+        return null;
+    }
+
+    @Override
     public Activity getActivity() {
         return mock(Activity.class);
     }

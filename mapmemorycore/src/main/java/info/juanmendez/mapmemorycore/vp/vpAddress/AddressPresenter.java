@@ -213,18 +213,17 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
         });
     }
 
-    public boolean shouldAllowToSubmit(){
+    public void submitName( String name ){
+        ShortAddress address = addressProvider.getSelectedAddress();
+        address.setName( name );
+        view.canSubmit( addressProvider.validate( address ).isEmpty() );
+    }
+
+    public void submitAddress(String addressLine1, String addressLine2 ){
         ShortAddress address = addressProvider.getSelectedAddress();
 
-        if( address == null )
-            return false;
-
-        if( networkService.isConnected() ){
-            //we only require to show address line 1
-            return !(SubmitError.emptyOrNull(address.getAddress1()));
-        }else{
-            //we require both lines filled
-            return !(SubmitError.emptyOrNull(address.getAddress1())) && !(SubmitError.emptyOrNull(address.getAddress2()));
-        }
+        address.setAddress1( addressLine1 );
+        address.setAddress2( addressLine2 );
+        view.canSubmit( addressProvider.validate( address ).isEmpty() );
     }
 }

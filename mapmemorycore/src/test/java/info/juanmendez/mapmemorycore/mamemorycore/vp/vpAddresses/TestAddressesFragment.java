@@ -5,7 +5,7 @@ import android.app.Activity;
 import java.util.List;
 
 import info.juanmendez.mapmemorycore.models.ShortAddress;
-import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesFragment;
+import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesView;
 import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesPresenter;
 
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -17,7 +17,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
  * contact@juanmendez.info
  */
 
-public class TestAddressesFragment implements AddressesFragment {
+public class TestAddressesFragment implements AddressesView {
 
     AddressesPresenter presenter;
     List<ShortAddress> addresses;

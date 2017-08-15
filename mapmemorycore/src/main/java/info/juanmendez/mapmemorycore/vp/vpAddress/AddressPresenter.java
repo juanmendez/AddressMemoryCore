@@ -23,7 +23,7 @@ import rx.Subscription;
  * www.juanmendez.info
  * contact@juanmendez.info
  */
-public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressFragment>{
+public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressView>{
 
     @Inject
     AddressProvider addressProvider;
@@ -37,14 +37,14 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressF
     @Inject
     NavigationService navigationService;
 
-    AddressFragment view;
+    AddressView view;
 
     public static final String ADDRESS_VIEW_TAG = "viewAddressTag";
     public static final String ADDDRESS_EDIT_TAG = "editAddressTag";
     private Subscription fileSubscription;
 
     @Override
-    public AddressPresenter register(AddressFragment view) {
+    public AddressPresenter register(AddressView view) {
         this.view = view;
         MapCoreModule.getComponent().inject(this);
         return this;

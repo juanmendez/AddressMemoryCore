@@ -10,7 +10,7 @@ import info.juanmendez.mapmemorycore.vp.FragmentNav;
  * contact@juanmendez.info
  */
 
-public interface PhotoFragment  extends FragmentNav {
+public interface PhotoView extends FragmentNav {
 
     //tell fragment what is the current picture for the address
     void onPhotoSelected( File photo );

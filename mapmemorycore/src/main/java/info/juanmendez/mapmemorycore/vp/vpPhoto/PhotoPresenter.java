@@ -11,7 +11,6 @@ import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.SubmitError;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
-import info.juanmendez.mapmemorycore.utils.RxUtils;
 import info.juanmendez.mapmemorycore.vp.ViewPresenter;
 import rx.Subscription;
 
@@ -21,7 +20,7 @@ import rx.Subscription;
  * contact@juanmendez.info
  */
 
-public class PhotoPresenter implements ViewPresenter<PhotoPresenter,PhotoFragment>{
+public class PhotoPresenter implements ViewPresenter<PhotoPresenter,PhotoView>{
 
     @Inject
     PhotoService photoService;
@@ -32,13 +31,13 @@ public class PhotoPresenter implements ViewPresenter<PhotoPresenter,PhotoFragmen
     @Inject
     NavigationService navigationService;
 
-    private PhotoFragment view;
+    private PhotoView view;
     private Subscription fileSubscription;
     private ShortAddress selectedAddress;
 
     @Override
-    public PhotoPresenter register(PhotoFragment photoFragment) {
-        this.view = photoFragment;
+    public PhotoPresenter register(PhotoView photoView) {
+        this.view = photoView;
         MapCoreModule.getComponent().inject(this);
         return this;
     }
@@ -74,16 +73,16 @@ public class PhotoPresenter implements ViewPresenter<PhotoPresenter,PhotoFragmen
 
     @Override
     public void inactive() {
-        RxUtils.unsubscribe( fileSubscription );
     }
 
     private void setPhotoSelected(File file ){
+        ShortAddress address = addressProvider.getSelectedAddress();
 
-        if( selectedAddress == null ){
+        if( address == null ){
             addressProvider.selectAddress( new ShortAddress());
-            selectedAddress = addressProvider.getSelectedAddress();
+            address = addressProvider.getSelectedAddress();
         }
 
-        selectedAddress.setPhotoLocation( file.getAbsolutePath() );
+        address.setPhotoLocation( file.getAbsolutePath() );
     }
 }

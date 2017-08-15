@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.List;
 
 import info.juanmendez.mapmemorycore.models.ShortAddress;
-import info.juanmendez.mapmemorycore.vp.vpAddress.AddressFragment;
+import info.juanmendez.mapmemorycore.vp.vpAddress.AddressView;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
 
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -16,7 +16,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
  * www.juanmendez.info
  * contact@juanmendez.info
  */
-public class TestAddressFragment implements AddressFragment {
+public class TestAddressFragment implements AddressView {
     AddressPresenter presenter;
 
     public TestAddressFragment() {

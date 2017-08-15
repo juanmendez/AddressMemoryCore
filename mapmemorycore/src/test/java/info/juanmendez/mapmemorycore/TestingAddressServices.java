@@ -22,7 +22,7 @@ import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.SubmitError;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.vp.FragmentNav;
-import info.juanmendez.mapmemorycore.vp.vpAddress.AddressFragment;
+import info.juanmendez.mapmemorycore.vp.vpAddress.AddressView;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
 
 import static junit.framework.Assert.assertEquals;
@@ -47,7 +47,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 public class TestingAddressServices {
 
-    AddressFragment viewMocked;
+    AddressView viewMocked;
     AddressPresenter presenter;
     NetworkService networkServiceMocked;
     AddressService addressServiceMocked;
@@ -60,7 +60,7 @@ public class TestingAddressServices {
     public void before() throws Exception {
         MapCoreModule.setApp( new TestApp() );
 
-        viewMocked = mock( AddressFragment.class );
+        viewMocked = mock( AddressView.class );
         presenter = new AddressPresenter();
         presenter.register(viewMocked);
 

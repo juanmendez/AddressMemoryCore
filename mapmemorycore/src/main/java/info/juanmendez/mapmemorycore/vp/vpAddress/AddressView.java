@@ -14,7 +14,7 @@ import info.juanmendez.mapmemorycore.vp.FragmentNav;
  * This is the contract for fragments to presenters
  */
 
-public interface AddressFragment extends FragmentNav {
+public interface AddressView extends FragmentNav {
 
     //notify fragment when online|offline
     void onNetworkStatus( Boolean online );

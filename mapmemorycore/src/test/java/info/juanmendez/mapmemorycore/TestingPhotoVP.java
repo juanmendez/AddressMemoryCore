@@ -14,7 +14,7 @@ import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
 import info.juanmendez.mapmemorycore.dependencies.PhotoService;
 import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
-import info.juanmendez.mapmemorycore.vp.vpPhoto.PhotoFragment;
+import info.juanmendez.mapmemorycore.vp.vpPhoto.PhotoView;
 import info.juanmendez.mapmemorycore.vp.vpPhoto.PhotoPresenter;
 import rx.Observable;
 
@@ -33,7 +33,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
 
 public class TestingPhotoVP {
 
-    PhotoFragment viewMocked;
+    PhotoView viewMocked;
     PhotoPresenter presenter;
     PhotoService photoServiceMocked;
     AddressProvider addressProvider;
@@ -44,7 +44,7 @@ public class TestingPhotoVP {
     public void before() throws Exception {
         MapCoreModule.setApp( new TestApp() );
 
-        viewMocked = mock( PhotoFragment.class );
+        viewMocked = mock( PhotoView.class );
         presenter = new PhotoPresenter();
         presenter.register(viewMocked);
 

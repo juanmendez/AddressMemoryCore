@@ -10,7 +10,7 @@ import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.utils.ModelUtils;
-import info.juanmendez.mapmemorycore.vp.vpAddress.AddressFragment;
+import info.juanmendez.mapmemorycore.vp.vpAddress.AddressView;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
 
 import static org.junit.Assert.assertEquals;
@@ -34,7 +34,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
 
 public class TestingWithoutRealm {
 
-    AddressFragment viewMocked;
+    AddressView viewMocked;
     AddressPresenter presenter;
     AddressProvider provider;
 
@@ -42,7 +42,7 @@ public class TestingWithoutRealm {
     public void before() throws Exception {
         MapCoreModule.setApp( new TestApp() );
 
-        viewMocked = mock( AddressFragment.class );
+        viewMocked = mock( AddressView.class );
         presenter = new AddressPresenter();
         presenter.register(viewMocked);
 

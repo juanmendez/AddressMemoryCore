@@ -11,6 +11,6 @@ import info.juanmendez.mapmemorycore.vp.FragmentNav;
  * contact@juanmendez.info
  */
 
-public interface AddressesFragment extends FragmentNav {
+public interface AddressesView extends FragmentNav {
     void injectAddresses(List<ShortAddress> addresses );
 }

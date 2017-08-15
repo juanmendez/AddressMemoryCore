@@ -91,14 +91,14 @@ public class DroidAddressProvider implements AddressProvider {
     public void updateAddressAsync(ShortAddress address, Response<ShortAddress> response ) {
 
         //assign id if it's a new address
-        if( address.getAddressId() == 0 ){
+        if( !SubmitError.initialized(address.getAddressId()) ){
             address.setAddressId( getNextPrimaryKey() );
         }
 
         realm.executeTransactionAsync(thisRealm -> {
             thisRealm.copyToRealmOrUpdate(address);
         }, () -> {
-            ShortAddress addressResult = getAddress( address.getAddressId());
+            ShortAddress addressResult = getAddress( address.getAddressId() );
             response.onResult( ModelUtils.cloneAddress( addressResult ) );
         }, exception -> {
             response.onError(new MapMemoryException(exception.getMessage()));

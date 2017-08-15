@@ -16,6 +16,7 @@ import info.juanmendez.mapmemorycore.models.AddressFields;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.SubmitError;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
+import info.juanmendez.mapmemorycore.utils.ModelUtils;
 import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesPresenter;
 import info.juanmendez.mockrealm.MockRealm;
 import info.juanmendez.mockrealm.models.RealmAnnotation;
@@ -75,6 +76,7 @@ public class TestingWithRealm extends MockRealmTester {
         provider.updateAddress( new ShortAddress(1));
 
         address = provider.getAddress(1);
+        address = ModelUtils.cloneAddress( address );
         address.setName( "testAddressProvider");
         address.setAddress1("0 N. State");
         address.setAddress2( "Chicago, 60641" );

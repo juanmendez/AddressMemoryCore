@@ -3,11 +3,10 @@ package info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddress;
 import android.app.Activity;
 
 import java.io.File;
-import java.util.List;
 
 import info.juanmendez.mapmemorycore.models.ShortAddress;
-import info.juanmendez.mapmemorycore.vp.vpAddress.AddressView;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
+import info.juanmendez.mapmemorycore.vp.vpAddress.AddressView;
 
 import static org.powermock.api.mockito.PowerMockito.mock;
 
@@ -40,11 +39,6 @@ public class TestAddressFragment implements AddressView {
 
     @Override
     public void onAddressError(Exception error) {
-
-    }
-
-    @Override
-    public void onAddressesSuggested(List<ShortAddress> addresses) {
 
     }
 

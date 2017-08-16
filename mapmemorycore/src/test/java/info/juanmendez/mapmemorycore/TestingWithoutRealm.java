@@ -46,7 +46,7 @@ public class TestingWithoutRealm {
         presenter = new AddressPresenter();
         presenter.register(viewMocked);
 
-        //through MVP, get your hands on the presenter, and subsequently get its dagger dependency
+        //through MVP, get your hands on the addressPresenter, and subsequently get its dagger dependency
         provider = Whitebox.getInternalState( presenter, "addressProvider" );
 
         //in another function just insert addresses

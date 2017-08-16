@@ -1,7 +1,6 @@
 package info.juanmendez.mapmemorycore.vp.vpAddress;
 
 import java.io.File;
-import java.util.List;
 
 import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.vp.FragmentNav;
@@ -24,9 +23,6 @@ public interface AddressView extends FragmentNav {
 
     //tell fragment of an error messaged wrapped in an exception
     void onAddressError(Exception exception );
-
-    //show all addresses matching a query-address from the fragment
-    void onAddressesSuggested(List<ShortAddress> addresses );
 
     //tell fragment what is the current picture for the address
     void onPhotoSelected( File photo );

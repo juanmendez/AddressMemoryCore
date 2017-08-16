@@ -24,6 +24,8 @@ import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.vp.FragmentNav;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressView;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
+import info.juanmendez.mapmemorycore.vp.vpSuggest.SuggestPresenter;
+import info.juanmendez.mapmemorycore.vp.vpSuggest.SuggestView;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
@@ -33,6 +35,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.doAnswer;
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -47,8 +50,11 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 public class TestingAddressServices {
 
-    AddressView viewMocked;
-    AddressPresenter presenter;
+    AddressView addressView;
+    AddressPresenter addressPresenter;
+
+    SuggestView suggestView;
+    SuggestPresenter suggestPresenter;
     NetworkService networkServiceMocked;
     AddressService addressServiceMocked;
     AddressProvider addressProvider;
@@ -60,14 +66,24 @@ public class TestingAddressServices {
     public void before() throws Exception {
         MapCoreModule.setApp( new TestApp() );
 
-        viewMocked = mock( AddressView.class );
-        presenter = new AddressPresenter();
-        presenter.register(viewMocked);
+        addressView = mock( AddressView.class );
+        addressPresenter = new AddressPresenter();
+        addressPresenter.register(addressView);
 
-        networkServiceMocked = (NetworkService)   Whitebox.getInternalState(presenter, "networkService");
-        addressServiceMocked = (AddressService) Whitebox.getInternalState(presenter, "addressService");
-        addressProvider = (AddressProvider) Whitebox.getInternalState(presenter, "addressProvider");
-        navigationService = (NavigationService) Whitebox.getInternalState(presenter, "navigationService");
+
+        suggestView = mock( SuggestView.class );
+        suggestPresenter = new SuggestPresenter();
+        suggestPresenter.register( suggestView );
+
+        networkServiceMocked = (NetworkService)   Whitebox.getInternalState(addressPresenter, "networkService");
+        addressServiceMocked = (AddressService) Whitebox.getInternalState(addressPresenter, "addressService");
+        addressProvider = (AddressProvider) Whitebox.getInternalState(suggestPresenter, "addressProvider");
+        navigationService = (NavigationService) Whitebox.getInternalState(addressPresenter, "navigationService");
+
+        //addressService and networkService are not singletons, so we want to save ourselves doing extra work
+        //by using the same mocked objects from addressPresenter
+        Whitebox.setInternalState( suggestPresenter, "addressService",addressServiceMocked );
+        Whitebox.setInternalState( suggestPresenter, "networkService",networkServiceMocked );
 
         //make each mocked object answer with positive results such as networkService.isConnected() returning true.
         applySuccessfulResults();
@@ -85,13 +101,13 @@ public class TestingAddressServices {
     @Test
     public void textNetwork(){
 
-        presenter.active("");
-        verify(viewMocked).onNetworkStatus(eq(true));
+        addressPresenter.active("");
+        verify(addressView).onNetworkStatus(eq(true));
 
 
         //view requests suggested addresses
-        presenter.requestAddressSuggestions("0 N. State");
-        verify(viewMocked).onAddressesSuggested(anyList());
+        suggestPresenter.requestAddressSuggestions("0 N. State");
+        verify(suggestView).onAddressesSuggested(anyList());
 
 
         //make it reply with an exception
@@ -103,17 +119,17 @@ public class TestingAddressServices {
 
 
         //view requests suggested addresses
-        presenter.requestAddressSuggestions("0 N. State");
-        verify(viewMocked).onAddressError( any(Exception.class));
+        suggestPresenter.requestAddressSuggestions("0 N. State");
+        verify(suggestView).onError( any(Exception.class));
 
     }
 
     @Test
     public void testNavigationTag(){
-        assertEquals( navigationService.getNavigationTag(viewMocked), navigationTag );
+        assertEquals( navigationService.getNavigationTag(addressView), navigationTag );
 
-        doReturn( null ).when( navigationService ).getNavigationTag(eq(viewMocked));
-        assertNull( navigationService.getNavigationTag(viewMocked ));
+        doReturn( null ).when( navigationService ).getNavigationTag(eq(addressView));
+        assertNull( navigationService.getNavigationTag(addressView));
     }
 
     /**
@@ -123,10 +139,10 @@ public class TestingAddressServices {
     public void testGeolocation(){
 
         //view suggested address by geolocation
-        presenter.requestAddressByGeolocation();
-        verify(viewMocked).onAddressResult( any(ShortAddress.class));
+        addressPresenter.requestAddressByGeolocation();
+        verify(addressView).onAddressResult( any(ShortAddress.class));
 
-        reset(viewMocked);
+        reset(addressView);
 
         //make it response with an error
         doAnswer(invocation -> {
@@ -136,8 +152,8 @@ public class TestingAddressServices {
         }).when(addressServiceMocked).geolocateAddress(any(Response.class));
 
         //view requests addresses by geolocation
-        presenter.requestAddressByGeolocation();
-        verify(viewMocked).onAddressError( any(Exception.class) );
+        addressPresenter.requestAddressByGeolocation();
+        verify(addressView).onAddressError( any(Exception.class) );
     }
 
     @Test
@@ -145,7 +161,7 @@ public class TestingAddressServices {
 
         /**
          * the user looks for suggested addresses, selects one
-         * and it is verified if the presenter's editAddress is the first one from
+         * and it is verified if the addressPresenter's editAddress is the first one from
          * getAddresses()
          */
         doAnswer(invocation -> {
@@ -154,23 +170,23 @@ public class TestingAddressServices {
             //lets pick the first address..
             addressProvider.selectAddress( addresses.get(0));
             return null;
-        }).when(viewMocked).onAddressesSuggested(anyList());
+        }).when(suggestView).onAddressesSuggested(anyList());
 
-        presenter.requestAddressSuggestions( "3463 N. Natch" );
-        verify(viewMocked).onAddressesSuggested(anyList());
+        suggestPresenter.requestAddressSuggestions( "3463 N. Natch" );
+        verify(suggestView).onAddressesSuggested(anyList());
         assertEquals( addressProvider.getSelectedAddress().getAddressId(), getAddresses().get(0).getAddressId() );
 
         //we want to make an exception happen during addressService.suggestAddress
         //by providing an empty query.
-        presenter.requestAddressSuggestions( "" );
-        verify(viewMocked).onAddressError(any(Exception.class));
+        suggestPresenter.requestAddressSuggestions( "" );
+        verify(suggestView).onError(any(Exception.class));
 
-        reset(viewMocked);
+        reset(addressView);
 
         //ok we want to catch an error if there is no connection
         doReturn(false).when(networkServiceMocked).isConnected();
-        presenter.requestAddressSuggestions( "3463 N. Natch" );
-        verify(viewMocked).onAddressError(any(Exception.class));
+        suggestPresenter.requestAddressSuggestions( "3463 N. Natch" );
+        verify(suggestView, times(2)).onError(any(Exception.class));
     }
 
     @Test
@@ -178,10 +194,10 @@ public class TestingAddressServices {
 
         String fileLocation = "absolute_path";
 
-        presenter.requestAddressByGeolocation();
-        verify(viewMocked).onAddressResult( any(ShortAddress.class));
+        addressPresenter.requestAddressByGeolocation();
+        verify(addressView).onAddressResult( any(ShortAddress.class));
 
-        AddressPresenter spiedPresenter = spy(presenter);
+        AddressPresenter spiedPresenter = spy(addressPresenter);
         doAnswer(invocation -> {
             Response<ShortAddress> response = invocation.getArgumentAt(0, Response.class );
             response.onResult(new ShortAddress());
@@ -201,7 +217,7 @@ public class TestingAddressServices {
         String errorCode = "funkyError";
 
         AddressProvider spiedProvider = spy( addressProvider );
-        Whitebox.setInternalState( presenter, "addressProvider", spiedProvider );
+        Whitebox.setInternalState(addressPresenter, "addressProvider", spiedProvider );
 
         doAnswer( invocation -> {
             List<SubmitError> errors = new ArrayList<SubmitError>();
@@ -213,7 +229,7 @@ public class TestingAddressServices {
 
         Response<ShortAddress> response = mock( Response.class );
 
-        presenter.submitAddress( response );
+        addressPresenter.submitAddress( response );
         verify( response ).onError(any(MapMemoryException.class));
 
         response = mock( Response.class );
@@ -227,11 +243,9 @@ public class TestingAddressServices {
             return null;
         }).when(spiedProvider).updateAddressAsync(any(ShortAddress.class), any(Response.class));
 
-        presenter.submitAddress( response );
+        addressPresenter.submitAddress( response );
         verify( response ).onResult(any(ShortAddress.class));
     }
-
-
 
     @Test
     public void testSubmittingAddress(){
@@ -239,7 +253,7 @@ public class TestingAddressServices {
         String fileLocation = "absolute_path";
 
         AddressProvider spiedProvider = spy( addressProvider );
-        Whitebox.setInternalState( presenter, "addressProvider", spiedProvider );
+        Whitebox.setInternalState(addressPresenter, "addressProvider", spiedProvider );
 
         spiedProvider.selectAddress( new ShortAddress());
         when( spiedProvider.validate(any(ShortAddress.class)) ).thenReturn( new ArrayList<SubmitError>());
@@ -251,10 +265,10 @@ public class TestingAddressServices {
             return null;
         }).when(spiedProvider).updateAddressAsync(any(ShortAddress.class), any(Response.class));
 
-        Whitebox.setInternalState( presenter, "addressProvider", spiedProvider );
+        Whitebox.setInternalState(addressPresenter, "addressProvider", spiedProvider );
 
         Response<ShortAddress> response = mock( Response.class );
-        presenter.submitAddress( response );
+        addressPresenter.submitAddress( response );
 
         verify( response ).onResult(any(ShortAddress.class));
     }
@@ -270,7 +284,6 @@ public class TestingAddressServices {
             }
         };
     }
-
 
     void applySuccessfulResults(){
 
@@ -302,7 +315,6 @@ public class TestingAddressServices {
         doReturn( navigationTag ).when( navigationService ).getNavigationTag(any(FragmentNav.class));
     }
 
-    //util
     List<ShortAddress> getAddresses(){
 
         List<ShortAddress> addresses = new ArrayList<>();

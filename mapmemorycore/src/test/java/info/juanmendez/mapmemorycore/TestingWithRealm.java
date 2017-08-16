@@ -96,8 +96,8 @@ public class TestingWithRealm extends MockRealmTester {
 
     /**
      * In this scenario there is an activity or fragment which has a recyclerView, and
-     * whose presenter is going to update the list. We are stealing away the provider
-     * inside this view's presenter in order to update it and see if the data is changed
+     * whose addressPresenter is going to update the list. We are stealing away the provider
+     * inside this view's addressPresenter in order to update it and see if the data is changed
      * in the actual view.
      */
     @Test

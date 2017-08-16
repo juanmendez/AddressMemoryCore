@@ -77,7 +77,8 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressV
 
         RxUtils.unsubscribe(fileSubscription);
     }
-    private void refreshView() {
+
+    public  void refreshView() {
         ShortAddress selectedAddress = addressProvider.getSelectedAddress();
 
         if( selectedAddress != null && !SubmitError.emptyOrNull(selectedAddress.getPhotoLocation()) ){
@@ -168,28 +169,8 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressV
         }
     }
 
-    /**
-     * View is requesting addresses by query which is replied asynchronously
-     */
-    public void requestAddressSuggestions( String query ){
-        if( networkService.isConnected() && !query.isEmpty() ){
-            addressService.suggestAddress(query, new Response<List<ShortAddress>>() {
-                @Override
-                public void onResult(List<ShortAddress> results ) {
-                    view.onAddressesSuggested( results );
-                }
+    public void requestAddressSuggestion(){
 
-                @Override
-                public void onError(Exception exception) {
-                    view.onAddressError( exception );
-                }
-            });
-        }else{
-            if( !networkService.isConnected() )
-                view.onAddressError( new MapMemoryException("networkService has no connection"));
-            else if( query.isEmpty() )
-                view.onAddressError( new MapMemoryException("query is empty"));
-        }
     }
 
     public void submitName( String name ){

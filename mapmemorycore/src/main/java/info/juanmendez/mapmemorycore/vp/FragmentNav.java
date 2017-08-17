@@ -9,7 +9,8 @@ import android.app.Activity;
  */
 
 public interface FragmentNav {
-    void setActive( Boolean active, String action);
+    void active( String action);
+    void inactive( Boolean rotated );
     int getId();
     String getTag();
     Activity getActivity();

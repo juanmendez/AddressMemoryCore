@@ -58,12 +58,13 @@ public class TestAddressFragment implements AddressView {
     }
 
     @Override
-    public void setActive(Boolean active, String action) {
-       if( active ){
-           presenter.active( action );
-       }else{
-           presenter.inactive();
-       }
+    public void active(String action) {
+        presenter.active( action );
+    }
+
+    @Override
+    public void inactive( Boolean rotated ){
+        presenter.inactive();
     }
 
     @Override

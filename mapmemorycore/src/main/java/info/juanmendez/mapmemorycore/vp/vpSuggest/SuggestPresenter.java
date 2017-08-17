@@ -1,5 +1,6 @@
 package info.juanmendez.mapmemorycore.vp.vpSuggest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -37,6 +38,7 @@ public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,Suggest
     private SuggestView view;
 
     public static final String SUGGEST_VIEW = "suggest_view";
+    private List<ShortAddress> cachedSuggestedAddresses = new ArrayList<>();
 
     @Override
     public SuggestPresenter register(SuggestView view) {
@@ -67,13 +69,17 @@ public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,Suggest
     }
 
     private void refreshView() {
-
+        view.onAddressesSuggested( cachedSuggestedAddresses );
     }
 
     @Override
-    public void inactive() {
+    public void inactive(Boolean rotated) {
         networkService.disconnect();
         addressService.onStop();
+
+        if(!rotated){
+            cachedSuggestedAddresses.clear();
+        }
     }
 
     /**
@@ -84,6 +90,7 @@ public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,Suggest
             addressService.suggestAddress(query, new Response<List<ShortAddress>>() {
                 @Override
                 public void onResult(List<ShortAddress> results ) {
+                    cachedSuggestedAddresses = results;
                     view.onAddressesSuggested( results );
                 }
 

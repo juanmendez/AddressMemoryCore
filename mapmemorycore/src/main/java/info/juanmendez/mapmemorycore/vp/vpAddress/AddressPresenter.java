@@ -75,7 +75,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressV
     }
 
     @Override
-    public void inactive() {
+    public void inactive(Boolean rotated) {
         networkService.disconnect();
         addressService.onStop();
 

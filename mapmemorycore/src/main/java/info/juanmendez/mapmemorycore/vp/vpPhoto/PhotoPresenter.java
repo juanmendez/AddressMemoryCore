@@ -72,7 +72,7 @@ public class PhotoPresenter implements ViewPresenter<PhotoPresenter,PhotoView>{
     }
 
     @Override
-    public void inactive() {
+    public void inactive(Boolean rotated) {
     }
 
     private void setPhotoSelected(File file ){

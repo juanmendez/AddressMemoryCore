@@ -151,8 +151,8 @@ public class TestingWithRealm extends MockRealmTester {
         });
 
         //lets see rotation..
-        addressesView.setActive(false, null);
-        addressesView.setActive(true, null );
+        addressesView.active(false, null);
+        addressesView.active(true, null );
 
         assertEquals( provider.countAddresses(), 1 );
 

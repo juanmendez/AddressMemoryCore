@@ -42,7 +42,7 @@ public class AddressesPresenter implements ViewPresenter<AddressesPresenter, Add
     }
 
     @Override
-    public void inactive(){
+    public void inactive(Boolean rotated){
 
     }
 

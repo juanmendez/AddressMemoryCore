@@ -21,5 +21,5 @@ public interface ViewPresenter<P,T>{
      * @param action
      */
     void active( String action);
-    void inactive();
+    void inactive( Boolean rotated );
 }

@@ -42,7 +42,7 @@ public class TestAddressesFragment implements AddressesView {
     }
 
     @Override
-    public void setActive(Boolean active, String action) {
+    public void active(Boolean active, String action) {
         if( active ){
             presenter.active(action);
         }else{

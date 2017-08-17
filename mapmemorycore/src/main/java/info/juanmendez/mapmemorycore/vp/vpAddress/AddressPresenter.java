@@ -16,6 +16,7 @@ import info.juanmendez.mapmemorycore.models.SubmitError;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.utils.RxUtils;
 import info.juanmendez.mapmemorycore.vp.ViewPresenter;
+import info.juanmendez.mapmemorycore.vp.vpSuggest.SuggestPresenter;
 import rx.Subscription;
 
 /**
@@ -38,6 +39,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressV
     NavigationService navigationService;
 
     AddressView view;
+    ShortAddress selectedAddress;
 
     public static final String ADDRESS_VIEW_TAG = "viewAddressTag";
     public static final String ADDDRESS_EDIT_TAG = "editAddressTag";
@@ -52,6 +54,8 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressV
 
     @Override
     public void active( String action ) {
+
+        selectedAddress = addressProvider.getSelectedAddress();
 
         networkService.reset();
         networkService.connect(new Response<Boolean>() {
@@ -79,7 +83,6 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressV
     }
 
     public  void refreshView() {
-        ShortAddress selectedAddress = addressProvider.getSelectedAddress();
 
         if( selectedAddress != null && !SubmitError.emptyOrNull(selectedAddress.getPhotoLocation()) ){
             view.onPhotoSelected( new File( selectedAddress.getPhotoLocation()));
@@ -90,16 +93,16 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressV
     }
 
     private void checkCanUpdate(){
-        ShortAddress addressSelected = addressProvider.getSelectedAddress();
-        if( addressSelected != null ) {
-            view.canSubmit( addressProvider.validate(addressSelected).isEmpty() );
+
+        if( selectedAddress != null ) {
+            view.canSubmit( addressProvider.validate(selectedAddress).isEmpty() );
         }
     }
 
     private void checkCanDelete(){
-        ShortAddress addressSelected = addressProvider.getSelectedAddress();
-        if( addressSelected != null ) {
-            view.canDelete( SubmitError.initialized(addressSelected.getAddressId()) );
+
+        if( selectedAddress != null ) {
+            view.canDelete( SubmitError.initialized(selectedAddress.getAddressId()) );
         }
     }
 
@@ -114,12 +117,11 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressV
 
     public void submitAddress(Response<ShortAddress> response) {
 
-        ShortAddress addressEdited = addressProvider.getSelectedAddress();
         List<SubmitError> errors = addressProvider.validate( addressProvider.getSelectedAddress() );
 
         if( errors.isEmpty() ){
 
-            addressProvider.updateAddressAsync(addressEdited, new Response<ShortAddress>() {
+            addressProvider.updateAddressAsync(selectedAddress, new Response<ShortAddress>() {
                 @Override
                 public void onResult(ShortAddress result) {
                     addressProvider.selectAddress( result );
@@ -141,7 +143,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressV
 
     public void deleteAddress( Response<Boolean> response ){
 
-        long addressId = addressProvider.getSelectedAddress().getAddressId();
+        long addressId = selectedAddress.getAddressId();
         addressProvider.deleteAddressAsync( addressId, response );
     }
 
@@ -174,16 +176,22 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressV
     }
 
     public void submitName( String name ){
-        ShortAddress address = addressProvider.getSelectedAddress();
-        address.setName( name );
-        view.canSubmit( addressProvider.validate( address ).isEmpty() );
+        selectedAddress.setName( name );
+        view.canSubmit( addressProvider.validate( selectedAddress ).isEmpty() );
     }
 
     public void submitAddress(String addressLine1, String addressLine2 ){
-        ShortAddress address = addressProvider.getSelectedAddress();
 
-        address.setAddress1( addressLine1 );
-        address.setAddress2( addressLine2 );
-        view.canSubmit( addressProvider.validate( address ).isEmpty() );
+        if( !networkService.isConnected() ){
+            selectedAddress.setAddress1( addressLine1 );
+            selectedAddress.setAddress2( addressLine2 );
+            view.canSubmit( addressProvider.validate( selectedAddress ).isEmpty() );
+        }
+    }
+
+    public void textFocused(){
+        if( networkService.isConnected() ){
+            navigationService.request(SuggestPresenter.SUGGEST_VIEW );
+        }
     }
 }

@@ -36,6 +36,8 @@ public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,Suggest
 
     private SuggestView view;
 
+    public static final String SUGGEST_VIEW = "suggest_view";
+
     @Override
     public SuggestPresenter register(SuggestView view) {
         this.view = view;
@@ -46,6 +48,20 @@ public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,Suggest
 
     @Override
     public void active(String action) {
+
+        networkService.reset();
+        networkService.connect(new Response<Boolean>() {
+            @Override
+            public void onResult(Boolean result) {
+
+            }
+
+            @Override
+            public void onError(Exception exception) {
+
+            }
+        });
+
         addressService.onStart( view.getActivity() );
         refreshView();
     }
@@ -56,6 +72,7 @@ public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,Suggest
 
     @Override
     public void inactive() {
+        networkService.disconnect();
         addressService.onStop();
     }
 
@@ -75,11 +92,11 @@ public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,Suggest
                     view.onError( exception );
                 }
             });
-        }else{
-            if( !networkService.isConnected() )
-                view.onError( new MapMemoryException("networkService has no connection"));
-            else if( query.isEmpty() )
-                view.onError( new MapMemoryException("query is empty"));
+        }else if( !networkService.isConnected() ) {
+            view.onError(new MapMemoryException("networkService has no connection"));
+        }
+        else if( query.isEmpty() ) {
+            view.onError(new MapMemoryException("query is empty"));
         }
     }
 }

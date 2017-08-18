@@ -13,6 +13,8 @@ import info.juanmendez.mapmemorycore.vp.FragmentNav;
 
 public interface SuggestView extends FragmentNav {
 
+    void displayAddress( String addressText );
+
     //show all addresses matching a query-address from the fragment
     void onAddressesSuggested(List<ShortAddress> addresses );
 

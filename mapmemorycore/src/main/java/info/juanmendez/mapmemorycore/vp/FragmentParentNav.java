@@ -7,5 +7,6 @@ package info.juanmendez.mapmemorycore.vp;
  */
 
 public interface FragmentParentNav {
-    void returnFromChildVisit();
+    void fromChildVisit();
+    void toChildVisit();
 }

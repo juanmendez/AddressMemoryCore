@@ -1,6 +1,6 @@
 package info.juanmendez.mapmemorycore.vp.vpSuggest;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -35,10 +35,12 @@ public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,Suggest
     @Inject
     NavigationService navigationService;
 
+    ShortAddress selectedAddress;
+
     private SuggestView view;
 
     public static final String SUGGEST_VIEW = "suggest_view";
-    private List<ShortAddress> cachedSuggestedAddresses = new ArrayList<>();
+    private HashMap<String,List<ShortAddress> > cachedSuggestedAddresses = new HashMap<>();
 
     @Override
     public SuggestPresenter register(SuggestView view) {
@@ -51,6 +53,7 @@ public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,Suggest
     @Override
     public void active(String action) {
 
+        selectedAddress = addressProvider.getSelectedAddress();
         networkService.reset();
         networkService.connect(new Response<Boolean>() {
             @Override
@@ -63,13 +66,19 @@ public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,Suggest
 
             }
         });
-
         addressService.onStart( view.getActivity() );
         refreshView();
     }
 
     private void refreshView() {
-        view.onAddressesSuggested( cachedSuggestedAddresses );
+
+        view.displayAddress( selectedAddress.getAddress1() );
+
+        if( cachedSuggestedAddresses.containsKey( selectedAddress.getAddress1() )){
+            view.onAddressesSuggested( cachedSuggestedAddresses.get( selectedAddress.getAddress1()) );
+        }else{
+            requestAddressSuggestions( selectedAddress.getAddress1() );
+        }
     }
 
     @Override
@@ -86,11 +95,13 @@ public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,Suggest
      * View is requesting addresses by query which is replied asynchronously
      */
     public void requestAddressSuggestions( String query ){
+        selectedAddress.setAddress1( query );
         if( networkService.isConnected() && !query.isEmpty() ){
             addressService.suggestAddress(query, new Response<List<ShortAddress>>() {
                 @Override
                 public void onResult(List<ShortAddress> results ) {
-                    cachedSuggestedAddresses = results;
+                    cachedSuggestedAddresses.clear();
+                    cachedSuggestedAddresses.put( selectedAddress.getAddress1(), results );
                     view.onAddressesSuggested( results );
                 }
 

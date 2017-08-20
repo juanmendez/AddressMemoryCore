@@ -1,6 +1,7 @@
 package info.juanmendez.mapmemorycore.vp.vpSuggest;
 
-import java.util.HashMap;
+import android.support.annotation.NonNull;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -38,9 +39,9 @@ public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,Suggest
     ShortAddress selectedAddress;
 
     private SuggestView view;
+    private boolean rotated;
 
     public static final String SUGGEST_VIEW = "suggest_view";
-    private HashMap<String,List<ShortAddress> > cachedSuggestedAddresses = new HashMap<>();
 
     @Override
     public SuggestPresenter register(SuggestView view) {
@@ -58,36 +59,26 @@ public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,Suggest
         networkService.connect(new Response<Boolean>() {
             @Override
             public void onResult(Boolean result) {
-
             }
 
             @Override
             public void onError(Exception exception) {
-
             }
         });
+
         addressService.onStart( view.getActivity() );
-        refreshView();
-    }
 
-    private void refreshView() {
-
-        view.displayAddress( selectedAddress.getAddress1() );
-
-        if( cachedSuggestedAddresses.containsKey( selectedAddress.getAddress1() )){
-            view.onAddressesSuggested( cachedSuggestedAddresses.get( selectedAddress.getAddress1()) );
-        }else{
-            requestAddressSuggestions( selectedAddress.getAddress1() );
-        }
+        view.setPrintedAddress( selectedAddress.getAddress1() );
     }
 
     @Override
     public void inactive(Boolean rotated) {
         networkService.disconnect();
         addressService.onStop();
+        this.rotated = rotated;
 
-        if(!rotated){
-            cachedSuggestedAddresses.clear();
+        if( !rotated ){
+            view.setPrintedAddress( "" );
         }
     }
 
@@ -100,9 +91,7 @@ public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,Suggest
             addressService.suggestAddress(query, new Response<List<ShortAddress>>() {
                 @Override
                 public void onResult(List<ShortAddress> results ) {
-                    cachedSuggestedAddresses.clear();
-                    cachedSuggestedAddresses.put( selectedAddress.getAddress1(), results );
-                    view.onAddressesSuggested( results );
+                    view.setSuggestedAddresses( results );
                 }
 
                 @Override
@@ -116,5 +105,18 @@ public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,Suggest
         else if( query.isEmpty() ) {
             view.onError(new MapMemoryException("query is empty"));
         }
+    }
+
+
+    /**
+     * View is providing a selected address
+     */
+    public void setAddressSelected( @NonNull  ShortAddress address ){
+        selectedAddress.setAddress1( address.getAddress1() );
+        selectedAddress.setAddress2( address.getAddress2() );
+        selectedAddress.setMapId( address.getMapId() );
+        selectedAddress.setLat( address.getLat() );
+        selectedAddress.setLon( address.getLon() );
+        //navigationService.goBack();
     }
 }

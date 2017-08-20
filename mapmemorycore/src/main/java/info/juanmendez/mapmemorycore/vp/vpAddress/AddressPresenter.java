@@ -86,6 +86,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressV
 
         if( selectedAddress != null && !SubmitError.emptyOrNull(selectedAddress.getPhotoLocation()) ){
             view.onPhotoSelected( new File( selectedAddress.getPhotoLocation()));
+            view.onAddressResult( selectedAddress );
         }
 
         checkCanUpdate();

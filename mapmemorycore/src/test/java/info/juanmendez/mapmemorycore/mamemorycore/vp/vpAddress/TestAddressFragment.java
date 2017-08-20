@@ -64,7 +64,7 @@ public class TestAddressFragment implements AddressView {
 
     @Override
     public void inactive( Boolean rotated ){
-        presenter.inactive();
+        presenter.inactive( rotated );
     }
 
     @Override

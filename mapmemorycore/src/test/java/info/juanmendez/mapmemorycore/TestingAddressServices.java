@@ -107,7 +107,7 @@ public class TestingAddressServices {
 
         //view requests suggested addresses
         suggestPresenter.requestAddressSuggestions("0 N. State");
-        verify(suggestView).onAddressesSuggested(anyList());
+        verify(suggestView).setSuggestedAddresses(anyList());
 
 
         //make it reply with an exception
@@ -170,10 +170,10 @@ public class TestingAddressServices {
             //lets pick the first address..
             addressProvider.selectAddress( addresses.get(0));
             return null;
-        }).when(suggestView).onAddressesSuggested(anyList());
+        }).when(suggestView).setSuggestedAddresses(anyList());
 
         suggestPresenter.requestAddressSuggestions( "3463 N. Natch" );
-        verify(suggestView).onAddressesSuggested(anyList());
+        verify(suggestView).setSuggestedAddresses(anyList());
         assertEquals( addressProvider.getSelectedAddress().getAddressId(), getAddresses().get(0).getAddressId() );
 
         //we want to make an exception happen during addressService.suggestAddress

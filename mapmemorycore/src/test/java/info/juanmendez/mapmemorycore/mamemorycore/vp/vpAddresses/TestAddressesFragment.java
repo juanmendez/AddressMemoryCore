@@ -42,12 +42,13 @@ public class TestAddressesFragment implements AddressesView {
     }
 
     @Override
-    public void active(Boolean active, String action) {
-        if( active ){
-            presenter.active(action);
-        }else{
-            presenter.inactive();
-        }
+    public void active(String action) {
+        presenter.active(action);
+    }
+
+    @Override
+    public void inactive(Boolean rotated) {
+        presenter.inactive(rotated);
     }
 
     @Override

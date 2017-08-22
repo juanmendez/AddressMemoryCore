@@ -36,7 +36,7 @@ public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,Suggest
     @Inject
     NavigationService navigationService;
 
-    ShortAddress selectedAddress;
+    private ShortAddress selectedAddress;
 
     private SuggestView view;
     private boolean rotated;
@@ -68,7 +68,8 @@ public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,Suggest
 
         addressService.onStart( view.getActivity() );
 
-        view.setPrintedAddress( selectedAddress.getAddress1() );
+        if( view.getPrintedAddress().isEmpty() )
+            view.setPrintedAddress( selectedAddress.getAddress1() );
     }
 
     @Override
@@ -76,10 +77,6 @@ public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,Suggest
         networkService.disconnect();
         addressService.onStop();
         this.rotated = rotated;
-
-        if( !rotated ){
-            view.setPrintedAddress( "" );
-        }
     }
 
     /**

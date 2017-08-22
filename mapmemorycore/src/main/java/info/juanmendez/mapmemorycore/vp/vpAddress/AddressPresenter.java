@@ -38,8 +38,8 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressV
     @Inject
     NavigationService navigationService;
 
-    AddressView view;
-    ShortAddress selectedAddress;
+    private AddressView view;
+    private ShortAddress selectedAddress;
 
     public static final String ADDRESS_VIEW_TAG = "viewAddressTag";
     public static final String ADDDRESS_EDIT_TAG = "editAddressTag";
@@ -82,10 +82,14 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressV
         RxUtils.unsubscribe(fileSubscription);
     }
 
-    public  void refreshView() {
+    private  void refreshView() {
 
-        if( selectedAddress != null && !SubmitError.emptyOrNull(selectedAddress.getPhotoLocation()) ){
-            view.onPhotoSelected( new File( selectedAddress.getPhotoLocation()));
+        if( selectedAddress != null ){
+
+            if( !SubmitError.emptyOrNull(selectedAddress.getPhotoLocation())){
+                view.onPhotoSelected( new File( selectedAddress.getPhotoLocation()));
+            }
+
             view.onAddressResult( selectedAddress );
         }
 
@@ -157,8 +161,12 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressV
             addressService.geolocateAddress(new Response<ShortAddress>() {
                 @Override
                 public void onResult(ShortAddress result) {
-                    addressProvider.selectAddress( result );
-                    view.onAddressResult( result );
+                    ShortAddress selectedAddress = addressProvider.getSelectedAddress();
+                    selectedAddress.setMapId( result.getMapId() );
+                    selectedAddress.setAddress1( result.getAddress1() );
+                    selectedAddress.setAddress2( result.getAddress2() );
+
+                    view.onAddressResult( selectedAddress );
                     checkCanUpdate();
                 }
 

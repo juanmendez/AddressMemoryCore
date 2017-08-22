@@ -26,9 +26,9 @@ import rx.Observable;
 
 public class DroidAddressProvider implements AddressProvider {
 
-    Realm realm;
-    Application application;
-    ShortAddress selectedAddress;
+    private Realm realm;
+    private Application application;
+    private ShortAddress selectedAddress;
 
     public DroidAddressProvider(Application application, Realm realm) {
         this.application = application;
@@ -95,14 +95,10 @@ public class DroidAddressProvider implements AddressProvider {
             address.setAddressId( getNextPrimaryKey() );
         }
 
-        realm.executeTransactionAsync(thisRealm -> {
-            thisRealm.copyToRealmOrUpdate(address);
-        }, () -> {
+        realm.executeTransactionAsync(thisRealm -> thisRealm.copyToRealmOrUpdate(address), () -> {
             ShortAddress addressResult = getAddress( address.getAddressId() );
             response.onResult( ModelUtils.cloneAddress( addressResult ) );
-        }, exception -> {
-            response.onError(new MapMemoryException(exception.getMessage()));
-        });
+        }, exception -> response.onError(new MapMemoryException(exception.getMessage())));
     }
 
     /**
@@ -138,11 +134,9 @@ public class DroidAddressProvider implements AddressProvider {
         realm.executeTransactionAsync(thisRealm -> {
             ShortAddress deletedAddress = thisRealm.where( ShortAddress.class ).equalTo( AddressFields.ADDRESSID, addressId ).findFirst();
             deletedAddress.deleteFromRealm();
-        }, () -> {
-            response.onResult( true );
-        }, exception -> {
-            response.onError(new MapMemoryException(application.getString(R.string.address_gone)));
-        });
+        },
+        () -> response.onResult( true ),
+        exception -> response.onError(new MapMemoryException(application.getString(R.string.address_gone))));
     }
 
     /**
@@ -180,9 +174,7 @@ public class DroidAddressProvider implements AddressProvider {
             }
         }
 
-        /**
-         * name is required, but if provided we need to ensure it is unique as well.
-         */
+        //name is required, but if provided we need to ensure it is unique as well.
         if( SubmitError.emptyOrNull(address.getName()) ){
             errors.add( new SubmitError(AddressFields.NAME, application.getString(R.string.required_field)));
         }else{
@@ -210,10 +202,6 @@ public class DroidAddressProvider implements AddressProvider {
 
             if( SubmitError.emptyOrNull(address.getAddress1()) ){
                 errors.add( new SubmitError(AddressFields.ADDRESS1, application.getString(R.string.required_field)));
-            }
-
-            if( SubmitError.emptyOrNull(address.getAddress2()) ){
-                errors.add( new SubmitError(AddressFields.ADDRESS2, application.getString(R.string.required_field)));
             }
         }
         return errors;

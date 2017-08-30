@@ -6,7 +6,7 @@ package info.juanmendez.mapmemorycore.vp;
  * contact@juanmendez.info
  */
 
-public interface ViewPresenter<P,T>{
+public interface Presenter<P,T>{
 
     /**
      * view gets registered as soon as it is created

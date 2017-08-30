@@ -10,7 +10,7 @@ import info.juanmendez.mapmemorycore.dependencies.PhotoService;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
-import info.juanmendez.mapmemorycore.vp.ViewPresenter;
+import info.juanmendez.mapmemorycore.vp.Presenter;
 import rx.Subscription;
 
 /**
@@ -19,7 +19,7 @@ import rx.Subscription;
  * contact@juanmendez.info
  */
 
-public class PhotoPresenter implements ViewPresenter<PhotoPresenter,PhotoView>{
+public class PhotoPresenter implements Presenter<PhotoPresenter,PhotoView> {
 
     @Inject
     PhotoService photoService;
@@ -83,6 +83,7 @@ public class PhotoPresenter implements ViewPresenter<PhotoPresenter,PhotoView>{
 
     @Override
     public void inactive(Boolean rotated) {
+
         if(!rotated)
             photoTaken = null;
     }

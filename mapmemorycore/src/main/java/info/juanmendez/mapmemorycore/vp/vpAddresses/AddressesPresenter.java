@@ -7,7 +7,7 @@ import info.juanmendez.mapmemorycore.dependencies.NavigationService;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.utils.ModelUtils;
-import info.juanmendez.mapmemorycore.vp.ViewPresenter;
+import info.juanmendez.mapmemorycore.vp.PresenterRotated;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
 import io.realm.RealmResults;
 
@@ -17,7 +17,7 @@ import io.realm.RealmResults;
  * contact@juanmendez.info
  */
 
-public class AddressesPresenter implements ViewPresenter<AddressesPresenter, AddressesView>{
+public class AddressesPresenter implements PresenterRotated<AddressesPresenter, AddressesView> {
 
     @Inject
     AddressProvider addressProvider;
@@ -29,6 +29,7 @@ public class AddressesPresenter implements ViewPresenter<AddressesPresenter, Add
 
     private RealmResults<ShortAddress> addresses;
     private AddressesView view;
+    private Boolean rotated;
 
     public AddressesPresenter() {
         MapCoreModule.getComponent().inject(this);
@@ -49,7 +50,7 @@ public class AddressesPresenter implements ViewPresenter<AddressesPresenter, Add
 
     @Override
     public void inactive(Boolean rotated){
-
+        this.rotated = rotated;
     }
 
     public void selectAddress( ShortAddress address ){
@@ -64,5 +65,10 @@ public class AddressesPresenter implements ViewPresenter<AddressesPresenter, Add
     public void updateAddress(ShortAddress shortAddress) {
         addressProvider.selectAddress(ModelUtils.cloneAddress(shortAddress));
         navigationService.request(AddressPresenter.ADDDRESS_EDIT_TAG);
+    }
+
+    @Override
+    public Boolean getRotated() {
+        return rotated;
     }
 }

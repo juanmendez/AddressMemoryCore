@@ -14,7 +14,7 @@ import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
-import info.juanmendez.mapmemorycore.vp.ViewPresenter;
+import info.juanmendez.mapmemorycore.vp.PresenterRotated;
 
 /**
  * Created by Juan Mendez on 8/16/2017.
@@ -22,7 +22,7 @@ import info.juanmendez.mapmemorycore.vp.ViewPresenter;
  * contact@juanmendez.info
  */
 
-public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,SuggestView> {
+public class SuggestPresenter  implements PresenterRotated<SuggestPresenter,SuggestView> {
 
     @Inject
     AddressProvider addressProvider;
@@ -119,5 +119,10 @@ public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,Suggest
         selectedAddress.setLat( address.getLat() );
         selectedAddress.setLon( address.getLon() );
         navigationService.goBack();
+    }
+
+    @Override
+    public Boolean getRotated() {
+        return rotated;
     }
 }

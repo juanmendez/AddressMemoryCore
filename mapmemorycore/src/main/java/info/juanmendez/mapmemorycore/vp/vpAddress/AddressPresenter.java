@@ -15,7 +15,7 @@ import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.SubmitError;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.utils.RxUtils;
-import info.juanmendez.mapmemorycore.vp.ViewPresenter;
+import info.juanmendez.mapmemorycore.vp.Presenter;
 import info.juanmendez.mapmemorycore.vp.vpSuggest.SuggestPresenter;
 import rx.Subscription;
 
@@ -24,7 +24,7 @@ import rx.Subscription;
  * www.juanmendez.info
  * contact@juanmendez.info
  */
-public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressView>{
+public class AddressPresenter implements Presenter<AddressPresenter,AddressView> {
 
     @Inject
     AddressProvider addressProvider;

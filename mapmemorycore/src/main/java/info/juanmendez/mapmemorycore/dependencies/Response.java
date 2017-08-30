@@ -6,7 +6,6 @@ package info.juanmendez.mapmemorycore.dependencies;
  * contact@juanmendez.info
  */
 
-public interface Response<T> {
-    void onResult(T result );
+public interface Response<T> extends ShortResponse<T> {
     void onError( Exception exception );
 }

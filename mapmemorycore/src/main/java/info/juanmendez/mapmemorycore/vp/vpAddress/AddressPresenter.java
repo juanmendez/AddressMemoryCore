@@ -82,14 +82,15 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressV
         RxUtils.unsubscribe(fileSubscription);
     }
 
-    private  void refreshView() {
+    /**
+     * this method was left public in case view wants to refresh itself.
+     * presenter notifies view with latest values.
+     */
+    public void refreshView() {
 
         if( selectedAddress != null ){
 
-            if( !SubmitError.emptyOrNull(selectedAddress.getPhotoLocation())){
-                view.onPhotoSelected( new File( selectedAddress.getPhotoLocation()));
-            }
-
+            view.onPhotoSelected( new File( selectedAddress.getPhotoLocation()));
             view.onAddressResult( selectedAddress );
         }
 
@@ -111,16 +112,7 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressV
         }
     }
 
-    /*public void setAddressEdited(ShortAddress addressEdited) {
-
-        addressProvider.selectAddress(addressEdited);
-
-        if( photoSelected != null && !photoSelected.getAbsolutePath().isEmpty() ){
-            addressEdited.setPhotoLocation( photoSelected.getAbsolutePath() );
-        }
-    }*/
-
-    public void submitAddress(Response<ShortAddress> response) {
+    public void saveAddress(Response<ShortAddress> response) {
 
         List<SubmitError> errors = addressProvider.validate( addressProvider.getSelectedAddress() );
 
@@ -180,16 +172,12 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressV
         }
     }
 
-    public void requestAddressSuggestion(){
-
-    }
-
-    public void submitName( String name ){
+    public void setAddressName(String name ){
         selectedAddress.setName( name );
         view.canSubmit( addressProvider.validate( selectedAddress ).isEmpty() );
     }
 
-    public void submitAddress(String addressLine1, String addressLine2 ){
+    public void setAddressLines(String addressLine1, String addressLine2 ){
 
         if( !networkService.isConnected() ){
             selectedAddress.setAddress1( addressLine1 );
@@ -198,6 +186,10 @@ public class AddressPresenter implements ViewPresenter<AddressPresenter,AddressV
         }
     }
 
+    /**
+     * if presenter gets poked about an element being focused, then it
+     * checks if there is connection and open up addressSuggestFragment
+     */
     public void textFocused(){
         if( networkService.isConnected() ){
             navigationService.request(SuggestPresenter.SUGGEST_VIEW );

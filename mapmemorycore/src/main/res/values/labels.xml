@@ -6,4 +6,9 @@
 
     <string name="labelPickPhoto">Choose from gallery</string>
     <string name="labelTakePhoto">Take photo</string>
+
+
+    <string name="deleteConfirmation">Do you want to delete the address?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

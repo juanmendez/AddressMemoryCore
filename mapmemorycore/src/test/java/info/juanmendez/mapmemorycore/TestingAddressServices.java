@@ -202,11 +202,11 @@ public class TestingAddressServices {
             Response<ShortAddress> response = invocation.getArgumentAt(0, Response.class );
             response.onResult(new ShortAddress());
             return null;
-        }).when(spiedPresenter).submitAddress(any(Response.class));
+        }).when(spiedPresenter).saveAddress(any(Response.class));
 
         Response<ShortAddress> response = mock( Response.class );
 
-        spiedPresenter.submitAddress(response);
+        spiedPresenter.saveAddress(response);
         verify( response ).onResult(any(ShortAddress.class));
     }
 
@@ -229,7 +229,7 @@ public class TestingAddressServices {
 
         Response<ShortAddress> response = mock( Response.class );
 
-        addressPresenter.submitAddress( response );
+        addressPresenter.saveAddress( response );
         verify( response ).onError(any(MapMemoryException.class));
 
         response = mock( Response.class );
@@ -243,7 +243,7 @@ public class TestingAddressServices {
             return null;
         }).when(spiedProvider).updateAddressAsync(any(ShortAddress.class), any(Response.class));
 
-        addressPresenter.submitAddress( response );
+        addressPresenter.saveAddress( response );
         verify( response ).onResult(any(ShortAddress.class));
     }
 
@@ -268,7 +268,7 @@ public class TestingAddressServices {
         Whitebox.setInternalState(addressPresenter, "addressProvider", spiedProvider );
 
         Response<ShortAddress> response = mock( Response.class );
-        addressPresenter.submitAddress( response );
+        addressPresenter.saveAddress( response );
 
         verify( response ).onResult(any(ShortAddress.class));
     }

@@ -59,6 +59,9 @@ public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,Suggest
         networkService.connect(new Response<Boolean>() {
             @Override
             public void onResult(Boolean result) {
+
+                if( !rotated )
+                    requestAddressSuggestions( selectedAddress.getAddress1() );
             }
 
             @Override
@@ -68,8 +71,9 @@ public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,Suggest
 
         addressService.onStart( view.getActivity() );
 
-        if( view.getPrintedAddress().isEmpty() )
+        if( view.getPrintedAddress().isEmpty() ){
             view.setPrintedAddress( selectedAddress.getAddress1() );
+        }
     }
 
     @Override
@@ -114,6 +118,6 @@ public class SuggestPresenter  implements ViewPresenter<SuggestPresenter,Suggest
         selectedAddress.setMapId( address.getMapId() );
         selectedAddress.setLat( address.getLat() );
         selectedAddress.setLon( address.getLon() );
-        //navigationService.goBack();
+        navigationService.goBack();
     }
 }

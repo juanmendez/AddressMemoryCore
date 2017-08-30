@@ -9,7 +9,6 @@ import info.juanmendez.mapmemorycore.dependencies.NavigationService;
 import info.juanmendez.mapmemorycore.dependencies.PhotoService;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
-import info.juanmendez.mapmemorycore.models.SubmitError;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.vp.ViewPresenter;
 import rx.Subscription;
@@ -34,6 +33,7 @@ public class PhotoPresenter implements ViewPresenter<PhotoPresenter,PhotoView>{
     private PhotoView view;
     private Subscription fileSubscription;
     private ShortAddress selectedAddress;
+    private File photoTaken;
 
     @Override
     public PhotoPresenter register(PhotoView photoView) {
@@ -45,7 +45,7 @@ public class PhotoPresenter implements ViewPresenter<PhotoPresenter,PhotoView>{
     //view requests to pick photo from public gallery
     public void requestPickPhoto(){
         fileSubscription = photoService.pickPhoto(view.getActivity()).subscribe(file -> {
-            setPhotoSelected( file );
+            photoTaken = file;
             view.onPhotoSelected( file );
         }, throwable -> {
             view.onPhotoError( new MapMemoryException(throwable.getMessage()));
@@ -55,34 +55,43 @@ public class PhotoPresenter implements ViewPresenter<PhotoPresenter,PhotoView>{
     //view requests to take a photo
     public void requestTakePhoto(){
         fileSubscription = photoService.takePhoto(view.getActivity()).subscribe(file -> {
-            setPhotoSelected( file );
+            photoTaken = file;
             view.onPhotoSelected( file );
         }, throwable -> {
             view.onPhotoError( new MapMemoryException(throwable.getMessage()));
         });
     }
 
+    public void imageConfirmed(){
+        if( selectedAddress != null && photoTaken != null ){
+            selectedAddress.setPhotoLocation( photoTaken.getAbsolutePath() );
+        }
+
+        navigationService.goBack();
+    }
+
     @Override
     public void active(String action) {
         selectedAddress = addressProvider.getSelectedAddress();
 
-        if( selectedAddress != null && !SubmitError.emptyOrNull(selectedAddress.getPhotoLocation())){
-            view.onPhotoSelected(new File( selectedAddress.getPhotoLocation()));
+        if( photoTaken == null && selectedAddress != null ){
+            photoTaken = new File( selectedAddress.getPhotoLocation() );
         }
+
+        view.onPhotoSelected(photoTaken);
     }
 
     @Override
     public void inactive(Boolean rotated) {
+        if(!rotated)
+            photoTaken = null;
     }
 
-    private void setPhotoSelected(File file ){
-        ShortAddress address = addressProvider.getSelectedAddress();
-
-        if( address == null ){
-            addressProvider.selectAddress( new ShortAddress());
-            address = addressProvider.getSelectedAddress();
+    public void deleteImage() {
+        if( photoTaken !=null ){
+            selectedAddress.setPhotoLocation("");
+            photoTaken = new File("");
+            view.onPhotoSelected( photoTaken );
         }
-
-        address.setPhotoLocation( file.getAbsolutePath() );
     }
 }

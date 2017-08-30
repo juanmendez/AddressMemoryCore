@@ -19,7 +19,7 @@ public class ShortAddress extends RealmObject{
     private long addressId;
 
     @Index
-    String name;
+    String name = "";
 
 
     String address1;
@@ -38,7 +38,7 @@ public class ShortAddress extends RealmObject{
     double lat;
     double lon;
     String url;
-    String photoLocation;
+    String photoLocation = "";
 
     public ShortAddress() {
         if( dateUpdated == null ){

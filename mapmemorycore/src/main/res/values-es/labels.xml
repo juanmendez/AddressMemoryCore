@@ -6,4 +6,9 @@
 
     <string name="labelPickPhoto">Elija de galería</string>
     <string name="labelTakePhoto">Tome foto</string>
+
+
+    <string name="deleteConfirmation">¿Desea borrar esta dirección?</string>
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
 </resources>

@@ -39,7 +39,7 @@ public class SuggestPresenter  implements PresenterRotated<SuggestPresenter,Sugg
     private ShortAddress selectedAddress;
 
     private SuggestView view;
-    private boolean rotated;
+    private boolean rotated = false;
 
     public static final String SUGGEST_VIEW = "suggest_view";
 

@@ -29,7 +29,7 @@ public class AddressesPresenter implements PresenterRotated<AddressesPresenter, 
 
     private RealmResults<ShortAddress> addresses;
     private AddressesView view;
-    private Boolean rotated;
+    private Boolean rotated = false;
 
     public AddressesPresenter() {
         MapCoreModule.getComponent().inject(this);
@@ -64,7 +64,13 @@ public class AddressesPresenter implements PresenterRotated<AddressesPresenter, 
 
     public void updateAddress(ShortAddress shortAddress) {
         addressProvider.selectAddress(ModelUtils.cloneAddress(shortAddress));
-        navigationService.request(AddressPresenter.ADDDRESS_EDIT_TAG);
+
+        if( shortAddress.getAddressId() > 0 ){
+            navigationService.request(AddressPresenter.ADDRESS_VIEW_TAG);
+        }else{
+            navigationService.request(AddressPresenter.ADDDRESS_EDIT_TAG);
+        }
+
     }
 
     @Override

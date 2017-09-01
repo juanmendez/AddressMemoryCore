@@ -22,8 +22,8 @@ import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.SubmitError;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.vp.FragmentNav;
-import info.juanmendez.mapmemorycore.vp.vpAddress.AddressView;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
+import info.juanmendez.mapmemorycore.vp.vpAddress.AddressView;
 import info.juanmendez.mapmemorycore.vp.vpSuggest.SuggestPresenter;
 import info.juanmendez.mapmemorycore.vp.vpSuggest.SuggestView;
 
@@ -272,7 +272,6 @@ public class TestingAddressServices {
 
         verify( response ).onResult(any(ShortAddress.class));
     }
-
 
     Matcher<File> fileMatcher(final String location) {
         return new TypeSafeMatcher<File>() {

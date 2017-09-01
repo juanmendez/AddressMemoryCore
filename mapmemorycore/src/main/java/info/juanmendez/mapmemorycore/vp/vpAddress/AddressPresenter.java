@@ -1,5 +1,7 @@
 package info.juanmendez.mapmemorycore.vp.vpAddress;
 
+import android.content.Intent;
+
 import java.io.File;
 import java.util.List;
 
@@ -14,6 +16,7 @@ import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.SubmitError;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
+import info.juanmendez.mapmemorycore.utils.ModelUtils;
 import info.juanmendez.mapmemorycore.utils.RxUtils;
 import info.juanmendez.mapmemorycore.vp.Presenter;
 import info.juanmendez.mapmemorycore.vp.vpSuggest.SuggestPresenter;
@@ -184,6 +187,12 @@ public class AddressPresenter implements Presenter<AddressPresenter,AddressView>
             selectedAddress.setAddress2( addressLine2 );
             view.canSubmit( addressProvider.validate( selectedAddress ).isEmpty() );
         }
+    }
+
+    public void openAppInExternalApp(){
+
+        Intent mapIntent = ModelUtils.fromAddress( selectedAddress, 'b' );
+        view.getActivity().startActivity( mapIntent );
     }
 
     /**

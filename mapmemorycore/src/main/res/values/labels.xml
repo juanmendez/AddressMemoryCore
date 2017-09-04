@@ -11,4 +11,7 @@
     <string name="deleteConfirmation">Do you want to delete the address?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+
+    <string name="launch_navigation">Launch Navigation</string>
+    <string name="edit">Edit</string>
 </resources>

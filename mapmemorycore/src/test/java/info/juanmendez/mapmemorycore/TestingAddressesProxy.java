@@ -40,8 +40,7 @@ public class TestingAddressesProxy extends MockRealmTester {
 
         MapCoreModule.setApp( new TestRealmApp() );
     }
-
-
+    
     @Test
     public void testProxy(){
         AddressesProxy proxy = new AddressesProxy();

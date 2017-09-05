@@ -189,7 +189,7 @@ public class AddressPresenter implements Presenter<AddressPresenter,AddressView>
         }
     }
 
-    public void openAppInExternalApp(){
+    public void openNavigationApp(){
 
         Intent mapIntent = ModelUtils.fromAddress( selectedAddress, 'b' );
         view.getActivity().startActivity( mapIntent );

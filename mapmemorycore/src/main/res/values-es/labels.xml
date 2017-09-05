@@ -4,11 +4,13 @@
     <string name="labelSave">Guardar dirección</string>
     <string name="labelDelete">Borrar dirección</string>
 
-    <string name="labelPickPhoto">Elija de galería</string>
-    <string name="labelTakePhoto">Tome foto</string>
-
+    <string name="labelPickPhoto">Foto de galería</string>
+    <string name="labelTakePhoto">Foto de camára</string>
 
     <string name="deleteConfirmation">¿Desea borrar esta dirección?</string>
     <string name="yes">Sí</string>
     <string name="no">No</string>
+
+    <string name="launch_navigation">Abrir Navegación</string>
+    <string name="edit">Modificar</string>
 </resources>

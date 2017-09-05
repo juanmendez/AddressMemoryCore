@@ -29,6 +29,10 @@ public class MapCoreModule {
         component = DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(app)).build();
     }
 
+    public CoreApp getApp() {
+        return app;
+    }
+
     public MapCoreModule(CoreApp app) {
         this.app = app;
     }

@@ -40,7 +40,7 @@ public class TestingAddressesProxy extends MockRealmTester {
 
         MapCoreModule.setApp( new TestRealmApp() );
     }
-    
+
     @Test
     public void testProxy(){
         AddressesProxy proxy = new AddressesProxy();
@@ -52,6 +52,8 @@ public class TestingAddressesProxy extends MockRealmTester {
         for( ShortAddress address: addresses ){
             provider.updateAddress( address );
         }
+
+        proxy.refresh();
 
         //show these objects were created by realm.
         for( ShortAddress address: provider.getAddresses() ){

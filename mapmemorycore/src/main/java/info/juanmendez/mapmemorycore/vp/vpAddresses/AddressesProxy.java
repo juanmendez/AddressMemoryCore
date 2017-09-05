@@ -24,22 +24,19 @@ public class AddressesProxy {
 
     public AddressesProxy() {
         MapCoreModule.getComponent().inject(this);
+        refresh();
     }
 
-    /**
-     * Since widgets run on their own thread, we can get an exception
-     * due to accessing realm objects outside the main thread.
-     * What we can do is clone the objects. :)
-     * @return a list with ShortAddreses free from Realm
-     */
-    public List<ShortAddress> getAddresses() {
+    public void refresh(){
         List<ShortAddress> realmAddresses = addressProvider.getAddresses();
         addresses.clear();
 
         for( ShortAddress shortAddress: realmAddresses ){
             addresses.add(ModelUtils.cloneAddress(shortAddress));
         }
+    }
 
+    public List<ShortAddress> getAddresses() {
         return addresses;
     }
 }

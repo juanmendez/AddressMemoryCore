@@ -53,8 +53,6 @@ public class TestingAddressesProxy extends MockRealmTester {
             provider.updateAddress( address );
         }
 
-        proxy.refresh();
-
         //show these objects were created by realm.
         for( ShortAddress address: provider.getAddresses() ){
             assertTrue( address.isValid() );

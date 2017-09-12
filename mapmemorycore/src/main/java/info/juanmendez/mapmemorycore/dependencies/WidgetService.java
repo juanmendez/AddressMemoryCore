@@ -8,4 +8,5 @@ package info.juanmendez.mapmemorycore.dependencies;
 
 public interface WidgetService {
     void refreshAddressList();
+    void refreshTransporationMode();
 }

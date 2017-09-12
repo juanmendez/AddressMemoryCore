@@ -5,7 +5,7 @@ import javax.inject.Inject;
 import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
 import info.juanmendez.mapmemorycore.dependencies.NavigationService;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
-import info.juanmendez.mapmemorycore.modules.SuperComponent;
+import info.juanmendez.mapmemorycore.modules.MapModuleBase;
 import info.juanmendez.mapmemorycore.utils.ModelUtils;
 import info.juanmendez.mapmemorycore.vp.PresenterRotated;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
@@ -32,7 +32,7 @@ public class AddressesPresenter implements PresenterRotated<AddressesPresenter, 
     private Boolean rotated = false;
 
     public AddressesPresenter() {
-        SuperComponent.getInjector().inject(this);
+        MapModuleBase.getInjector().inject(this);
     }
 
     @Override

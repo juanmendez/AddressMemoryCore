@@ -22,7 +22,7 @@ import info.juanmendez.mapmemorycore.mamemorycore.module.MapCoreModule;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.SubmitError;
-import info.juanmendez.mapmemorycore.modules.SuperComponent;
+import info.juanmendez.mapmemorycore.modules.MapModuleBase;
 import info.juanmendez.mapmemorycore.vp.FragmentNav;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressView;
@@ -66,7 +66,7 @@ public class TestingAddressServices {
 
     @Before
     public void before() throws Exception {
-        SuperComponent.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestApp())).build() );
+        MapModuleBase.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestApp())).build() );
 
         addressView = mock( AddressView.class );
         addressPresenter = new AddressPresenter();

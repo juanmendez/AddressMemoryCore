@@ -6,7 +6,7 @@ package info.juanmendez.mapmemorycore.modules;
  * contact@juanmendez.info
  */
 
-public class SuperComponent {
+public class MapModuleBase {
     private static MapInjector injector;
 
     public static MapInjector getInjector() {
@@ -14,6 +14,6 @@ public class SuperComponent {
     }
 
     public static void setInjector(MapInjector injector) {
-        SuperComponent.injector = injector;
+        MapModuleBase.injector = injector;
     }
 }

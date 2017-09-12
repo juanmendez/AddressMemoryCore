@@ -14,7 +14,7 @@ import info.juanmendez.mapmemorycore.mamemorycore.module.DaggerMapCoreComponent;
 import info.juanmendez.mapmemorycore.models.AddressFields;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.mamemorycore.module.MapCoreModule;
-import info.juanmendez.mapmemorycore.modules.SuperComponent;
+import info.juanmendez.mapmemorycore.modules.MapModuleBase;
 import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesProxy;
 import info.juanmendez.mockrealm.MockRealm;
 import info.juanmendez.mockrealm.models.RealmAnnotation;
@@ -40,7 +40,7 @@ public class TestingAddressesProxy extends MockRealmTester {
                 .primaryField(AddressFields.ADDRESSID)
                 .indexedFields(AddressFields.NAME, AddressFields.DATEUPDATED, AddressFields.TIMESVISITED));
 
-        SuperComponent.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestRealmApp())).build() );
+        MapModuleBase.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestRealmApp())).build() );
     }
 
     @Test

@@ -16,7 +16,7 @@ import info.juanmendez.mapmemorycore.dependencies.WidgetService;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.SubmitError;
-import info.juanmendez.mapmemorycore.modules.SuperComponent;
+import info.juanmendez.mapmemorycore.modules.MapModuleBase;
 import info.juanmendez.mapmemorycore.utils.ModelUtils;
 import info.juanmendez.mapmemorycore.utils.RxUtils;
 import info.juanmendez.mapmemorycore.vp.Presenter;
@@ -55,7 +55,7 @@ public class AddressPresenter implements Presenter<AddressPresenter,AddressView>
     @Override
     public AddressPresenter register(AddressView view) {
         this.view = view;
-        SuperComponent.getInjector().inject(this);
+        MapModuleBase.getInjector().inject(this);
         return this;
     }
 

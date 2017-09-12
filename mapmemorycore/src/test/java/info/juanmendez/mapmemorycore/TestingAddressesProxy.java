@@ -10,10 +10,10 @@ import java.util.List;
 
 import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
 import info.juanmendez.mapmemorycore.mamemorycore.TestRealmApp;
+import info.juanmendez.mapmemorycore.mamemorycore.module.DaggerMapCoreComponent;
 import info.juanmendez.mapmemorycore.models.AddressFields;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
-import info.juanmendez.mapmemorycore.modules.DaggerMapCoreComponent;
-import info.juanmendez.mapmemorycore.modules.MapCoreModule;
+import info.juanmendez.mapmemorycore.mamemorycore.module.MapCoreModule;
 import info.juanmendez.mapmemorycore.modules.SuperComponent;
 import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesProxy;
 import info.juanmendez.mockrealm.MockRealm;

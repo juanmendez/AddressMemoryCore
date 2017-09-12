@@ -11,7 +11,6 @@ import info.juanmendez.mapmemorycore.vp.vpSuggest.SuggestPresenter;
  * www.juanmendez.info
  * contact@juanmendez.info
  */
-
 public interface MapInjector {
     void inject( AddressesPresenter addressesPresenter );
     void inject( AddressPresenter addressPresenter );

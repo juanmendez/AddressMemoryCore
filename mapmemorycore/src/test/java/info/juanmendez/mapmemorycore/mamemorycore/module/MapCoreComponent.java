@@ -1,8 +1,9 @@
-package info.juanmendez.mapmemorycore.modules;
+package info.juanmendez.mapmemorycore.mamemorycore.module;
 
 import javax.inject.Singleton;
 
 import dagger.Component;
+import info.juanmendez.mapmemorycore.modules.MapInjector;
 
 /**
  * Created by Juan Mendez on 6/24/2017.
@@ -11,5 +12,5 @@ import dagger.Component;
  */
 @Singleton
 @Component(modules={MapCoreModule.class})
-public interface MapCoreComponent extends MapInjector{
+public interface MapCoreComponent extends MapInjector {
 }

@@ -13,11 +13,11 @@ import java.io.File;
 import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
 import info.juanmendez.mapmemorycore.dependencies.PhotoService;
 import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
-import info.juanmendez.mapmemorycore.modules.DaggerMapCoreComponent;
-import info.juanmendez.mapmemorycore.modules.MapCoreModule;
+import info.juanmendez.mapmemorycore.mamemorycore.module.DaggerMapCoreComponent;
+import info.juanmendez.mapmemorycore.mamemorycore.module.MapCoreModule;
 import info.juanmendez.mapmemorycore.modules.SuperComponent;
-import info.juanmendez.mapmemorycore.vp.vpPhoto.PhotoView;
 import info.juanmendez.mapmemorycore.vp.vpPhoto.PhotoPresenter;
+import info.juanmendez.mapmemorycore.vp.vpPhoto.PhotoView;
 import rx.Observable;
 
 import static org.mockito.Matchers.any;

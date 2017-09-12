@@ -4,16 +4,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
-import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
+import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
+import info.juanmendez.mapmemorycore.mamemorycore.module.DaggerMapCoreComponent;
+import info.juanmendez.mapmemorycore.mamemorycore.module.MapCoreModule;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
-import info.juanmendez.mapmemorycore.modules.DaggerMapCoreComponent;
-import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.modules.SuperComponent;
 import info.juanmendez.mapmemorycore.utils.ModelUtils;
-import info.juanmendez.mapmemorycore.vp.vpAddress.AddressView;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
+import info.juanmendez.mapmemorycore.vp.vpAddress.AddressView;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

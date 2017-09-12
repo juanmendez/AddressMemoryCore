@@ -14,7 +14,6 @@ import io.realm.RealmConfiguration;
  * So we can also test with Realm and instead of using TestApp, we can
  * provide to the Dagger module this instance which of course comes with a Realm object
  */
-
 public class TestRealmApp extends TestApp {
 
     Realm realm;

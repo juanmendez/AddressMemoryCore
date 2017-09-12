@@ -1,4 +1,4 @@
-package info.juanmendez.mapmemorycore.modules;
+package info.juanmendez.mapmemorycore.mamemorycore.module;
 
 import android.app.Application;
 
@@ -6,13 +6,15 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import info.juanmendez.mapmemorycore.CoreApp;
-import info.juanmendez.mapmemorycore.dependencies.AddressService;
 import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
+import info.juanmendez.mapmemorycore.dependencies.AddressService;
 import info.juanmendez.mapmemorycore.dependencies.NavigationService;
 import info.juanmendez.mapmemorycore.dependencies.NetworkService;
 import info.juanmendez.mapmemorycore.dependencies.PhotoService;
 import info.juanmendez.mapmemorycore.dependencies.WidgetService;
+import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
+
+import static org.powermock.api.mockito.PowerMockito.mock;
 
 /**
  * Created by Juan Mendez on 6/24/2017.
@@ -22,13 +24,9 @@ import info.juanmendez.mapmemorycore.dependencies.WidgetService;
 
 @Module
 public class MapCoreModule {
-    private CoreApp app;
+    private TestApp app;
 
-    public CoreApp getApp() {
-        return app;
-    }
-
-    public MapCoreModule(CoreApp app) {
+    public MapCoreModule(TestApp app) {
         this.app = app;
     }
 
@@ -40,7 +38,7 @@ public class MapCoreModule {
 
     @Provides
     public AddressService getAddressService(){
-        return  app.getAddressService();
+        return mock( AddressService.class );
     }
 
     @Singleton
@@ -52,23 +50,23 @@ public class MapCoreModule {
     @Singleton
     @Provides
     public PhotoService getPhotoService(){
-        return app.getPhotoService();
+        return mock( PhotoService.class );
     }
 
     @Provides
     public NetworkService getNetworkService(){
-        return app.getNetworkService();
+        return mock( NetworkService.class );
     }
 
     @Provides
     @Singleton
     public NavigationService getNavigationService(){
-        return app.getNavigationService();
+        return mock(NavigationService.class);
     }
 
     @Provides
     @Singleton
     public WidgetService getWidgetService(){
-        return app.getWidgetService();
+        return mock(WidgetService.class);
     }
 }

@@ -24,15 +24,25 @@ android {
     }
 }
 
+android.libraryVariants.all { variant ->
+    if (variant.buildType.name == "debug") {
+        def aptOutputDir = new File(buildDir, "generated/source/apt/${variant.unitTestVariant.dirName}")
+        variant.unitTestVariant.addJavaSourceFoldersToModel(aptOutputDir)
+        assembleDebug.finalizedBy('assembleDebugUnitTest')
+    }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:25.3.1'
     testCompile 'junit:junit:4.12'
+
+    testCompile 'com.google.dagger:dagger:2.11'
+    testAnnotationProcessor 'com.google.dagger:dagger-compiler:2.11'
 
     compile 'com.google.dagger:dagger:2.11'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
 
     compile "io.reactivex:rxjava:1.3.0"
     testCompile project(':mockrealm')
-    testCompile 'com.github.fabioCollini:DaggerMock:0.7.0'
 }

@@ -4,17 +4,10 @@ import android.app.Application;
 
 import org.mockito.Mockito;
 
-import info.juanmendez.mapmemorycore.CoreApp;
-import info.juanmendez.mapmemorycore.dependencies.AddressService;
 import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
-import info.juanmendez.mapmemorycore.dependencies.NavigationService;
-import info.juanmendez.mapmemorycore.dependencies.NetworkService;
-import info.juanmendez.mapmemorycore.dependencies.PhotoService;
-import info.juanmendez.mapmemorycore.dependencies.WidgetService;
 import info.juanmendez.mapmemorycore.mamemorycore.dependencies.TestAddressProvider;
 
 import static org.powermock.api.mockito.PowerMockito.doAnswer;
-import static org.powermock.api.mockito.PowerMockito.mock;
 
 
 /**
@@ -22,8 +15,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
  * www.juanmendez.info
  * contact@juanmendez.info
  */
-
-public class TestApp implements CoreApp {
+public class TestApp{
 
     protected Application application;
 
@@ -35,38 +27,11 @@ public class TestApp implements CoreApp {
         }).when( application ).getString( Mockito.anyInt() );
     }
 
-    @Override
     public Application getApplication() {
         return application;
     }
 
-    @Override
     public AddressProvider getAddressProvider() {
         return new TestAddressProvider();
-    }
-
-    @Override
-    public AddressService getAddressService() {
-        return mock( AddressService.class );
-    }
-
-    @Override
-    public NetworkService getNetworkService() {
-        return mock( NetworkService.class );
-    }
-
-    @Override
-    public PhotoService getPhotoService() {
-        return mock( PhotoService.class );
-    }
-
-    @Override
-    public NavigationService getNavigationService() {
-        return mock(NavigationService.class);
-    }
-
-    @Override
-    public WidgetService getWidgetService() {
-        return mock(WidgetService.class);
     }
 }

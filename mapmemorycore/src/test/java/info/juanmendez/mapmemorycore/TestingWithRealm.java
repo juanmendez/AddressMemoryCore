@@ -16,7 +16,9 @@ import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddresses.TestAddressesFr
 import info.juanmendez.mapmemorycore.models.AddressFields;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.SubmitError;
+import info.juanmendez.mapmemorycore.modules.DaggerMapCoreComponent;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
+import info.juanmendez.mapmemorycore.modules.SuperComponent;
 import info.juanmendez.mapmemorycore.utils.ModelUtils;
 import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesPresenter;
 import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesView;
@@ -54,7 +56,7 @@ public class TestingWithRealm extends MockRealmTester {
                 .primaryField(AddressFields.ADDRESSID)
                 .indexedFields(AddressFields.NAME, AddressFields.DATEUPDATED, AddressFields.TIMESVISITED));
 
-        MapCoreModule.setApp( new TestRealmApp() );
+        SuperComponent.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestRealmApp())).build() );
 
         viewMocked = PowerMockito.mock( AddressesView.class );
         presenter = new AddressesPresenter();
@@ -71,7 +73,7 @@ public class TestingWithRealm extends MockRealmTester {
         RealmResults<ShortAddress> addresses;
         ShortAddress address;
 
-        assertNotNull( MapCoreModule.getComponent() );
+        assertNotNull( SuperComponent.getInjector() );
 
         assertEquals(provider.countAddresses(), 0);
 

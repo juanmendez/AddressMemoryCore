@@ -22,13 +22,7 @@ import info.juanmendez.mapmemorycore.dependencies.WidgetService;
 
 @Module
 public class MapCoreModule {
-
-    private static MapCoreComponent component;
     private CoreApp app;
-
-    public static void setApp(CoreApp app ){
-        component = DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(app)).build();
-    }
 
     public CoreApp getApp() {
         return app;
@@ -76,9 +70,5 @@ public class MapCoreModule {
     @Singleton
     public WidgetService getWidgetService(){
         return app.getWidgetService();
-    }
-
-    public static MapCoreComponent getComponent(){
-        return component;
     }
 }

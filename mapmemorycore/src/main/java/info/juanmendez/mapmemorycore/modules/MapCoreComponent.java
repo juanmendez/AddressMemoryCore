@@ -3,11 +3,6 @@ package info.juanmendez.mapmemorycore.modules;
 import javax.inject.Singleton;
 
 import dagger.Component;
-import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
-import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesPresenter;
-import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesProxy;
-import info.juanmendez.mapmemorycore.vp.vpPhoto.PhotoPresenter;
-import info.juanmendez.mapmemorycore.vp.vpSuggest.SuggestPresenter;
 
 /**
  * Created by Juan Mendez on 6/24/2017.
@@ -16,10 +11,5 @@ import info.juanmendez.mapmemorycore.vp.vpSuggest.SuggestPresenter;
  */
 @Singleton
 @Component(modules={MapCoreModule.class})
-public interface MapCoreComponent{
-    void inject( AddressesPresenter addressesPresenter );
-    void inject( AddressPresenter addressPresenter );
-    void inject( PhotoPresenter photoPresenter );
-    void inject( SuggestPresenter suggestPresenter );
-    void inject( AddressesProxy addressesProxy );
+public interface MapCoreComponent extends MapInjector{
 }

@@ -9,7 +9,7 @@ import info.juanmendez.mapmemorycore.dependencies.NavigationService;
 import info.juanmendez.mapmemorycore.dependencies.PhotoService;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
-import info.juanmendez.mapmemorycore.modules.MapCoreModule;
+import info.juanmendez.mapmemorycore.modules.SuperComponent;
 import info.juanmendez.mapmemorycore.vp.Presenter;
 import rx.Subscription;
 
@@ -38,7 +38,7 @@ public class PhotoPresenter implements Presenter<PhotoPresenter,PhotoView> {
     @Override
     public PhotoPresenter register(PhotoView photoView) {
         this.view = photoView;
-        MapCoreModule.getComponent().inject(this);
+        SuperComponent.getInjector().inject(this);
         return this;
     }
 

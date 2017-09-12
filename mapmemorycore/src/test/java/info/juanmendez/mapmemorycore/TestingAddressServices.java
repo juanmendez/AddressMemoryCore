@@ -20,7 +20,9 @@ import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.SubmitError;
+import info.juanmendez.mapmemorycore.modules.DaggerMapCoreComponent;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
+import info.juanmendez.mapmemorycore.modules.SuperComponent;
 import info.juanmendez.mapmemorycore.vp.FragmentNav;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressView;
@@ -64,7 +66,7 @@ public class TestingAddressServices {
 
     @Before
     public void before() throws Exception {
-        MapCoreModule.setApp( new TestApp() );
+        SuperComponent.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestApp())).build() );
 
         addressView = mock( AddressView.class );
         addressPresenter = new AddressPresenter();

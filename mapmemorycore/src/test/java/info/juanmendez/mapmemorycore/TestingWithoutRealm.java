@@ -8,7 +8,9 @@ import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
 import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
+import info.juanmendez.mapmemorycore.modules.DaggerMapCoreComponent;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
+import info.juanmendez.mapmemorycore.modules.SuperComponent;
 import info.juanmendez.mapmemorycore.utils.ModelUtils;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressView;
 import info.juanmendez.mapmemorycore.vp.vpAddress.AddressPresenter;
@@ -40,7 +42,7 @@ public class TestingWithoutRealm {
 
     @Before
     public void before() throws Exception {
-        MapCoreModule.setApp( new TestApp() );
+        SuperComponent.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestApp())).build() );
 
         viewMocked = mock( AddressView.class );
         presenter = new AddressPresenter();

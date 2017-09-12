@@ -13,7 +13,7 @@ import info.juanmendez.mapmemorycore.dependencies.NetworkService;
 import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
-import info.juanmendez.mapmemorycore.modules.MapCoreModule;
+import info.juanmendez.mapmemorycore.modules.SuperComponent;
 import info.juanmendez.mapmemorycore.vp.PresenterRotated;
 
 /**
@@ -46,8 +46,7 @@ public class SuggestPresenter  implements PresenterRotated<SuggestPresenter,Sugg
     @Override
     public SuggestPresenter register(SuggestView view) {
         this.view = view;
-
-        MapCoreModule.getComponent().inject(this);
+        SuperComponent.getInjector().inject(this);
         return this;
     }
 

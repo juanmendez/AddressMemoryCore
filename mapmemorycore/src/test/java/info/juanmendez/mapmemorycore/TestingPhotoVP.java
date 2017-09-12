@@ -13,7 +13,9 @@ import java.io.File;
 import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
 import info.juanmendez.mapmemorycore.dependencies.PhotoService;
 import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
+import info.juanmendez.mapmemorycore.modules.DaggerMapCoreComponent;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
+import info.juanmendez.mapmemorycore.modules.SuperComponent;
 import info.juanmendez.mapmemorycore.vp.vpPhoto.PhotoView;
 import info.juanmendez.mapmemorycore.vp.vpPhoto.PhotoPresenter;
 import rx.Observable;
@@ -42,7 +44,7 @@ public class TestingPhotoVP {
 
     @Before
     public void before() throws Exception {
-        MapCoreModule.setApp( new TestApp() );
+        SuperComponent.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestApp())).build() );
 
         viewMocked = mock( PhotoView.class );
         presenter = new PhotoPresenter();

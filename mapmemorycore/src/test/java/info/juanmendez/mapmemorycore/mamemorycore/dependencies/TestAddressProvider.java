@@ -20,7 +20,7 @@ import rx.Observable;
 public class TestAddressProvider implements AddressProvider {
 
     List<ShortAddress> addresses = new ArrayList<>();
-    ShortAddress selectedAddress;
+    ShortAddress selectedAddress = new ShortAddress();
 
     int totalAdded=0;
 

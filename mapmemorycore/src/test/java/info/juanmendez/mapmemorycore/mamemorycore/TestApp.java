@@ -10,6 +10,7 @@ import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
 import info.juanmendez.mapmemorycore.dependencies.NavigationService;
 import info.juanmendez.mapmemorycore.dependencies.NetworkService;
 import info.juanmendez.mapmemorycore.dependencies.PhotoService;
+import info.juanmendez.mapmemorycore.dependencies.WidgetService;
 import info.juanmendez.mapmemorycore.mamemorycore.dependencies.TestAddressProvider;
 
 import static org.powermock.api.mockito.PowerMockito.doAnswer;
@@ -62,5 +63,10 @@ public class TestApp implements CoreApp {
     @Override
     public NavigationService getNavigationService() {
         return mock(NavigationService.class);
+    }
+
+    @Override
+    public WidgetService getWidgetService() {
+        return mock(WidgetService.class);
     }
 }

@@ -16,7 +16,7 @@ import info.juanmendez.mapmemorycore.vp.vpSuggest.SuggestPresenter;
  */
 @Singleton
 @Component(modules={MapCoreModule.class})
-public interface MapCoreComponent {
+public interface MapCoreComponent{
     void inject( AddressesPresenter addressesPresenter );
     void inject( AddressPresenter addressPresenter );
     void inject( PhotoPresenter photoPresenter );

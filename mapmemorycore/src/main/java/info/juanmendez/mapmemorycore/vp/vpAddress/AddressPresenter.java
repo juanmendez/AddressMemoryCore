@@ -12,6 +12,7 @@ import info.juanmendez.mapmemorycore.dependencies.AddressService;
 import info.juanmendez.mapmemorycore.dependencies.NavigationService;
 import info.juanmendez.mapmemorycore.dependencies.NetworkService;
 import info.juanmendez.mapmemorycore.dependencies.Response;
+import info.juanmendez.mapmemorycore.dependencies.WidgetService;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.models.SubmitError;
@@ -40,6 +41,9 @@ public class AddressPresenter implements Presenter<AddressPresenter,AddressView>
 
     @Inject
     NavigationService navigationService;
+
+    @Inject
+    WidgetService widgetService;
 
     private AddressView view;
     private ShortAddress selectedAddress;
@@ -128,6 +132,7 @@ public class AddressPresenter implements Presenter<AddressPresenter,AddressView>
                     response.onResult( result );
                     checkCanDelete();
                     checkCanUpdate();
+                    widgetService.refreshAddressList();
                 }
 
                 @Override
@@ -145,6 +150,7 @@ public class AddressPresenter implements Presenter<AddressPresenter,AddressView>
 
         long addressId = selectedAddress.getAddressId();
         addressProvider.deleteAddressAsync( addressId, response );
+        widgetService.refreshAddressList();
     }
 
     /**

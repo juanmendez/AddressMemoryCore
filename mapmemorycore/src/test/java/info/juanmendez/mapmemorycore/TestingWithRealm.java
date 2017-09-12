@@ -3,13 +3,14 @@ package info.juanmendez.mapmemorycore;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.reflect.Whitebox;
 
 import java.util.List;
 
-import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
+import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.mamemorycore.TestRealmApp;
 import info.juanmendez.mapmemorycore.mamemorycore.vp.vpAddresses.TestAddressesFragment;
 import info.juanmendez.mapmemorycore.models.AddressFields;
@@ -18,6 +19,7 @@ import info.juanmendez.mapmemorycore.models.SubmitError;
 import info.juanmendez.mapmemorycore.modules.MapCoreModule;
 import info.juanmendez.mapmemorycore.utils.ModelUtils;
 import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesPresenter;
+import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesView;
 import info.juanmendez.mockrealm.MockRealm;
 import info.juanmendez.mockrealm.models.RealmAnnotation;
 import info.juanmendez.mockrealm.test.MockRealmTester;
@@ -40,6 +42,7 @@ import static org.mockito.Mockito.mock;
 @PrepareForTest({TestRealmApp.class})
 public class TestingWithRealm extends MockRealmTester {
 
+    AddressesView viewMocked;
     AddressesPresenter presenter;
     AddressProvider provider;
 
@@ -53,7 +56,9 @@ public class TestingWithRealm extends MockRealmTester {
 
         MapCoreModule.setApp( new TestRealmApp() );
 
+        viewMocked = PowerMockito.mock( AddressesView.class );
         presenter = new AddressesPresenter();
+        presenter.register(viewMocked);
 
         //Pull the injection, and test it!
         provider = Whitebox.getInternalState( presenter, "addressProvider" );
@@ -74,6 +79,7 @@ public class TestingWithRealm extends MockRealmTester {
         assertNull( address );
 
         provider.updateAddress( new ShortAddress(1));
+        assertEquals( provider.countAddresses(), 1 );
 
         address = provider.getAddress(1);
         address = ModelUtils.cloneAddress( address );
@@ -81,17 +87,10 @@ public class TestingWithRealm extends MockRealmTester {
         address.setAddress1("0 N. State");
         address.setAddress2( "Chicago, 60641" );
 
-        provider.updateAddressAsync(address, new Response<ShortAddress>() {
-            @Override
-            public void onResult(ShortAddress result) {
-                assertTrue( true );
-            }
+        provider.updateAddress( address );
 
-            @Override
-            public void onError(Exception exception) {
-                assertTrue( false );
-            }
-        });
+        address = provider.getAddress(1);
+        assertEquals( address.getName(), "testAddressProvider");
     }
 
     /**
@@ -104,15 +103,7 @@ public class TestingWithRealm extends MockRealmTester {
     public void testAddressesView(){
         MockRealm.clearData();
 
-        List<ShortAddress> addresses;
         ShortAddress address;
-
-        /**
-         * lets build addressesView
-         */
-        TestAddressesFragment addressesView = new TestAddressesFragment();
-
-        addresses = addressesView.getAddresses();
 
         assertEquals(0, provider.countAddresses());
 
@@ -149,16 +140,6 @@ public class TestingWithRealm extends MockRealmTester {
 
             }
         });
-
-        //lets see rotation..
-        addressesView.active( null);
-        addressesView.inactive(true);
-
-        assertEquals( provider.countAddresses(), 1 );
-
-        //we want to make the o
-        address = provider.getAddress(2);
-        provider.selectAddress( address );
     }
 
     /**

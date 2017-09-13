@@ -13,6 +13,7 @@ import info.juanmendez.mapmemorycore.dependencies.NetworkService;
 import info.juanmendez.mapmemorycore.dependencies.Response;
 import info.juanmendez.mapmemorycore.models.MapMemoryException;
 import info.juanmendez.mapmemorycore.models.ShortAddress;
+import info.juanmendez.mapmemorycore.models.SubmitError;
 import info.juanmendez.mapmemorycore.modules.MapModuleBase;
 import info.juanmendez.mapmemorycore.vp.PresenterRotated;
 
@@ -59,7 +60,7 @@ public class SuggestPresenter  implements PresenterRotated<SuggestPresenter,Sugg
             @Override
             public void onResult(Boolean result) {
 
-                if( !rotated )
+                if( !rotated && !SubmitError.emptyOrNull(selectedAddress.getAddress1()))
                     requestAddressSuggestions( selectedAddress.getAddress1() );
             }
 
@@ -70,7 +71,7 @@ public class SuggestPresenter  implements PresenterRotated<SuggestPresenter,Sugg
 
         addressService.onStart( view.getActivity() );
 
-        if( view.getPrintedAddress().isEmpty() ){
+        if( view.getPrintedAddress() != null && view.getPrintedAddress().isEmpty() ){
             view.setPrintedAddress( selectedAddress.getAddress1() );
         }
     }
@@ -85,7 +86,7 @@ public class SuggestPresenter  implements PresenterRotated<SuggestPresenter,Sugg
     /**
      * View is requesting addresses by query which is replied asynchronously
      */
-    public void requestAddressSuggestions( String query ){
+    public void requestAddressSuggestions( @NonNull String query ){
         selectedAddress.setAddress1( query );
         if( networkService.isConnected() && !query.isEmpty() ){
             addressService.suggestAddress(query, new Response<List<ShortAddress>>() {

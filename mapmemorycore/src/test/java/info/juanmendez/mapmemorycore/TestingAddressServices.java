@@ -108,6 +108,7 @@ public class TestingAddressServices {
 
 
         //view requests suggested addresses
+        suggestPresenter.active("");
         suggestPresenter.requestAddressSuggestions("0 N. State");
         verify(suggestView).setSuggestedAddresses(anyList());
 
@@ -174,6 +175,7 @@ public class TestingAddressServices {
             return null;
         }).when(suggestView).setSuggestedAddresses(anyList());
 
+        suggestPresenter.active(null);
         suggestPresenter.requestAddressSuggestions( "3463 N. Natch" );
         verify(suggestView).setSuggestedAddresses(anyList());
         assertEquals( addressProvider.getSelectedAddress().getAddressId(), getAddresses().get(0).getAddressId() );

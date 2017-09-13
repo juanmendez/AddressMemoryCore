@@ -180,7 +180,7 @@ public class TestingWithRealm extends MockRealmTester {
         address.setAddress1(" ");
         List<SubmitError> errors = provider.validate( address);
 
-        assertTrue( errors.size()==3 );
+        assertTrue( errors.size()==2 );
 
         //how about submitting lat lon instead of address and city.
         address.setLat( 12 );

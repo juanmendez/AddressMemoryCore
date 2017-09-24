@@ -1,1 +1,1 @@
-include ':mapmemorycore'
+include ':addressmemorycore'

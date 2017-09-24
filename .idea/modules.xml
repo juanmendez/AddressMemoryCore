@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MapMemoryCore.iml" filepath="$PROJECT_DIR$/MapMemoryCore.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mapmemorycore/mapmemorycore.iml" filepath="$PROJECT_DIR$/mapmemorycore/mapmemorycore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AddressMemoryCore.iml" filepath="$PROJECT_DIR$/AddressMemoryCore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/addressmemorycore/addressmemorycore.iml" filepath="$PROJECT_DIR$/addressmemorycore/addressmemorycore.iml" />
+      <module fileurl="file://C:\codes\Android\juanmendez\MapMemory\AddressMemoryCore\mapmemorycore\mapmemorycore.iml" filepath="C:\codes\Android\juanmendez\MapMemory\AddressMemoryCore\mapmemorycore\mapmemorycore.iml" />
     </modules>
   </component>
 </project>

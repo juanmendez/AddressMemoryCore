@@ -1,5 +1,3 @@
-package info.juanmendez.mapmemorycore;
-
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;

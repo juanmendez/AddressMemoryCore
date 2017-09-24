@@ -1,5 +1,3 @@
-package info.juanmendez.mapmemorycore;
-
 import android.app.Activity;
 
 import junit.framework.Assert;

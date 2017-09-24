@@ -1,5 +1,3 @@
-package info.juanmendez.mapmemorycore;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;

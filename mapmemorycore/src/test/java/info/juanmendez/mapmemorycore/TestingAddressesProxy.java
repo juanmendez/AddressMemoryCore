@@ -35,7 +35,7 @@ public class TestingAddressesProxy{
     @Test
     public void testProxy(){
         AddressesProxy proxy = new AddressesProxy();
-        AddressProvider provider = (AddressProvider) Whitebox.getInternalState( proxy, "addressProvider" );
+        AddressProvider provider = Whitebox.getInternalState( proxy, "addressProvider" );
         assertNotNull( provider );
 
         List<ShortAddress> addresses = getAddresses();
@@ -57,7 +57,7 @@ public class TestingAddressesProxy{
         }
     }
 
-    List<ShortAddress> getAddresses(){
+    private List<ShortAddress> getAddresses(){
 
         List<ShortAddress> addresses = new ArrayList<>();
 

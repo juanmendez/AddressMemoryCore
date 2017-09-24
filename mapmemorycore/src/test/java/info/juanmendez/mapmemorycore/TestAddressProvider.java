@@ -36,9 +36,9 @@ import static org.powermock.api.mockito.PowerMockito.mock;
 
 public class TestAddressProvider {
 
-    AddressView viewMocked;
-    AddressPresenter presenter;
-    AddressProvider provider;
+    private AddressView viewMocked;
+    private AddressPresenter presenter;
+    private AddressProvider provider;
 
     @Before
     public void before() throws Exception {
@@ -90,7 +90,7 @@ public class TestAddressProvider {
         assertTrue( "same lat lon", cloned.getLat()==firstAddress.getLat());
     }
 
-    void insertAddresses( AddressProvider provider ){
+    private void insertAddresses( AddressProvider provider ){
 
         ShortAddress address;
         //lets add an address, and see if addressesView has updated its addresses
@@ -119,5 +119,4 @@ public class TestAddressProvider {
         address.setAddress2( "Chicago, 60641" );
         provider.updateAddress( address );
     }
-
 }

@@ -35,11 +35,11 @@ import static org.powermock.api.mockito.PowerMockito.mock;
 
 public class TestingPhotoVP {
 
-    PhotoView viewMocked;
-    PhotoPresenter presenter;
-    PhotoService photoServiceMocked;
-    AddressProvider addressProvider;
-    String fileLocation = "absolute_path";
+    private PhotoView viewMocked;
+    private PhotoPresenter presenter;
+    private PhotoService photoServiceMocked;
+    private AddressProvider addressProvider;
+    private String fileLocation = "absolute_path";
 
 
     @Before
@@ -50,8 +50,8 @@ public class TestingPhotoVP {
         presenter = new PhotoPresenter();
         presenter.register(viewMocked);
 
-        photoServiceMocked = (PhotoService) Whitebox.getInternalState(presenter, "photoService");
-        addressProvider = (AddressProvider) Whitebox.getInternalState(presenter, "addressProvider");
+        photoServiceMocked = Whitebox.getInternalState(presenter, "photoService");
+        addressProvider = Whitebox.getInternalState(presenter, "addressProvider");
 
         //make each mocked object answer with positive results such as networkService.isConnected() returning true.
         applySuccessfulResults();
@@ -76,7 +76,7 @@ public class TestingPhotoVP {
     }
 
 
-    void applySuccessfulResults(){
+    private void applySuccessfulResults(){
 
         doAnswer(invocation -> {
             File file = mock(File.class);

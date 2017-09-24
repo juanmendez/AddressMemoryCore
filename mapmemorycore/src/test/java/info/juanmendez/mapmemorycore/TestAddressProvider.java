@@ -34,7 +34,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
  * with our Android environment.
  */
 
-public class TestingWithoutRealm {
+public class TestAddressProvider {
 
     AddressView viewMocked;
     AddressPresenter presenter;

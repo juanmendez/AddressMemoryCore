@@ -2,23 +2,18 @@ package info.juanmendez.mapmemorycore;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.reflect.Whitebox;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import info.juanmendez.mapmemorycore.dependencies.AddressProvider;
-import info.juanmendez.mapmemorycore.mamemorycore.TestRealmApp;
+import info.juanmendez.mapmemorycore.mamemorycore.TestApp;
 import info.juanmendez.mapmemorycore.mamemorycore.module.DaggerMapCoreComponent;
-import info.juanmendez.mapmemorycore.models.AddressFields;
-import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.mamemorycore.module.MapCoreModule;
+import info.juanmendez.mapmemorycore.models.ShortAddress;
 import info.juanmendez.mapmemorycore.modules.MapModuleBase;
 import info.juanmendez.mapmemorycore.vp.vpAddresses.AddressesProxy;
-import info.juanmendez.mockrealm.MockRealm;
-import info.juanmendez.mockrealm.models.RealmAnnotation;
-import info.juanmendez.mockrealm.test.MockRealmTester;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -30,17 +25,11 @@ import static junit.framework.Assert.assertTrue;
  * www.juanmendez.info
  * contact@juanmendez.info
  */
-@PrepareForTest({TestRealmApp.class})
-public class TestingAddressesProxy extends MockRealmTester {
+public class TestingAddressesProxy{
 
     @Before
     public void before() throws Exception {
-        MockRealm.prepare();
-        MockRealm.addAnnotations( RealmAnnotation.build(ShortAddress.class)
-                .primaryField(AddressFields.ADDRESSID)
-                .indexedFields(AddressFields.NAME, AddressFields.DATEUPDATED, AddressFields.TIMESVISITED));
-
-        MapModuleBase.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestRealmApp())).build() );
+        MapModuleBase.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestApp())).build() );
     }
 
     @Test

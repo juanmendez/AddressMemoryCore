@@ -1,3 +1,1 @@
 include ':mapmemorycore'
-include 'mockrealm'
-project(':mockrealm').projectDir = new File('C:\\codes\\Android\\misc\\mockRealm\\mockrealm')

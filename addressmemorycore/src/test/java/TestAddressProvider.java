@@ -4,6 +4,7 @@ import org.powermock.reflect.Whitebox;
 
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.Response;
+import info.juanmendez.addressmemorycore.models.AddressViewModel;
 import info.juanmendez.mapmemorycore.addressmemorycore.TestApp;
 import info.juanmendez.mapmemorycore.addressmemorycore.module.DaggerMapCoreComponent;
 import info.juanmendez.mapmemorycore.addressmemorycore.module.MapCoreModule;
@@ -34,6 +35,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
 
 public class TestAddressProvider {
 
+    private AddressViewModel viewModel;
     private AddressView viewMocked;
     private AddressPresenter presenter;
     private AddressProvider provider;
@@ -44,7 +46,7 @@ public class TestAddressProvider {
 
         viewMocked = mock( AddressView.class );
         presenter = new AddressPresenter();
-        presenter.register(viewMocked);
+        viewModel = presenter.getViewModel(viewMocked);
 
         //through MVP, get your hands on the addressPresenter, and subsequently get its dagger dependency
         provider = Whitebox.getInternalState( presenter, "addressProvider" );

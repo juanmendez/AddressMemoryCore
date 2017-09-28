@@ -1,24 +1,24 @@
 package info.juanmendez.addressmemorycore.vp.vpAddress;
 
 import android.content.Intent;
-
-import java.io.File;
-import java.util.List;
+import android.databinding.Observable;
 
 import javax.inject.Inject;
 
+import info.juanmendez.addressmemorycore.BR;
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.AddressService;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
-import info.juanmendez.addressmemorycore.dependencies.WidgetService;
-import info.juanmendez.addressmemorycore.models.ShortAddress;
-import info.juanmendez.addressmemorycore.models.SubmitError;
-import info.juanmendez.addressmemorycore.utils.ModelUtils;
-import info.juanmendez.addressmemorycore.utils.RxUtils;
 import info.juanmendez.addressmemorycore.dependencies.NetworkService;
 import info.juanmendez.addressmemorycore.dependencies.Response;
+import info.juanmendez.addressmemorycore.dependencies.WidgetService;
+import info.juanmendez.addressmemorycore.models.AddressViewModel;
 import info.juanmendez.addressmemorycore.models.MapMemoryException;
+import info.juanmendez.addressmemorycore.models.ShortAddress;
+import info.juanmendez.addressmemorycore.models.SubmitError;
 import info.juanmendez.addressmemorycore.modules.MapModuleBase;
+import info.juanmendez.addressmemorycore.utils.ModelUtils;
+import info.juanmendez.addressmemorycore.utils.RxUtils;
 import info.juanmendez.addressmemorycore.vp.Presenter;
 import info.juanmendez.addressmemorycore.vp.vpSuggest.SuggestPresenter;
 import rx.Subscription;
@@ -28,7 +28,8 @@ import rx.Subscription;
  * www.juanmendez.info
  * contact@juanmendez.info
  */
-public class AddressPresenter implements Presenter<AddressPresenter,AddressView> {
+public class AddressPresenter extends Observable.OnPropertyChangedCallback
+                                implements Presenter<AddressViewModel,AddressView> {
 
     @Inject
     AddressProvider addressProvider;
@@ -46,39 +47,40 @@ public class AddressPresenter implements Presenter<AddressPresenter,AddressView>
     WidgetService widgetService;
 
     private AddressView view;
-    private ShortAddress selectedAddress;
+    private AddressViewModel viewModel;
 
     public static final String ADDRESS_VIEW_TAG = "viewAddressTag";
     public static final String ADDDRESS_EDIT_TAG = "editAddressTag";
     private Subscription fileSubscription;
 
     @Override
-    public AddressPresenter register(AddressView view) {
+    public AddressViewModel getViewModel(AddressView view) {
         this.view = view;
         MapModuleBase.getInjector().inject(this);
-        return this;
+
+        return viewModel = new AddressViewModel();
     }
 
     @Override
     public void active( String action ) {
-
-        selectedAddress = addressProvider.getSelectedAddress();
+        
+        viewModel.setAddress( addressProvider.getSelectedAddress() );
 
         networkService.reset();
         networkService.connect(new Response<Boolean>() {
             @Override
             public void onResult(Boolean result) {
-                view.onNetworkStatus( result );
+                viewModel.isOnline.set(result);
             }
 
             @Override
             public void onError(Exception exception) {
-
+                viewModel.setAddressException( exception );
             }
         });
 
         addressService.onStart( view.getActivity() );
-        refreshView();
+        viewModel.addOnPropertyChangedCallback(this);
     }
 
     @Override
@@ -87,51 +89,30 @@ public class AddressPresenter implements Presenter<AddressPresenter,AddressView>
         addressService.onStop();
 
         RxUtils.unsubscribe(fileSubscription);
+        viewModel.removeOnPropertyChangedCallback(this);
     }
 
-    /**
-     * this method was left public in case view wants to refresh itself.
-     * presenter notifies view with latest values.
-     */
-    public void refreshView() {
-
-        if( selectedAddress != null ){
-
-            view.onPhotoSelected( new File( selectedAddress.getPhotoLocation()));
-            view.onAddressResult( selectedAddress );
-        }
-
-        checkCanUpdate();
-        checkCanDelete();
-    }
-
-    private void checkCanUpdate(){
-
-        if( selectedAddress != null ) {
-            view.canSubmit( addressProvider.validate(selectedAddress).isEmpty() );
-        }
+    private void checkCanSubmit(){
+        viewModel.canSubmit.set( isAddressValid() );
     }
 
     private void checkCanDelete(){
+        viewModel.canDelete.set( SubmitError.initialized(viewModel.getAddress().getAddressId()) );
+    }
 
-        if( selectedAddress != null ) {
-            view.canDelete( SubmitError.initialized(selectedAddress.getAddressId()) );
-        }
+    private boolean isAddressValid(){
+        return addressProvider.validate(viewModel.getAddress()).isEmpty();
     }
 
     public void saveAddress(Response<ShortAddress> response) {
 
-        List<SubmitError> errors = addressProvider.validate( addressProvider.getSelectedAddress() );
+        if( isAddressValid() ){
 
-        if( errors.isEmpty() ){
-
-            addressProvider.updateAddressAsync(selectedAddress, new Response<ShortAddress>() {
+            addressProvider.updateAddressAsync(viewModel.getAddress(), new Response<ShortAddress>() {
                 @Override
                 public void onResult(ShortAddress result) {
+                    viewModel.setAddress(result);
                     addressProvider.selectAddress( result );
-                    response.onResult( result );
-                    checkCanDelete();
-                    checkCanUpdate();
                     widgetService.refreshAddressList();
                 }
 
@@ -142,13 +123,13 @@ public class AddressPresenter implements Presenter<AddressPresenter,AddressView>
             });
 
         }else{
-            response.onError( MapMemoryException.build("On Submit there are errors").setErrors( errors ) );
+            response.onError( MapMemoryException.build("On Submit there are errors").setErrors( addressProvider.validate(viewModel.getAddress()) ) );
         }
     }
 
     public void deleteAddress( Response<Boolean> response ){
 
-        long addressId = selectedAddress.getAddressId();
+        long addressId = viewModel.getAddress().getAddressId();
         addressProvider.deleteAddressAsync( addressId, response );
         widgetService.refreshAddressList();
     }
@@ -162,42 +143,40 @@ public class AddressPresenter implements Presenter<AddressPresenter,AddressView>
             addressService.geolocateAddress(new Response<ShortAddress>() {
                 @Override
                 public void onResult(ShortAddress result) {
-                    ShortAddress selectedAddress = addressProvider.getSelectedAddress();
-                    selectedAddress.setMapId( result.getMapId() );
-                    selectedAddress.setAddress1( result.getAddress1() );
-                    selectedAddress.setAddress2( result.getAddress2() );
 
-                    view.onAddressResult( selectedAddress );
-                    checkCanUpdate();
+                    viewModel.getAddress().setMapId( result.getMapId() );
+                    viewModel.getAddress().setAddress1( result.getAddress1() );
+                    viewModel.getAddress().setAddress2( result.getAddress2() );
+                    viewModel.notifyAddress();
                 }
 
                 @Override
                 public void onError(Exception exception) {
-                    view.onAddressError(exception);
+                    viewModel.setAddressException( exception );
                 }
             });
         }else{
-            view.onAddressError( new MapMemoryException("networkService has no connection"));
+            viewModel.setAddressException( new MapMemoryException("networkService has no connection") );
         }
     }
 
     public void setAddressName(String name ){
-        selectedAddress.setName( name );
-        view.canSubmit( addressProvider.validate( selectedAddress ).isEmpty() );
+        viewModel.getAddress().setName( name );
+        viewModel.notifyAddress();
     }
 
     public void setAddressLines(String addressLine1, String addressLine2 ){
 
         if( !networkService.isConnected() ){
-            selectedAddress.setAddress1( addressLine1 );
-            selectedAddress.setAddress2( addressLine2 );
-            view.canSubmit( addressProvider.validate( selectedAddress ).isEmpty() );
+            viewModel.getAddress().setAddress1( addressLine1 );
+            viewModel.getAddress().setAddress2( addressLine2 );
+            viewModel.notifyAddress();
         }
     }
 
     public void openNavigationApp(){
 
-        Intent mapIntent = ModelUtils.fromAddress( selectedAddress, 'b' );
+        Intent mapIntent = ModelUtils.fromAddress( viewModel.getAddress(), 'b' );
         view.getActivity().startActivity( mapIntent );
     }
 
@@ -208,6 +187,14 @@ public class AddressPresenter implements Presenter<AddressPresenter,AddressView>
     public void textFocused(){
         if( networkService.isConnected() ){
             navigationService.request(SuggestPresenter.SUGGEST_VIEW );
+        }
+    }
+
+    @Override
+    public void onPropertyChanged(Observable observable, int brId) {
+        if(BR.address == brId){
+            checkCanSubmit();
+            checkCanDelete();
         }
     }
 }

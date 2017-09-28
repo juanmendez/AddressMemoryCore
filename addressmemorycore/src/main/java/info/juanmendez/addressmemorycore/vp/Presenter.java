@@ -13,7 +13,7 @@ public interface Presenter<P,T>{
      * @param view
      * @return
      */
-    P register(T view);
+    P getViewModel(T view);
 
     /**
      * we don't need to keep in mind what is onStart and onPause

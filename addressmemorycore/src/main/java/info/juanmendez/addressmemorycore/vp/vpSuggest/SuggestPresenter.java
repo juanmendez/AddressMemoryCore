@@ -45,7 +45,7 @@ public class SuggestPresenter  implements PresenterRotated<SuggestPresenter,Sugg
     public static final String SUGGEST_VIEW = "suggest_view";
 
     @Override
-    public SuggestPresenter register(SuggestView view) {
+    public SuggestPresenter getViewModel(SuggestView view) {
         this.view = view;
         MapModuleBase.getInjector().inject(this);
         return this;

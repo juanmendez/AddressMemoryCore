@@ -5,6 +5,7 @@ import java.util.List;
 
 import info.juanmendez.addressmemorycore.dependencies.Response;
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
+import info.juanmendez.addressmemorycore.models.AddressFields;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.models.MapMemoryException;
 import info.juanmendez.addressmemorycore.models.SubmitError;
@@ -116,6 +117,14 @@ public class TestAddressProvider implements AddressProvider {
 
     @Override
     public List<SubmitError> validate(ShortAddress address) {
-        return new ArrayList<SubmitError>();
+        List<SubmitError> errors = new ArrayList<>();
+
+        if( SubmitError.emptyOrNull(address.getName()))
+            errors.add( new SubmitError(AddressFields.NAME, "Name is missing"));
+
+        if( SubmitError.emptyOrNull(address.getAddress1()))
+            errors.add( new SubmitError(AddressFields.ADDRESS1, "Address is missing"));
+
+        return errors;
     }
 }

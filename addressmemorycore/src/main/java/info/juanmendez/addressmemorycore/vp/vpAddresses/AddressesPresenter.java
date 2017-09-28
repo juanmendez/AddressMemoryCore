@@ -36,7 +36,7 @@ public class AddressesPresenter implements PresenterRotated<AddressesPresenter, 
     }
 
     @Override
-    public AddressesPresenter register(AddressesView view) {
+    public AddressesPresenter getViewModel(AddressesView view) {
         this.view = view;
         view.injectAddresses( addressProvider.getAddresses() );
 

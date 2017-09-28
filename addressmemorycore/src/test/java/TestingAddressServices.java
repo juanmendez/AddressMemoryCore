@@ -14,6 +14,7 @@ import info.juanmendez.addressmemorycore.dependencies.AddressService;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.dependencies.NetworkService;
 import info.juanmendez.addressmemorycore.dependencies.Response;
+import info.juanmendez.addressmemorycore.models.AddressViewModel;
 import info.juanmendez.mapmemorycore.addressmemorycore.TestApp;
 import info.juanmendez.mapmemorycore.addressmemorycore.module.DaggerMapCoreComponent;
 import info.juanmendez.mapmemorycore.addressmemorycore.module.MapCoreModule;
@@ -29,6 +30,7 @@ import info.juanmendez.addressmemorycore.vp.vpSuggest.SuggestView;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
@@ -61,6 +63,8 @@ public class TestingAddressServices {
     NavigationService navigationService;
     String navigationTag = "helloNavigation";
 
+    AddressViewModel viewModel;
+
 
     @Before
     public void before() throws Exception {
@@ -68,12 +72,12 @@ public class TestingAddressServices {
 
         addressView = mock( AddressView.class );
         addressPresenter = new AddressPresenter();
-        addressPresenter.register(addressView);
+        viewModel = addressPresenter.getViewModel(addressView);
 
 
         suggestView = mock( SuggestView.class );
         suggestPresenter = new SuggestPresenter();
-        suggestPresenter.register( suggestView );
+        suggestPresenter.getViewModel( suggestView );
 
         networkServiceMocked = (NetworkService)   Whitebox.getInternalState(addressPresenter, "networkService");
         addressServiceMocked = (AddressService) Whitebox.getInternalState(addressPresenter, "addressService");
@@ -102,7 +106,7 @@ public class TestingAddressServices {
     public void textNetwork(){
 
         addressPresenter.active("");
-        verify(addressView).onNetworkStatus(eq(true));
+        assertTrue( viewModel.isOnline.get() );
 
 
         //view requests suggested addresses

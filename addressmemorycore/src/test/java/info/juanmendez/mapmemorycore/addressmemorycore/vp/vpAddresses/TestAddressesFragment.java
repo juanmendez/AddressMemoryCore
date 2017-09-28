@@ -24,7 +24,7 @@ public class TestAddressesFragment implements AddressesView {
 
     public TestAddressesFragment() {
         presenter = new AddressesPresenter();
-        presenter.register(this);
+        presenter.getViewModel(this);
     }
 
     @Override

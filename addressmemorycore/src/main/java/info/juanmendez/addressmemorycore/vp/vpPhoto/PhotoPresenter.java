@@ -36,7 +36,7 @@ public class PhotoPresenter implements Presenter<PhotoPresenter,PhotoView> {
     private File photoTaken;
 
     @Override
-    public PhotoPresenter register(PhotoView photoView) {
+    public PhotoPresenter getViewModel(PhotoView photoView) {
         this.view = photoView;
         MapModuleBase.getInjector().inject(this);
         return this;

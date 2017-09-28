@@ -46,7 +46,7 @@ public class TestingPhotoVP {
 
         viewMocked = mock( PhotoView.class );
         presenter = new PhotoPresenter();
-        presenter.register(viewMocked);
+        presenter.getViewModel(viewMocked);
 
         photoServiceMocked = Whitebox.getInternalState(presenter, "photoService");
         addressProvider = Whitebox.getInternalState(presenter, "addressProvider");

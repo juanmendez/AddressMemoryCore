@@ -5,7 +5,6 @@ import android.databinding.Observable;
 
 import javax.inject.Inject;
 
-import info.juanmendez.addressmemorycore.BR;
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.AddressService;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
@@ -21,6 +20,8 @@ import info.juanmendez.addressmemorycore.utils.ModelUtils;
 import info.juanmendez.addressmemorycore.utils.RxUtils;
 import info.juanmendez.addressmemorycore.vp.Presenter;
 import info.juanmendez.addressmemorycore.vp.vpSuggest.SuggestPresenter;
+
+import info.juanmendez.addressmemorycore.BR;
 import rx.Subscription;
 
 /**
@@ -67,6 +68,8 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
         viewModel.setAddress( addressProvider.getSelectedAddress() );
 
         networkService.reset();
+
+        //TODO if possible make it to ShortResponse
         networkService.connect(new Response<Boolean>() {
             @Override
             public void onResult(Boolean result) {
@@ -79,7 +82,8 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
             }
         });
 
-        addressService.onStart( view.getActivity() );
+        addressService.onStart(view.getActivity(), result -> viewModel.isGeoOn.set(result));
+
         viewModel.addOnPropertyChangedCallback(this);
     }
 
@@ -139,15 +143,14 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
      * this is done in an asynchronous way
      */
     public void requestAddressByGeolocation(){
-        if( networkService.isConnected() ){
+        if( addressService.isConnected() ){
             addressService.geolocateAddress(new Response<ShortAddress>() {
                 @Override
                 public void onResult(ShortAddress result) {
 
                     viewModel.getAddress().setMapId( result.getMapId() );
-                    viewModel.getAddress().setAddress1( result.getAddress1() );
-                    viewModel.getAddress().setAddress2( result.getAddress2() );
-                    viewModel.notifyAddress();
+                    viewModel.setAddress1( result.getAddress1() );
+                    viewModel.setAddress2( result.getAddress2() );
                 }
 
                 @Override
@@ -192,7 +195,9 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
 
     @Override
     public void onPropertyChanged(Observable observable, int brId) {
-        if(BR.address == brId){
+
+        //TODO: refactor this condition
+        if(BR.addressException != brId ){
             checkCanSubmit();
             checkCanDelete();
         }

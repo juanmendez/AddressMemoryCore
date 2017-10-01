@@ -67,7 +67,7 @@ public class ShortAddress extends RealmObject{
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = SubmitError.emptyOrNull(name)?"":name;
     }
 
     public String getAddress1() {
@@ -75,7 +75,7 @@ public class ShortAddress extends RealmObject{
     }
 
     public void setAddress1(String address1) {
-        this.address1 = address1;
+        this.address1 = SubmitError.emptyOrNull(address1)?"":address1;
     }
 
     public String getAddress2() {
@@ -83,7 +83,7 @@ public class ShortAddress extends RealmObject{
     }
 
     public void setAddress2(String address2) {
-        this.address2 = address2;
+        this.address2 =  SubmitError.emptyOrNull(address2)?"":address2;
     }
 
     public double getLat() {
@@ -123,7 +123,7 @@ public class ShortAddress extends RealmObject{
     }
 
     public void setMapId(String mapId) {
-        this.mapId = mapId;
+        this.mapId = SubmitError.emptyOrNull(mapId)?"":mapId;
     }
 
     public Date getDateUpdated() {

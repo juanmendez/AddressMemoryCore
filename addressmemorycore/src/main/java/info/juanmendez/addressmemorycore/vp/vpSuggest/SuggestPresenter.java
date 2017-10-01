@@ -69,7 +69,9 @@ public class SuggestPresenter  implements PresenterRotated<SuggestPresenter,Sugg
             }
         });
 
-        addressService.onStart( view.getActivity() );
+        addressService.onStart(view.getActivity(), result -> {
+
+        });
 
         if( view.getPrintedAddress() != null && view.getPrintedAddress().isEmpty() ){
             view.setPrintedAddress( selectedAddress.getAddress1() );
@@ -88,7 +90,7 @@ public class SuggestPresenter  implements PresenterRotated<SuggestPresenter,Sugg
      */
     public void requestAddressSuggestions( @NonNull String query ){
         selectedAddress.setAddress1( query );
-        if( networkService.isConnected() && !query.isEmpty() ){
+        if( addressService.isConnected() && !query.isEmpty() ){
             addressService.suggestAddress(query, new Response<List<ShortAddress>>() {
                 @Override
                 public void onResult(List<ShortAddress> results ) {
@@ -100,8 +102,8 @@ public class SuggestPresenter  implements PresenterRotated<SuggestPresenter,Sugg
                     view.onError( exception );
                 }
             });
-        }else if( !networkService.isConnected() ) {
-            view.onError(new MapMemoryException("networkService has no connection"));
+        }else if( !addressService.isConnected() ) {
+            view.onError(new MapMemoryException("There is no connection"));
         }
         else if( query.isEmpty() ) {
             view.onError(new MapMemoryException("query is empty"));

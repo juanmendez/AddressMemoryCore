@@ -14,9 +14,11 @@ import info.juanmendez.addressmemorycore.models.ShortAddress;
 
 public interface AddressService {
 
-    void onStart( Activity activity );
+    void onStart(Activity activity, ShortResponse<Boolean> connectionResponse );
     void onStop();
 
     void suggestAddress( String query, Response<List<ShortAddress>> response );
     void geolocateAddress( Response<ShortAddress> response );
+
+    boolean isConnected();
 }

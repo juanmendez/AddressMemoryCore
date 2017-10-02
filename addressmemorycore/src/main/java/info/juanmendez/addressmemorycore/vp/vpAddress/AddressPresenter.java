@@ -18,10 +18,8 @@ import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.models.SubmitError;
 import info.juanmendez.addressmemorycore.modules.MapModuleBase;
 import info.juanmendez.addressmemorycore.utils.ModelUtils;
-import info.juanmendez.addressmemorycore.utils.RxUtils;
 import info.juanmendez.addressmemorycore.vp.Presenter;
 import info.juanmendez.addressmemorycore.vp.vpSuggest.SuggestPresenter;
-import rx.Subscription;
 
 /**
  * Created by Juan Mendez on 6/26/2017.
@@ -51,7 +49,13 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
 
     public static final String ADDRESS_VIEW_TAG = "viewAddressTag";
     public static final String ADDDRESS_EDIT_TAG = "editAddressTag";
-    private Subscription fileSubscription;
+
+    /**
+     * This property remind us of the last geoResult, and in case that is never requested then
+     * the address values are empty strings. This result is used to figure out if the user is
+     * editing any of the address fields.
+     */
+    private ShortAddress geoResult = new ShortAddress();
 
     @Override
     public AddressViewModel getViewModel(AddressView view) {
@@ -67,8 +71,6 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
         viewModel.setAddress( addressProvider.getSelectedAddress() );
 
         networkService.reset();
-
-        //TODO if possible make it to ShortResponse
         networkService.connect(result -> viewModel.isOnline.set(result));
         addressService.onStart(view.getActivity(), result -> viewModel.isGeoOn.set(result));
         viewModel.addOnPropertyChangedCallback(this);
@@ -79,7 +81,6 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
         networkService.disconnect();
         addressService.onStop();
 
-        RxUtils.unsubscribe(fileSubscription);
         viewModel.removeOnPropertyChangedCallback(this);
     }
 
@@ -134,7 +135,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
             addressService.geolocateAddress(new Response<ShortAddress>() {
                 @Override
                 public void onResult(ShortAddress result) {
-
+                    geoResult = result;
                     viewModel.getAddress().setMapId( result.getMapId() );
                     viewModel.setAddress1( result.getAddress1() );
                     viewModel.setAddress2( result.getAddress2() );
@@ -161,8 +162,8 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
      * if presenter gets poked about an element being focused, then it
      * checks if there is connection and open up addressSuggestFragment
      */
-    public void textFocused(){
-        if( networkService.isConnected() ){
+    public void requestAddressSuggestion(){
+        if( addressService.isConnected() ){
             navigationService.request(SuggestPresenter.SUGGEST_VIEW );
         }
     }
@@ -170,8 +171,18 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
     @Override
     public void onPropertyChanged(Observable observable, int brId) {
 
-        //TODO: refactor this condition
-        if(BR.addressException != brId ){
+        if(BR.address1==brId){
+            //when editing address1, then pop up
+            if(!viewModel.getAddress1().equals(geoResult.getAddress1())){
+                requestAddressSuggestion();
+            }
+        }
+        else
+        if(BR.address2==brId){
+            if(!viewModel.getAddress2().equals(geoResult.getAddress2())){
+                requestAddressSuggestion();
+            }
+        }else if(BR.addressException != brId ){
             checkCanSubmit();
             checkCanDelete();
         }

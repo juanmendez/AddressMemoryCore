@@ -12,6 +12,6 @@ Dependencies for this app
 
 Read [User Stories](https://github.com/juanmendez/MapMemoryCore/wiki/User-Stories)
 
-I got inspiration doing level of abstraction from this video
+I got inspiration doing TDD level of abstraction from this video
 
 [![Alt text for your video](https://img.youtube.com/vi/RLo6hs1uDLA/0.jpg)](http://www.youtube.com/watch?v=RLo6hs1uDLA)

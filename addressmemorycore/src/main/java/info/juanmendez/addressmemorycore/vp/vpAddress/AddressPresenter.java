@@ -151,6 +151,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
                     viewModel.getAddress().setMapId( result.getMapId() );
                     viewModel.setAddress1( result.getAddress1() );
                     viewModel.setAddress2( result.getAddress2() );
+                    viewModel.notifyAddress();
                 }
 
                 @Override
@@ -160,20 +161,6 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
             });
         }else{
             viewModel.setAddressException( new MapMemoryException("networkService has no connection") );
-        }
-    }
-
-    public void setAddressName(String name ){
-        viewModel.getAddress().setName( name );
-        viewModel.notifyAddress();
-    }
-
-    public void setAddressLines(String addressLine1, String addressLine2 ){
-
-        if( !networkService.isConnected() ){
-            viewModel.getAddress().setAddress1( addressLine1 );
-            viewModel.getAddress().setAddress2( addressLine2 );
-            viewModel.notifyAddress();
         }
     }
 

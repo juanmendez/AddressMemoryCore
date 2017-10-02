@@ -171,18 +171,15 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
     @Override
     public void onPropertyChanged(Observable observable, int brId) {
 
-        if(BR.address1==brId){
-            //when editing address1, then pop up
-            if(!viewModel.getAddress1().equals(geoResult.getAddress1())){
-                requestAddressSuggestion();
-            }
+        if( BR.address1==brId && !viewModel.getAddress1().equals(geoResult.getAddress1()) ){
+            requestAddressSuggestion();
         }
         else
-        if(BR.address2==brId){
-            if(!viewModel.getAddress2().equals(geoResult.getAddress2())){
-                requestAddressSuggestion();
-            }
-        }else if(BR.addressException != brId ){
+        if( BR.address2==brId && !viewModel.getAddress2().equals(geoResult.getAddress2()) ){
+            requestAddressSuggestion();
+        }
+
+        if( BR.addressException != brId ){
             checkCanSubmit();
             checkCanDelete();
         }

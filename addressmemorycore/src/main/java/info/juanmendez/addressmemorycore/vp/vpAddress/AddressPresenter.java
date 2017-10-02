@@ -5,6 +5,7 @@ import android.databinding.Observable;
 
 import javax.inject.Inject;
 
+import info.juanmendez.addressmemorycore.BR;
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.AddressService;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
@@ -20,8 +21,6 @@ import info.juanmendez.addressmemorycore.utils.ModelUtils;
 import info.juanmendez.addressmemorycore.utils.RxUtils;
 import info.juanmendez.addressmemorycore.vp.Presenter;
 import info.juanmendez.addressmemorycore.vp.vpSuggest.SuggestPresenter;
-
-import info.juanmendez.addressmemorycore.BR;
 import rx.Subscription;
 
 /**
@@ -70,20 +69,8 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
         networkService.reset();
 
         //TODO if possible make it to ShortResponse
-        networkService.connect(new Response<Boolean>() {
-            @Override
-            public void onResult(Boolean result) {
-                viewModel.isOnline.set(result);
-            }
-
-            @Override
-            public void onError(Exception exception) {
-                viewModel.setAddressException( exception );
-            }
-        });
-
+        networkService.connect(result -> viewModel.isOnline.set(result));
         addressService.onStart(view.getActivity(), result -> viewModel.isGeoOn.set(result));
-
         viewModel.addOnPropertyChangedCallback(this);
     }
 

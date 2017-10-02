@@ -6,6 +6,6 @@ package info.juanmendez.addressmemorycore.dependencies;
  * contact@juanmendez.info
  */
 
-public interface ShortResponse<T> {
+public interface QuickResponse<T> {
     void onResult(T result );
 }

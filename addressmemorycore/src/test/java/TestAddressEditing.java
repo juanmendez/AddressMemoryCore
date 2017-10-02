@@ -9,6 +9,7 @@ import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.AddressService;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.dependencies.NetworkService;
+import info.juanmendez.addressmemorycore.dependencies.QuickResponse;
 import info.juanmendez.addressmemorycore.dependencies.Response;
 import info.juanmendez.addressmemorycore.models.AddressViewModel;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
@@ -118,10 +119,10 @@ public class TestAddressEditing {
         doReturn(true).when(networkServiceMocked).isConnected();
 
         doAnswer(invocation -> {
-            Response<Boolean> response = invocation.getArgumentAt(0, Response.class);
+            QuickResponse<Boolean> response = invocation.getArgumentAt(0, QuickResponse.class);
             response.onResult(true);
             return null;
-        }).when( networkServiceMocked ).connect(any(Response.class));
+        }).when( networkServiceMocked ).connect(any(QuickResponse.class));
 
         doAnswer( invocation -> {
             Response<List<ShortAddress>> response = invocation.getArgumentAt(1, Response.class );

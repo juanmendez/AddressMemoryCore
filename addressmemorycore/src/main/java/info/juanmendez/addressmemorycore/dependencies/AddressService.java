@@ -14,7 +14,7 @@ import info.juanmendez.addressmemorycore.models.ShortAddress;
 
 public interface AddressService {
 
-    void onStart(Activity activity, ShortResponse<Boolean> connectionResponse );
+    void onStart(Activity activity, QuickResponse<Boolean> connectionResponse );
     void onStop();
 
     void suggestAddress( String query, Response<List<ShortAddress>> response );

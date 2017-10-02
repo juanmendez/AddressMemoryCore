@@ -9,6 +9,6 @@ package info.juanmendez.addressmemorycore.dependencies;
 public interface NetworkService {
     boolean isConnected();
     void reset();
-    void connect( Response<Boolean> response );
+    void connect( QuickResponse<Boolean> response );
     void disconnect();
 }

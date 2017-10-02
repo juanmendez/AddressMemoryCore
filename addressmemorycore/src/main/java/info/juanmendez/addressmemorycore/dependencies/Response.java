@@ -6,6 +6,6 @@ package info.juanmendez.addressmemorycore.dependencies;
  * contact@juanmendez.info
  */
 
-public interface Response<T> extends ShortResponse<T> {
+public interface Response<T> extends QuickResponse<T> {
     void onError( Exception exception );
 }

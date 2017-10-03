@@ -1,11 +1,12 @@
 package info.juanmendez.addressmemorycore.vp.vpSuggest;
 
-import android.support.annotation.NonNull;
+import android.databinding.Observable;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
+import info.juanmendez.addressmemorycore.BR;
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.AddressService;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
@@ -13,7 +14,7 @@ import info.juanmendez.addressmemorycore.dependencies.NetworkService;
 import info.juanmendez.addressmemorycore.dependencies.Response;
 import info.juanmendez.addressmemorycore.models.MapMemoryException;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
-import info.juanmendez.addressmemorycore.models.SubmitError;
+import info.juanmendez.addressmemorycore.models.SuggestAddressViewModel;
 import info.juanmendez.addressmemorycore.modules.MapModuleBase;
 import info.juanmendez.addressmemorycore.vp.PresenterRotated;
 
@@ -23,7 +24,7 @@ import info.juanmendez.addressmemorycore.vp.PresenterRotated;
  * contact@juanmendez.info
  */
 
-public class SuggestPresenter  implements PresenterRotated<SuggestPresenter,SuggestView> {
+public class SuggestPresenter extends Observable.OnPropertyChangedCallback implements PresenterRotated<SuggestAddressViewModel,SuggestView> {
 
     @Inject
     AddressProvider addressProvider;
@@ -37,94 +38,97 @@ public class SuggestPresenter  implements PresenterRotated<SuggestPresenter,Sugg
     @Inject
     NavigationService navigationService;
 
-    private ShortAddress selectedAddress;
-
     private SuggestView view;
+    private SuggestAddressViewModel viewModel;
     private boolean rotated = false;
 
     public static final String SUGGEST_VIEW = "suggest_view";
 
     @Override
-    public SuggestPresenter getViewModel(SuggestView view) {
+    public SuggestAddressViewModel getViewModel(SuggestView view) {
         this.view = view;
         MapModuleBase.getInjector().inject(this);
-        return this;
+        viewModel = new SuggestAddressViewModel();
+        viewModel.addOnPropertyChangedCallback(this);
+        return viewModel;
     }
 
     @Override
     public void active(String action) {
-
-        selectedAddress = addressProvider.getSelectedAddress();
         networkService.reset();
-        networkService.connect(new Response<Boolean>() {
-            @Override
-            public void onResult(Boolean result) {
 
-                if( !rotated && !SubmitError.emptyOrNull(selectedAddress.getAddress1()))
-                    requestAddressSuggestions( selectedAddress.getAddress1() );
-            }
-
-            @Override
-            public void onError(Exception exception) {
+        //We update addressEdited in that way we generate matching addresses.
+        //We don't do that if the device has only rotated.
+        networkService.connect(result -> {
+            if( !rotated ){
+                viewModel.setSelectedAddress(addressProvider.getSelectedAddress());
             }
         });
-
-        addressService.onStart(view.getActivity(), result -> {
-
-        });
-
-        if( view.getPrintedAddress() != null && view.getPrintedAddress().isEmpty() ){
-            view.setPrintedAddress( selectedAddress.getAddress1() );
-        }
     }
 
     @Override
-    public void inactive(Boolean rotated) {
+    public void inactive(Boolean isRotated) {
+        this.rotated = isRotated;
         networkService.disconnect();
         addressService.onStop();
-        this.rotated = rotated;
+        viewModel.removeOnPropertyChangedCallback(this);
     }
 
     /**
-     * View is requesting addresses by query which is replied asynchronously
+     * Through addressService we look for matching addresses and update the viewModel
+     * so the matching address are reflected in the view.
+     * TODO: make exception messages come from resource strings
      */
-    public void requestAddressSuggestions( @NonNull String query ){
-        selectedAddress.setAddress1( query );
-        if( addressService.isConnected() && !query.isEmpty() ){
+    private void searchForMatchingAddresses(){
+
+        String query = viewModel.getAddressEdited();
+
+        if( !addressService.isConnected() ) {
+            viewModel.setAddressException(new MapMemoryException("There is no connection"));
+        } else if( query.trim().isEmpty() ) {
+            viewModel.clearMatchingResults();
+        } else {
             addressService.suggestAddress(query, new Response<List<ShortAddress>>() {
                 @Override
                 public void onResult(List<ShortAddress> results ) {
-                    view.setSuggestedAddresses( results );
+                    viewModel.setMatchingAddresses(results);
                 }
 
                 @Override
                 public void onError(Exception exception) {
-                    view.onError( exception );
+                    viewModel.setAddressException(exception);
                 }
             });
-        }else if( !addressService.isConnected() ) {
-            view.onError(new MapMemoryException("There is no connection"));
-        }
-        else if( query.isEmpty() ) {
-            view.onError(new MapMemoryException("query is empty"));
         }
     }
 
-
     /**
-     * View is providing a selected address
+     * User has selected one address!
      */
-    public void setAddressSelected( @NonNull  ShortAddress address ){
-        selectedAddress.setAddress1( address.getAddress1() );
-        selectedAddress.setAddress2( address.getAddress2() );
-        selectedAddress.setMapId( address.getMapId() );
-        selectedAddress.setLat( address.getLat() );
-        selectedAddress.setLon( address.getLon() );
-        navigationService.goBack();
+    public void updateFromPickedAddress(){
+        ShortAddress pickedAddress = viewModel.getPickedMatchingAddress();
+        if( pickedAddress != null ){
+            ShortAddress selectedAddress = addressProvider.getSelectedAddress();
+            selectedAddress.setAddress1( pickedAddress.getAddress1() );
+            selectedAddress.setAddress2( pickedAddress.getAddress2() );
+            selectedAddress.setMapId( pickedAddress.getMapId() );
+            selectedAddress.setLat( pickedAddress.getLat() );
+            selectedAddress.setLon( pickedAddress.getLon() );
+            navigationService.goBack();
+        }
     }
 
     @Override
     public Boolean getRotated() {
         return rotated;
+    }
+
+    @Override
+    public void onPropertyChanged(Observable observable, int brId) {
+        if( brId == BR.addressEdited){
+            searchForMatchingAddresses();
+        }else if( brId == BR.pickedMatchingAddress ){
+            updateFromPickedAddress();
+        }
     }
 }

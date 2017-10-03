@@ -1,8 +1,5 @@
 package info.juanmendez.addressmemorycore.vp.vpSuggest;
 
-import java.util.List;
-
-import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.vp.FragmentNav;
 
 /**
@@ -13,12 +10,12 @@ import info.juanmendez.addressmemorycore.vp.FragmentNav;
 
 public interface SuggestView extends FragmentNav {
 
-    void setPrintedAddress(String addressText );
+    /*void setPrintedAddress(String addressText );
 
     String getPrintedAddress();
 
     //show all addresses matching a query-address from the fragment
     void setSuggestedAddresses(List<ShortAddress> addresses );
 
-    void onError(Exception exception);
+    void onError(Exception exception);*/
 }

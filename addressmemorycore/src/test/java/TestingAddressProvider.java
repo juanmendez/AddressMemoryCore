@@ -100,7 +100,7 @@ public class TestingAddressProvider {
 
     @Test
     public void testAsync(){
-        provider.getAddressAsync(1).subscribe(shortAddress -> {
+        provider.getAddressAsync(4).subscribe(shortAddress -> {
            assertNotNull(shortAddress);
         });
     }

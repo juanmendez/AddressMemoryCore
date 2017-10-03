@@ -12,7 +12,9 @@ import info.juanmendez.addressmemorycore.dependencies.NetworkService;
 import info.juanmendez.addressmemorycore.dependencies.QuickResponse;
 import info.juanmendez.addressmemorycore.dependencies.Response;
 import info.juanmendez.addressmemorycore.models.AddressViewModel;
+import info.juanmendez.addressmemorycore.models.MapMemoryException;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
+import info.juanmendez.addressmemorycore.models.SubmitError;
 import info.juanmendez.addressmemorycore.modules.MapModuleBase;
 import info.juanmendez.addressmemorycore.vp.FragmentNav;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressPresenter;
@@ -21,6 +23,7 @@ import info.juanmendez.mapmemorycore.addressmemorycore.TestApp;
 import info.juanmendez.mapmemorycore.addressmemorycore.module.DaggerMapCoreComponent;
 import info.juanmendez.mapmemorycore.addressmemorycore.module.MapCoreModule;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -32,6 +35,7 @@ import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.doAnswer;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.spy;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
  * Created by Juan Mendez on 9/27/2017.
@@ -55,7 +59,6 @@ public class TestAddressEditing {
     @Before
     public void before() throws Exception {
 
-        getAddresses();
         MapModuleBase.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestApp())).build() );
 
         addressView = mock( AddressView.class );
@@ -116,7 +119,7 @@ public class TestAddressEditing {
     }
 
     /**
-     * Through the viewModel we are able to determine
+     * Through the suggestViewModel we are able to determine
      * if user is editng address1, or address2.
      * If there is any geolocation update then we use those values
      * to figure out for editing from the presenter rather than the view.
@@ -156,18 +159,80 @@ public class TestAddressEditing {
         presenter.inactive(false);
     }
 
-    //<editor-fold desc="utils">
-    void applySuccessfulResults(){
+    @Test
+    public void testSavingAddress(){
 
         String fileLocation = "absolute_path";
+        presenter.active("");
+        ShortAddress selectedAddress = provider.getSelectedAddress();
+
+        //first item from addresses is selected to update selected address
+        presenter.requestAddressByGeolocation();
+        assertEquals( addresses.get(0).getAddress1(), selectedAddress.getAddress1());
+
+        Response<ShortAddress> response = mock( Response.class );
+        presenter.saveAddress(response);
+
+        //we don't provide name, so that is an error saving!!
+        verify( response ).onError(any(Exception.class));
+
+        //lets do that then!
+        reset( response );
+        viewModel.setName("Home");
+        presenter.saveAddress(response);
+
+        //fantastic, now this worked!
+        verify(response).onResult(any(ShortAddress.class));
+    }
+
+    @Test
+    public void testSavingAddressWithErrors(){
+
+        String errorCode = "funkyError";
+
+        AddressProvider spiedProvider = spy( provider );
+        Whitebox.setInternalState(presenter, "addressProvider", spiedProvider );
+
+        doAnswer( invocation -> {
+            List<SubmitError> errors = new ArrayList<SubmitError>();
+            errors.add( new SubmitError(errorCode, "lucky"));
+            return errors;
+        }).when( spiedProvider ).validate(any(ShortAddress.class));
+
+        spiedProvider.selectAddress( new ShortAddress());
+
+        Response<ShortAddress> response = mock( Response.class );
+
+        presenter.saveAddress( response );
+        verify( response ).onError(any(MapMemoryException.class));
+
+        reset(response);
+        when( spiedProvider.validate(any(ShortAddress.class)) ).thenReturn( new ArrayList<SubmitError>());
+
+        doAnswer(invocation -> {
+            ShortAddress address = invocation.getArgumentAt(0, ShortAddress.class );
+            Response<ShortAddress>  thisResponse = invocation.getArgumentAt(1, Response.class );
+            thisResponse.onResult( address );
+            return null;
+        }).when(spiedProvider).updateAddressAsync(any(ShortAddress.class), any(Response.class));
+
+        presenter.saveAddress( response );
+        verify( response ).onResult(any(ShortAddress.class));
+    }
+
+    //<editor-fold desc="utils">
+    void applySuccessfulResults(){
+        setAddresses();
 
         doReturn(true).when(networkServiceMocked).isConnected();
 
         doAnswer(invocation -> {
-            QuickResponse<Boolean> response = invocation.getArgumentAt(0, QuickResponse.class);
+            QuickResponse<Boolean> response = invocation.getArgumentAt(0, Response.class);
             response.onResult(true);
             return null;
         }).when( networkServiceMocked ).connect(any(QuickResponse.class));
+
+        doReturn(true).when( addressServiceMocked ).isConnected();
 
         doAnswer( invocation -> {
             Response<List<ShortAddress>> response = invocation.getArgumentAt(1, Response.class );
@@ -183,7 +248,8 @@ public class TestAddressEditing {
             return null;
         }).when( addressServiceMocked ).geolocateAddress( any(Response.class) );
 
-        doReturn(true).when( addressServiceMocked ).isConnected();
+
+
 
         doReturn( navigationTag ).when( navigationService ).getNavigationTag(any(FragmentNav.class));
 
@@ -192,7 +258,7 @@ public class TestAddressEditing {
         }
     }
 
-    void getAddresses(){
+    private List<ShortAddress> setAddresses(){
 
         ShortAddress address;
         //lets add an address, and see if addressesView has updated its addresses
@@ -219,6 +285,8 @@ public class TestAddressEditing {
         address.setAddress1("3 N. State");
         address.setAddress2( "Chicago, 60641" );
         addresses.add( address );
+
+        return addresses;
     }
     //</editor-fold>
 }

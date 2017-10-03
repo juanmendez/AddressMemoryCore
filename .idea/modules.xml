@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AddressMemoryCore.iml" filepath="$PROJECT_DIR$/AddressMemoryCore.iml" />
       <module fileurl="file://$PROJECT_DIR$/addressmemorycore/addressmemorycore.iml" filepath="$PROJECT_DIR$/addressmemorycore/addressmemorycore.iml" />
-      <module fileurl="file://C:\codes\Android\juanmendez\MapMemory\AddressMemoryCore\mapmemorycore\mapmemorycore.iml" filepath="C:\codes\Android\juanmendez\MapMemory\AddressMemoryCore\mapmemorycore\mapmemorycore.iml" />
     </modules>
   </component>
 </project>

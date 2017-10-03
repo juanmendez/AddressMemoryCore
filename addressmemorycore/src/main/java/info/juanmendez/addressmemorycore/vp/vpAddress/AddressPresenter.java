@@ -103,9 +103,10 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
             addressProvider.updateAddressAsync(viewModel.getAddress(), new Response<ShortAddress>() {
                 @Override
                 public void onResult(ShortAddress result) {
-                    viewModel.setAddress(result);
                     addressProvider.selectAddress( result );
                     widgetService.refreshAddressList();
+                    viewModel.setAddress(result);
+                    response.onResult(result);
                 }
 
                 @Override

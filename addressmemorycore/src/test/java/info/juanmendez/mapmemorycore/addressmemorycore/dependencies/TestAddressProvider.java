@@ -3,13 +3,14 @@ package info.juanmendez.mapmemorycore.addressmemorycore.dependencies;
 import java.util.ArrayList;
 import java.util.List;
 
-import info.juanmendez.addressmemorycore.dependencies.Response;
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
+import info.juanmendez.addressmemorycore.dependencies.Response;
 import info.juanmendez.addressmemorycore.models.AddressFields;
-import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.models.MapMemoryException;
+import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.models.SubmitError;
 import rx.Observable;
+import rx.subjects.BehaviorSubject;
 
 
 /**
@@ -22,6 +23,7 @@ public class TestAddressProvider implements AddressProvider {
 
     List<ShortAddress> addresses = new ArrayList<>();
     ShortAddress selectedAddress = new ShortAddress();
+    long lastId;
 
     int totalAdded=0;
 
@@ -42,7 +44,9 @@ public class TestAddressProvider implements AddressProvider {
 
     @Override
     public Observable<List<ShortAddress>> getAddressesAsync() {
-        return null;
+        BehaviorSubject<List<ShortAddress>> subject = BehaviorSubject.create();
+        subject.onNext( addresses );
+        return subject;
     }
 
     @Override
@@ -59,24 +63,28 @@ public class TestAddressProvider implements AddressProvider {
 
     @Override
     public Observable<ShortAddress> getAddressAsync(long addressId) {
-        return null;
+        BehaviorSubject<ShortAddress> subject = BehaviorSubject.create();
+        subject.onNext( getAddress(addressId));
+        return subject;
     }
 
     @Override
     public ShortAddress updateAddress(ShortAddress updated) {
 
+        long currentId;
+
         //here we update
         for(ShortAddress address: addresses ){
+            currentId = updated.getAddressId();
 
-            if( updated.getAddressId() == address.getAddressId() ){
+            if( currentId != 0 && currentId == address.getAddressId() ){
                 int location = addresses.indexOf(address);
-
                 return addresses.set( location, updated );
             }
-
         }
 
         //here we add
+        updated.setAddressId(lastId+=1);
         addresses.add( updated );
         totalAdded++;
         return updated;

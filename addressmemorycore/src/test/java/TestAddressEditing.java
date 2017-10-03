@@ -26,42 +26,46 @@ import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.doAnswer;
 import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.spy;
 
 /**
  * Created by Juan Mendez on 9/27/2017.
  * www.juanmendez.info
  * contact@juanmendez.info
  */
-
 public class TestAddressEditing {
     AddressView addressView;
-    AddressPresenter addressPresenter;
+    AddressPresenter presenter;
 
     NetworkService networkServiceMocked;
     AddressService addressServiceMocked;
     NavigationService navigationService;
-    private AddressProvider provider;
+    AddressProvider provider;
+
     String navigationTag = "helloNavigation";
-    List<ShortAddress> addresses;
+    List<ShortAddress> addresses = new ArrayList<>();
 
     AddressViewModel viewModel;
 
     @Before
     public void before() throws Exception {
 
-        addresses = getAddresses();
+        getAddresses();
         MapModuleBase.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestApp())).build() );
 
         addressView = mock( AddressView.class );
-        addressPresenter = new AddressPresenter();
-        viewModel = addressPresenter.getViewModel(addressView);
+        presenter = spy(new AddressPresenter());
+        viewModel = presenter.getViewModel(addressView);
 
-        networkServiceMocked = Whitebox.getInternalState(addressPresenter, "networkService");
-        addressServiceMocked = Whitebox.getInternalState(addressPresenter, "addressService");
-        navigationService = Whitebox.getInternalState(addressPresenter, "navigationService");
-        provider = Whitebox.getInternalState( addressPresenter, "addressProvider" );
+        networkServiceMocked = Whitebox.getInternalState(presenter, "networkService");
+        addressServiceMocked = Whitebox.getInternalState(presenter, "addressService");
+        navigationService = Whitebox.getInternalState(presenter, "navigationService");
+        provider = Whitebox.getInternalState(presenter, "addressProvider" );
 
         //make each mocked object answer with positive results such as networkService.isConnected() returning true.
         applySuccessfulResults();
@@ -79,14 +83,14 @@ public class TestAddressEditing {
     @Test
     public void textNetwork(){
 
-        addressPresenter.active("");
+        presenter.active("");
         assertTrue( viewModel.isOnline.get() );
-        addressPresenter.inactive(false);
+        presenter.inactive(false);
     }
 
     @Test
     public void testAddressValidation(){
-        addressPresenter.active("");
+        presenter.active("");
         assertFalse( viewModel.canSubmit.get() );
 
         ShortAddress address = viewModel.getAddress();
@@ -108,7 +112,48 @@ public class TestAddressEditing {
         viewModel.notifyAddress();
         assertTrue( viewModel.canDelete.get() );
 
-        addressPresenter.inactive(false);
+        presenter.inactive(false);
+    }
+
+    /**
+     * Through the viewModel we are able to determine
+     * if user is editng address1, or address2.
+     * If there is any geolocation update then we use those values
+     * to figure out for editing from the presenter rather than the view.
+     */
+    @Test
+    public void requestAddressSuggestion(){
+        presenter.active("");
+
+        //ok editing before geolocation update
+        reset(presenter);
+        viewModel.setAddress2(viewModel.getAddress2() + "...");
+        verify(presenter).requestAddressSuggestion();
+
+
+        //now we request an update for geolocation.
+        presenter.requestAddressByGeolocation();
+
+        ShortAddress geoResult = Whitebox.getInternalState(presenter, "geoResult");
+        assertFalse( geoResult.getAddress1().isEmpty() );
+        assertFalse( geoResult.getAddress2().isEmpty() );
+
+        //no change.. so there must be no address suggestion
+        reset(presenter);
+        viewModel.setAddress1(geoResult.getAddress1());
+        verify(presenter, times(0)).requestAddressSuggestion();
+
+        //so if user updates address1, we fire address sugestion
+        reset(presenter);
+        viewModel.setAddress1("0 South State");
+        verify(presenter).requestAddressSuggestion();
+
+        //same happens if we update address2
+        reset(presenter);
+        viewModel.setAddress2("Madison, Wisconsin");
+        verify(presenter).requestAddressSuggestion();
+
+        presenter.inactive(false);
     }
 
     //<editor-fold desc="utils">
@@ -138,6 +183,7 @@ public class TestAddressEditing {
             return null;
         }).when( addressServiceMocked ).geolocateAddress( any(Response.class) );
 
+        doReturn(true).when( addressServiceMocked ).isConnected();
 
         doReturn( navigationTag ).when( navigationService ).getNavigationTag(any(FragmentNav.class));
 
@@ -146,9 +192,7 @@ public class TestAddressEditing {
         }
     }
 
-    List<ShortAddress> getAddresses(){
-
-        List<ShortAddress> addresses = new ArrayList<>();
+    void getAddresses(){
 
         ShortAddress address;
         //lets add an address, and see if addressesView has updated its addresses
@@ -175,8 +219,6 @@ public class TestAddressEditing {
         address.setAddress1("3 N. State");
         address.setAddress2( "Chicago, 60641" );
         addresses.add( address );
-
-        return addresses;
     }
     //</editor-fold>
 }

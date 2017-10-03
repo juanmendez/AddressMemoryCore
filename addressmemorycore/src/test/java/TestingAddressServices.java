@@ -85,7 +85,7 @@ public class TestingAddressServices {
         navigationService = (NavigationService) Whitebox.getInternalState(addressPresenter, "navigationService");
 
         //addressService and networkService are not singletons, so we want to save ourselves doing extra work
-        //by using the same mocked objects from addressPresenter
+        //by using the same mocked objects from presenter
         Whitebox.setInternalState( suggestPresenter, "addressService",addressServiceMocked );
         Whitebox.setInternalState( suggestPresenter, "networkService",networkServiceMocked );
 
@@ -144,7 +144,7 @@ public class TestingAddressServices {
     public void testGeolocation(){
 
       /*  //view suggested address by geolocation
-        addressPresenter.requestAddressByGeolocation();
+        presenter.requestAddressByGeolocation();
         verify(addressView).onAddressResult( any(ShortAddress.class));
 
         reset(addressView);
@@ -157,7 +157,7 @@ public class TestingAddressServices {
         }).when(addressServiceMocked).geolocateAddress(any(Response.class));
 
         //view requests addresses by geolocation
-        addressPresenter.requestAddressByGeolocation();
+        presenter.requestAddressByGeolocation();
         verify(addressView).onAddressError( any(Exception.class) );*/
     }
 
@@ -166,7 +166,7 @@ public class TestingAddressServices {
 
         /**
          * the user looks for suggested addresses, selects one
-         * and it is verified if the addressPresenter's editAddress is the first one from
+         * and it is verified if the presenter's editAddress is the first one from
          * getAddresses()
          */
         doAnswer(invocation -> {
@@ -200,10 +200,10 @@ public class TestingAddressServices {
 
         /*String fileLocation = "absolute_path";
 
-        addressPresenter.requestAddressByGeolocation();
+        presenter.requestAddressByGeolocation();
         verify(addressView).onAddressResult( any(ShortAddress.class));
 
-        AddressPresenter spiedPresenter = spy(addressPresenter);
+        AddressPresenter spiedPresenter = spy(presenter);
         doAnswer(invocation -> {
             Response<ShortAddress> response = invocation.getArgumentAt(0, Response.class );
             response.onResult(new ShortAddress());

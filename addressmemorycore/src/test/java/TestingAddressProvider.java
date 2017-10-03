@@ -2,22 +2,26 @@ import org.junit.Before;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.Response;
 import info.juanmendez.addressmemorycore.models.AddressViewModel;
-import info.juanmendez.mapmemorycore.addressmemorycore.TestApp;
-import info.juanmendez.mapmemorycore.addressmemorycore.module.DaggerMapCoreComponent;
-import info.juanmendez.mapmemorycore.addressmemorycore.module.MapCoreModule;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.modules.MapModuleBase;
 import info.juanmendez.addressmemorycore.utils.ModelUtils;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressPresenter;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressView;
+import info.juanmendez.mapmemorycore.addressmemorycore.TestApp;
+import info.juanmendez.mapmemorycore.addressmemorycore.module.DaggerMapCoreComponent;
+import info.juanmendez.mapmemorycore.addressmemorycore.module.MapCoreModule;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.spy;
 
 /**
  * Created by Juan Mendez on 7/9/2017.
@@ -32,38 +36,42 @@ import static org.powermock.api.mockito.PowerMockito.mock;
  * work in parallel and can be switched while testing. The good news is DroidAddressProvider is set to work
  * with our Android environment.
  */
-
-public class TestAddressProvider {
+public class TestingAddressProvider {
 
     private AddressViewModel viewModel;
     private AddressView viewMocked;
     private AddressPresenter presenter;
-    private AddressProvider provider;
+
+    String navigationTag = "helloNavigation";
+    AddressProvider provider;
+
+    List<ShortAddress> addresses = new ArrayList<>();
 
     @Before
     public void before() throws Exception {
+        getAddresses();
         MapModuleBase.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestApp())).build() );
 
         viewMocked = mock( AddressView.class );
-        presenter = new AddressPresenter();
+        presenter = spy(new AddressPresenter());
         viewModel = presenter.getViewModel(viewMocked);
 
-        //through MVP, get your hands on the addressPresenter, and subsequently get its dagger dependency
-        provider = Whitebox.getInternalState( presenter, "addressProvider" );
+        //through MVP, get your hands on the presenter, and subsequently get its dagger dependency
+        provider = Whitebox.getInternalState(presenter, "addressProvider" );
 
-        //in another function just insert addresses
-        insertAddresses( provider );
+        //make each mocked object answer with positive results such as networkService.isConnected() returning true.
+        applySuccessfulResults();
     }
 
     @Test
     public void testAddressProvider(){
 
-        assertEquals(provider.countAddresses(), 4);
+        assertEquals(provider.countAddresses(), addresses.size());
 
         provider.deleteAddressAsync(1, new Response<Boolean>() {
             @Override
             public void onResult(Boolean result) {
-                assertEquals( provider.countAddresses(), 3 );
+                assertEquals( provider.countAddresses(), addresses.size()-1 );
             }
 
             @Override
@@ -90,33 +98,48 @@ public class TestAddressProvider {
         assertTrue( "same lat lon", cloned.getLat()==firstAddress.getLat());
     }
 
-    private void insertAddresses( AddressProvider provider ){
+    @Test
+    public void testAsync(){
+        provider.getAddressAsync(1).subscribe(shortAddress -> {
+           assertNotNull(shortAddress);
+        });
+    }
+
+    //<editor-fold desc="utils">
+    void applySuccessfulResults(){
+
+        for(ShortAddress address: addresses ){
+            provider.updateAddress( address );
+        }
+    }
+
+    void getAddresses(){
 
         ShortAddress address;
         //lets add an address, and see if addressesView has updated its addresses
-        address = new ShortAddress(provider.getNextPrimaryKey());
+        address = new ShortAddress();
         address.setName( "1");
         address.setAddress1("0 N. State");
         address.setAddress2( "Chicago, 60641" );
-        address.setPhotoLocation( "photo.jpg");
-        provider.updateAddress( address );
+        addresses.add( address );
 
-        address = new ShortAddress(provider.getNextPrimaryKey());
+        address = new ShortAddress();
         address.setName( "2");
         address.setAddress1("1 N. State");
         address.setAddress2( "Chicago, 60641" );
-        provider.updateAddress( address );
+        addresses.add( address );
 
-        address = new ShortAddress(provider.getNextPrimaryKey());
+        address = new ShortAddress();
         address.setName( "3");
         address.setAddress1("2 N. State");
         address.setAddress2( "Chicago, 60641" );
-        provider.updateAddress( address );
+        addresses.add( address );
 
-        address = new ShortAddress(provider.getNextPrimaryKey());
+        address = new ShortAddress();
         address.setName( "4");
         address.setAddress1("3 N. State");
         address.setAddress2( "Chicago, 60641" );
-        provider.updateAddress( address );
+        addresses.add( address );
     }
+    //</editor-fold>
 }

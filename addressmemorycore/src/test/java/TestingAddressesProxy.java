@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
-import info.juanmendez.mapmemorycore.addressmemorycore.TestApp;
-import info.juanmendez.mapmemorycore.addressmemorycore.module.DaggerMapCoreComponent;
-import info.juanmendez.mapmemorycore.addressmemorycore.module.MapCoreModule;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.modules.MapModuleBase;
 import info.juanmendez.addressmemorycore.vp.vpAddresses.AddressesProxy;
+import info.juanmendez.mapmemorycore.addressmemorycore.TestApp;
+import info.juanmendez.mapmemorycore.addressmemorycore.module.DaggerMapCoreComponent;
+import info.juanmendez.mapmemorycore.addressmemorycore.module.MapCoreModule;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -47,11 +47,17 @@ public class TestingAddressesProxy{
             assertTrue( address.isValid() );
         }
 
+        proxy.refresh();
         assertEquals( provider.countAddresses(), proxy.getAddresses().size() );
 
         //show these objects were not created by realm.
-        for( ShortAddress address: proxy.getAddresses() ){
-            assertFalse( address.isValid() );
+        long id;
+        ShortAddress currentAddress;
+
+        for( int i = 0; i < proxy.getAddresses().size(); i++ ){
+            currentAddress = proxy.getAddresses().get(i);
+            id = currentAddress.getAddressId();
+            assertFalse( currentAddress == provider.getAddress(id));
         }
     }
 

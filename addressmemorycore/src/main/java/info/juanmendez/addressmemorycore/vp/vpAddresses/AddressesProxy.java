@@ -30,8 +30,7 @@ public class AddressesProxy {
         refresh();
     }
 
-    private void refresh(){
-
+    public void refresh(){
         subscription = addressProvider.getAddressesAsync().subscribe(shortAddresses -> {
             addresses.clear();
 

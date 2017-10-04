@@ -1,9 +1,10 @@
-package info.juanmendez.addressmemorycore.models;
+package info.juanmendez.addressmemorycore.vp.vpAddress;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.databinding.ObservableBoolean;
 import info.juanmendez.addressmemorycore.BR;
+import info.juanmendez.addressmemorycore.models.ShortAddress;
 
 
 /**

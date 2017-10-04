@@ -7,15 +7,6 @@ import info.juanmendez.addressmemorycore.vp.FragmentNav;
  * www.juanmendez.info
  * contact@juanmendez.info
  */
-
 public interface SuggestView extends FragmentNav {
-
-    /*void setPrintedAddress(String addressText );
-
-    String getPrintedAddress();
-
-    //show all addresses matching a query-address from the fragment
-    void setSuggestedAddresses(List<ShortAddress> addresses );
-
-    void onError(Exception exception);*/
+    //all methods required are gone due to the SuggestViewModel
 }

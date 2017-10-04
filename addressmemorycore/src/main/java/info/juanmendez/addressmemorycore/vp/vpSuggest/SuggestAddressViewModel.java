@@ -1,4 +1,4 @@
-package info.juanmendez.addressmemorycore.models;
+package info.juanmendez.addressmemorycore.vp.vpSuggest;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import info.juanmendez.addressmemorycore.BR;
+import info.juanmendez.addressmemorycore.models.ShortAddress;
 
 
 /**

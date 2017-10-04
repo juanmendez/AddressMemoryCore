@@ -31,7 +31,7 @@ public class TestingAddressesProxy{
     }
 
     @Test
-    public void testProxy(){
+    public void testProxy() throws Exception {
         AddressesProxy proxy = new AddressesProxy();
         AddressProvider provider = Whitebox.getInternalState( proxy, "addressProvider" );
         assertNotNull( provider );
@@ -47,13 +47,16 @@ public class TestingAddressesProxy{
             assertTrue( address.isValid() );
         }
 
-        proxy.refresh();
+        //busted, provider updates happen after proxy.refresh() is called..
+        //so we make a secret call to make ends meet.
+        Whitebox.invokeMethod(proxy, "refresh" );
         assertEquals( provider.countAddresses(), proxy.getAddresses().size() );
 
         //show these objects were not created by realm.
         long id;
         ShortAddress currentAddress;
 
+        //proxy provides copies of realmObject, as they raised errors when used outside the main thread
         for( int i = 0; i < proxy.getAddresses().size(); i++ ){
             currentAddress = proxy.getAddresses().get(i);
             id = currentAddress.getAddressId();

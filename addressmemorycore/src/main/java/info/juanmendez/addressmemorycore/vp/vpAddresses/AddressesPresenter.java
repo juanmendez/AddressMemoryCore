@@ -39,7 +39,6 @@ public class AddressesPresenter implements PresenterRotated<AddressesPresenter, 
     public AddressesPresenter getViewModel(AddressesView view) {
         this.view = view;
         view.injectAddresses( addressProvider.getAddresses() );
-
         return this;
     }
 

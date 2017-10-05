@@ -1,7 +1,5 @@
 import android.app.Activity;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
@@ -9,22 +7,24 @@ import org.powermock.reflect.Whitebox;
 import java.io.File;
 
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
+import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.dependencies.PhotoService;
-import info.juanmendez.mapmemorycore.addressmemorycore.TestApp;
-import info.juanmendez.mapmemorycore.addressmemorycore.module.DaggerMapCoreComponent;
-import info.juanmendez.mapmemorycore.addressmemorycore.module.MapCoreModule;
 import info.juanmendez.addressmemorycore.modules.MapModuleBase;
 import info.juanmendez.addressmemorycore.vp.vpPhoto.PhotoPresenter;
 import info.juanmendez.addressmemorycore.vp.vpPhoto.PhotoView;
+import info.juanmendez.addressmemorycore.vp.vpPhoto.PhotoViewModel;
+import info.juanmendez.mapmemorycore.addressmemorycore.TestApp;
+import info.juanmendez.mapmemorycore.addressmemorycore.module.DaggerMapCoreComponent;
+import info.juanmendez.mapmemorycore.addressmemorycore.module.MapCoreModule;
 import rx.Observable;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.doAnswer;
 import static org.powermock.api.mockito.PowerMockito.mock;
-
 /**
  * Created by Juan Mendez on 8/14/2017.
  * www.juanmendez.info
@@ -36,9 +36,14 @@ public class TestingPhotoVP {
     private PhotoView viewMocked;
     private PhotoPresenter presenter;
     private PhotoService photoServiceMocked;
+    NavigationService navigationService;
     private AddressProvider addressProvider;
-    private String fileLocation = "absolute_path";
+    private String cameraLocation = "/gallery/oldPhoto.png";
+    private String galleryLocation = "/camera/photo.png";
 
+    private PhotoViewModel viewModel;
+    private File photoTaken = new File(cameraLocation);
+    private File photoPicked = new File(galleryLocation);
 
     @Before
     public void before() throws Exception {
@@ -46,10 +51,11 @@ public class TestingPhotoVP {
 
         viewMocked = mock( PhotoView.class );
         presenter = new PhotoPresenter();
-        presenter.getViewModel(viewMocked);
+        viewModel = presenter.getViewModel(viewMocked);
 
-        photoServiceMocked = Whitebox.getInternalState(presenter, "photoService");
         addressProvider = Whitebox.getInternalState(presenter, "addressProvider");
+        photoServiceMocked = Whitebox.getInternalState(presenter, "photoService");
+        navigationService = Whitebox.getInternalState(presenter, "navigationService");
 
         //make each mocked object answer with positive results such as networkService.isConnected() returning true.
         applySuccessfulResults();
@@ -59,37 +65,60 @@ public class TestingPhotoVP {
     public void pickPhoto(){
         presenter.active("");
         reset( viewMocked );
+
+        //address in presenter is just blank
+        assertTrue( viewModel.getAddress().getPhotoLocation().isEmpty() );
+
         presenter.requestPickPhoto();
-        verify( viewMocked ).onPhotoSelected( any(File.class));
-        Assert.assertNotNull( addressProvider.getSelectedAddress().getPhotoLocation() );
+        assertEquals( viewModel.getPhoto(), photoPicked);
+
+        //ok, then confirm photo
+        presenter.imageConfirmed();
+
+        //so selectedAddress must have the current photo's file path
+        assertEquals( viewModel.getAddress().getPhotoLocation(), photoPicked.getAbsolutePath() );
+        presenter.inactive(false);
+    }
+
+    @Test
+    public void clearPhoto(){
+
+        presenter.active("");
+        reset( viewMocked );
+
+        presenter.requestPickPhoto();
+        assertEquals( photoPicked, viewModel.getPhoto());
+        presenter.imageConfirmed();
+        assertFalse( viewModel.getAddress().getPhotoLocation().isEmpty() );
+
+
+        viewModel.clearPhoto();
+        presenter.imageConfirmed();
+        assertTrue( viewModel.getAddress().getPhotoLocation().isEmpty() );
+
+        presenter.inactive(false);
     }
 
     @Test
     public void takePhoto(){
         presenter.active("");
         reset( viewMocked );
-        presenter.requestTakePhoto();
-        verify( viewMocked ).onPhotoSelected( any(File.class));
-        Assert.assertNotNull( addressProvider.getSelectedAddress().getPhotoLocation() );
-    }
 
+        presenter.requestTakePhoto();
+        assertEquals( viewModel.getPhoto(), photoTaken);
+
+        presenter.inactive(false);
+    }
 
     private void applySuccessfulResults(){
 
         doAnswer(invocation -> {
-            File file = mock(File.class);
-            doReturn( fileLocation ).when( file ).getAbsolutePath();
-
-            return Observable.just( file);
+            return Observable.just(photoPicked);
 
         }).when(photoServiceMocked).pickPhoto(any(Activity.class));
 
         doAnswer(invocation -> {
-            File file = mock(File.class);
-            doReturn( fileLocation ).when( file ).getAbsolutePath();
-
-            return Observable.just( file);
-
+            return Observable.just(photoTaken);
         }).when(photoServiceMocked).takePhoto(any(Activity.class));
     }
 }

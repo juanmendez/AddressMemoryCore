@@ -1,7 +1,5 @@
 package info.juanmendez.addressmemorycore.vp.vpPhoto;
 
-import java.io.File;
-
 import info.juanmendez.addressmemorycore.vp.FragmentNav;
 
 /**
@@ -11,8 +9,4 @@ import info.juanmendez.addressmemorycore.vp.FragmentNav;
  */
 
 public interface PhotoView extends FragmentNav {
-
-    //tell fragment what is the current picture for the address
-    void onPhotoSelected( File photo );
-    void onPhotoError( Exception exception);
 }

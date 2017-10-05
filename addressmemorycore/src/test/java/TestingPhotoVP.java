@@ -23,6 +23,8 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.doAnswer;
 import static org.powermock.api.mockito.PowerMockito.mock;
 /**
@@ -76,7 +78,8 @@ public class TestingPhotoVP {
         presenter.imageConfirmed();
 
         //so selectedAddress must have the current photo's file path
-        assertEquals( viewModel.getAddress().getPhotoLocation(), photoPicked.getAbsolutePath() );
+        assertEquals( viewModel.getAddress().getPhotoLocation(), photoPicked.toString() );
+        verify( navigationService ).goBack();
         presenter.inactive(false);
     }
 
@@ -95,7 +98,7 @@ public class TestingPhotoVP {
         viewModel.clearPhoto();
         presenter.imageConfirmed();
         assertTrue( viewModel.getAddress().getPhotoLocation().isEmpty() );
-
+        verify( navigationService, times(2) ).goBack();
         presenter.inactive(false);
     }
 

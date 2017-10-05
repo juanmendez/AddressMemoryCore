@@ -1,3 +1,5 @@
+import android.app.Activity;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -15,15 +17,15 @@ import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.dependencies.NetworkService;
 import info.juanmendez.addressmemorycore.dependencies.QuickResponse;
 import info.juanmendez.addressmemorycore.dependencies.Response;
-import info.juanmendez.addressmemorycore.vp.vpAddress.AddressViewModel;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
-import info.juanmendez.addressmemorycore.vp.vpSuggest.SuggestAddressViewModel;
 import info.juanmendez.addressmemorycore.modules.MapModuleBase;
 import info.juanmendez.addressmemorycore.vp.FragmentNav;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressPresenter;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressView;
+import info.juanmendez.addressmemorycore.vp.vpAddress.AddressViewModel;
 import info.juanmendez.addressmemorycore.vp.vpSuggest.SuggestPresenter;
 import info.juanmendez.addressmemorycore.vp.vpSuggest.SuggestView;
+import info.juanmendez.addressmemorycore.vp.vpSuggest.SuggestViewModel;
 import info.juanmendez.mapmemorycore.addressmemorycore.TestApp;
 import info.juanmendez.mapmemorycore.addressmemorycore.module.DaggerMapCoreComponent;
 import info.juanmendez.mapmemorycore.addressmemorycore.module.MapCoreModule;
@@ -56,7 +58,7 @@ public class TestingAddressServices {
 
     SuggestView suggestView;
     SuggestPresenter suggestPresenter;
-    SuggestAddressViewModel suggestViewModel;
+    SuggestViewModel suggestViewModel;
 
     ShortAddress selectedAddress;
 
@@ -223,15 +225,18 @@ public class TestingAddressServices {
             return null;
         }).when( addressServiceMocked ).suggestAddress( anyString(), any(Response.class) );
 
+        doAnswer(invocation -> {
+            QuickResponse<Boolean> response = invocation.getArgumentAt(1, QuickResponse.class );
+            response.onResult(true);
+            return null;
+        }).when( addressServiceMocked ).onStart(any(Activity.class), any(QuickResponse.class) );
+
         doAnswer( invocation -> {
             Response<ShortAddress> response = invocation.getArgumentAt(0, Response.class );
             response.onResult(addresses.get(0));
 
             return null;
         }).when( addressServiceMocked ).geolocateAddress( any(Response.class) );
-
-
-
 
         doReturn( navigationTag ).when( navigationService ).getNavigationTag(any(FragmentNav.class));
 

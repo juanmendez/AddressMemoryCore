@@ -17,7 +17,7 @@ import info.juanmendez.addressmemorycore.models.ShortAddress;
  *
  * This viewModel glues SuggestPresenter with SuggestView
  */
-public class SuggestAddressViewModel extends BaseObservable {
+public class SuggestViewModel extends BaseObservable {
 
     //given address, we pull its address1 as a bindable
     private ShortAddress selectedAddress = new ShortAddress();
@@ -28,6 +28,8 @@ public class SuggestAddressViewModel extends BaseObservable {
 
     //any error?
     private Exception addressException;
+
+    private String lastAddressTyped = "";
 
     public void setSelectedAddress(ShortAddress selectedAddress) {
         this.selectedAddress = selectedAddress;
@@ -72,6 +74,7 @@ public class SuggestAddressViewModel extends BaseObservable {
     }
 
     public void setAddressEdited(String addressEdited) {
+        lastAddressTyped = addressEdited;
         selectedAddress.setAddress1(addressEdited);
         notifyPropertyChanged(BR.addressEdited);
     }

@@ -1,3 +1,5 @@
+import android.app.Activity;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
@@ -231,6 +233,13 @@ public class TestAddressEditing {
             response.onResult(true);
             return null;
         }).when( networkServiceMocked ).connect(any(QuickResponse.class));
+
+
+        doAnswer(invocation -> {
+            QuickResponse<Boolean> response = invocation.getArgumentAt(1, QuickResponse.class );
+            response.onResult(true);
+            return null;
+        }).when( addressServiceMocked ).onStart(any(Activity.class), any(QuickResponse.class) );
 
         doReturn(true).when( addressServiceMocked ).isConnected();
 

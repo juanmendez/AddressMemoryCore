@@ -23,7 +23,7 @@ import info.juanmendez.addressmemorycore.vp.PresenterRotated;
  * contact@juanmendez.info
  */
 
-public class SuggestPresenter extends Observable.OnPropertyChangedCallback implements PresenterRotated<SuggestAddressViewModel,SuggestView> {
+public class SuggestPresenter extends Observable.OnPropertyChangedCallback implements PresenterRotated<SuggestViewModel,SuggestView> {
 
     @Inject
     AddressProvider addressProvider;
@@ -38,36 +38,34 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
     NavigationService navigationService;
 
     private SuggestView view;
-    private SuggestAddressViewModel viewModel;
-    private boolean rotated = false;
+    private SuggestViewModel viewModel;
 
     public static final String SUGGEST_VIEW = "suggest_view";
 
     @Override
-    public SuggestAddressViewModel getViewModel(SuggestView view) {
+    public SuggestViewModel getViewModel(SuggestView view) {
         this.view = view;
         MapModuleBase.getInjector().inject(this);
-        viewModel = new SuggestAddressViewModel();
-        viewModel.addOnPropertyChangedCallback(this);
+        viewModel = new SuggestViewModel();
         return viewModel;
     }
 
     @Override
     public void active(String action) {
+
+        viewModel.addOnPropertyChangedCallback(this);
         networkService.reset();
 
         //We update addressEdited in that way we generate matching addresses.
-        //We don't do that if the device has only rotated.
-        networkService.connect(result -> {
-            if( !rotated ){
-                viewModel.setSelectedAddress(addressProvider.getSelectedAddress());
-            }
+        networkService.connect(result -> {});
+
+        addressService.onStart(view.getActivity(), result -> {
+            viewModel.setSelectedAddress(addressProvider.getSelectedAddress());
         });
     }
 
     @Override
     public void inactive(Boolean isRotated) {
-        this.rotated = isRotated;
         networkService.disconnect();
         addressService.onStop();
         viewModel.removeOnPropertyChangedCallback(this);
@@ -119,7 +117,7 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
 
     @Override
     public Boolean getRotated() {
-        return rotated;
+        return false;
     }
 
     @Override

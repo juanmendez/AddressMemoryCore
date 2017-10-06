@@ -7,7 +7,6 @@ import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.dependencies.PhotoService;
 import info.juanmendez.addressmemorycore.models.MapMemoryException;
 import info.juanmendez.addressmemorycore.modules.MapModuleBase;
-import info.juanmendez.addressmemorycore.utils.RxUtils;
 import info.juanmendez.addressmemorycore.vp.Presenter;
 import rx.Subscription;
 
@@ -69,6 +68,7 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
 
     @Override
     public void inactive(Boolean rotated) {
-        RxUtils.unsubscribe( fileSubscription );
+        //TODO, this should work, but when taking or grabbing the photo then the subscription is canceled.
+        //RxUtils.unsubscribe( fileSubscription );
     }
 }

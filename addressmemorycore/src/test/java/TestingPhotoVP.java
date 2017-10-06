@@ -36,7 +36,7 @@ public class TestingPhotoVP {
     private PhotoView viewMocked;
     private PhotoPresenter presenter;
     private PhotoService photoServiceMocked;
-    NavigationService navigationService;
+    private NavigationService navigationService;
     private AddressProvider addressProvider;
     private String photoTaken = "/gallery/oldPhoto.png";
     private String photoPicked = "/camera/photo.png";
@@ -71,9 +71,9 @@ public class TestingPhotoVP {
         assertEquals( viewModel.getPhoto(), photoPicked);
 
         //ok, then confirm photo
-        presenter.imageConfirmed();
+        presenter.confirmPhoto();
 
-        //so selectedAddress must have the current photo's file path
+        //so address pojo must have the same photo
         assertEquals( viewModel.getAddress().getPhotoLocation(), photoPicked );
         verify( navigationService ).goBack();
         presenter.inactive(false);
@@ -85,14 +85,16 @@ public class TestingPhotoVP {
         presenter.active("");
         reset( viewMocked );
 
+        //you pick a photo, then you confirm you want it
+        //therefore the address pojo has that photo
         presenter.requestPickPhoto();
         assertEquals( photoPicked, viewModel.getPhoto());
-        presenter.imageConfirmed();
+        presenter.confirmPhoto();
         assertFalse( viewModel.getAddress().getPhotoLocation().isEmpty() );
 
 
         viewModel.clearPhoto();
-        presenter.imageConfirmed();
+        presenter.confirmPhoto();
         assertTrue( viewModel.getAddress().getPhotoLocation().isEmpty() );
         verify( navigationService, times(2) ).goBack();
         presenter.inactive(false);
@@ -103,7 +105,9 @@ public class TestingPhotoVP {
         presenter.active("");
         reset( viewMocked );
 
+        //oh, so you take a selfie, then lets see after confirm you did
         presenter.requestTakePhoto();
+        presenter.confirmPhoto();
         assertEquals( viewModel.getPhoto(), photoTaken);
 
         presenter.inactive(false);

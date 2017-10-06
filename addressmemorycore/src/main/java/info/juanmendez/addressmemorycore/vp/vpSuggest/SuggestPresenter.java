@@ -103,7 +103,7 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
      * User has selected one address!
      */
     public void updateFromPickedAddress(){
-        ShortAddress pickedAddress = viewModel.getPickedMatchingAddress();
+        ShortAddress pickedAddress = viewModel.getPickedAddress();
         if( pickedAddress != null ){
             ShortAddress selectedAddress = addressProvider.getSelectedAddress();
             selectedAddress.setAddress1( pickedAddress.getAddress1() );
@@ -124,7 +124,7 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
     public void onPropertyChanged(Observable observable, int brId) {
         if( brId == BR.addressEdited){
             searchForMatchingAddresses();
-        }else if( brId == BR.pickedMatchingAddress ){
+        }else if( brId == BR.pickedAddress ){
             updateFromPickedAddress();
         }
     }

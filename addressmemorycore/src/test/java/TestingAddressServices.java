@@ -1,13 +1,9 @@
 import android.app.Activity;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -155,7 +151,7 @@ public class TestingAddressServices {
 
         //we have matching addresses, and we are going to pick on the second one as our selected address!
         ShortAddress pickedAddress = suggestViewModel.getMatchingAddresses().get(1);
-        suggestViewModel.setPickedMatchingAddress( pickedAddress );
+        suggestViewModel.setPickedAddress( pickedAddress );
 
         //BINGO!!
         assertEquals( selectedAddress.getAddress1(), pickedAddress.getAddress1() );
@@ -168,41 +164,6 @@ public class TestingAddressServices {
 
         doReturn( null ).when( navigationService ).getNavigationTag(eq(addressView));
         assertNull( navigationService.getNavigationTag(addressView));
-    }
-
-    /**
-     * test geolocation with successful and error response
-     */
-    @Test
-    public void testGeolocation(){
-
-      /*  //view suggested address by geolocation
-        presenter.requestAddressByGeolocation();
-        verify(addressView).onAddressResult( any(ShortAddress.class));
-
-        reset(addressView);
-
-        //make it response with an error
-        doAnswer(invocation -> {
-            Response<ShortAddress> response = invocation.getArgumentAt(0, Response.class );
-            response.onError(new MapMemoryException("oops"));
-            return null;
-        }).when(addressServiceMocked).geolocateAddress(any(Response.class));
-
-        //view requests addresses by geolocation
-        presenter.requestAddressByGeolocation();
-        verify(addressView).onAddressError( any(Exception.class) );*/
-    }
-
-    Matcher<File> fileMatcher(final String location) {
-        return new TypeSafeMatcher<File>() {
-            public boolean matchesSafely(File item) {
-                return location.equals(item.getAbsolutePath());
-            }
-            public void describeTo(Description description) {
-                description.appendText("checks if file's path is " + location);
-            }
-        };
     }
 
     void applySuccessfulResults(){

@@ -24,7 +24,7 @@ import static junit.framework.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.spy;
@@ -69,11 +69,11 @@ public class TestAddressesView {
         int rotate = 1;
 
         for( int i =0; i<=rotate; i++){
-            reset(viewModel);
             presenter.active("");
             presenter.getViewModel(addressView);
             //presenter has to assign to the view the streaming list
-            verify(viewModel).setStreamingAddresses( any(List.class));
+            verify(viewModel, times(1) ).setStreamingAddresses( any(List.class));
+
             assertNotNull( provider.getSelectedAddress() );
             assertNotNull( viewModel.getSelectedAddress() );
             presenter.inactive(true);

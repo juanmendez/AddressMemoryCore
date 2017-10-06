@@ -12,5 +12,5 @@ import info.juanmendez.addressmemorycore.vp.FragmentNav;
  */
 
 public interface AddressesView extends FragmentNav {
-    void injectAddresses(List<ShortAddress> addresses );
+    void setStreamingList(List<ShortAddress> addresses );
 }

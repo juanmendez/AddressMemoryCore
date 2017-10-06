@@ -1,3 +1,5 @@
+import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
@@ -17,6 +19,7 @@ import info.juanmendez.mapmemorycore.addressmemorycore.TestApp;
 import info.juanmendez.mapmemorycore.addressmemorycore.module.DaggerMapCoreComponent;
 import info.juanmendez.mapmemorycore.addressmemorycore.module.MapCoreModule;
 
+import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -68,17 +71,24 @@ public class TestingAddressProvider {
 
         assertEquals(provider.countAddresses(), addresses.size());
 
+        //ok we are going to delete the selected element. see if provider still accounts for that
+        ShortAddress selectedAddress = provider.getAddress(1);
+        provider.selectAddress( selectedAddress );
+
         provider.deleteAddressAsync(1, new Response<Boolean>() {
             @Override
             public void onResult(Boolean result) {
+                Assert.assertTrue( result );
                 assertEquals( provider.countAddresses(), addresses.size()-1 );
             }
 
             @Override
             public void onError(Exception exception) {
-
+                Assert.fail(exception.getMessage());
             }
         });
+
+        assertFalse(provider.getSelectedAddress() == selectedAddress );
     }
 
     @Test

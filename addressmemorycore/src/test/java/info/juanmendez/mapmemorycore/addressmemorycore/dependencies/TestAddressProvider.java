@@ -10,7 +10,6 @@ import info.juanmendez.addressmemorycore.models.MapMemoryException;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.models.SubmitError;
 import rx.Observable;
-import rx.subjects.BehaviorSubject;
 
 
 /**
@@ -44,9 +43,7 @@ public class TestAddressProvider implements AddressProvider {
 
     @Override
     public Observable<List<ShortAddress>> getAddressesAsync() {
-        BehaviorSubject<List<ShortAddress>> subject = BehaviorSubject.create();
-        subject.onNext( addresses );
-        return subject;
+        return Observable.just(addresses);
     }
 
     @Override
@@ -63,9 +60,7 @@ public class TestAddressProvider implements AddressProvider {
 
     @Override
     public Observable<ShortAddress> getAddressAsync(long addressId) {
-        BehaviorSubject<ShortAddress> subject = BehaviorSubject.create();
-        subject.onNext( getAddress(addressId));
-        return subject;
+        return Observable.just(getAddress(addressId));
     }
 
     @Override
@@ -107,6 +102,11 @@ public class TestAddressProvider implements AddressProvider {
 
         if( address != null ){
             addresses.remove(address);
+
+            if( address == selectedAddress ){
+                selectedAddress = new ShortAddress();
+            }
+
             response.onResult(true);
         }else{
             response.onError( new MapMemoryException("couldn't delete address asynchronously"));

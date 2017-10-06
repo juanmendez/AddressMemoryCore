@@ -21,7 +21,7 @@ public class SuggestViewModel extends BaseObservable {
 
     //given address, we pull its address1 as a bindable
     private ShortAddress selectedAddress = new ShortAddress();
-    private ShortAddress pickedMatchingAddress = new ShortAddress();
+    private ShortAddress pickedAddress = new ShortAddress();
 
     //matching addresses.
     private List<ShortAddress> matchingAddresses = new ArrayList();
@@ -57,13 +57,13 @@ public class SuggestViewModel extends BaseObservable {
 
     //<editor-fold desc="pickedAddress">
     @Bindable
-    public ShortAddress getPickedMatchingAddress() {
-        return pickedMatchingAddress;
+    public ShortAddress getPickedAddress() {
+        return pickedAddress;
     }
 
-    public void setPickedMatchingAddress(ShortAddress pickedMatchingAddress) {
-        this.pickedMatchingAddress = pickedMatchingAddress;
-        notifyPropertyChanged(BR.pickedMatchingAddress);
+    public void setPickedAddress(ShortAddress pickedAddress) {
+        this.pickedAddress = pickedAddress;
+        notifyPropertyChanged(BR.pickedAddress);
     }
     //</editor-fold>
 

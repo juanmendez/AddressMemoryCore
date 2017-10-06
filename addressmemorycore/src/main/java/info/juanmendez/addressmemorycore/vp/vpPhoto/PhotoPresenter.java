@@ -55,7 +55,7 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
         });
     }
 
-    public void imageConfirmed(){
+    public void confirmPhoto(){
         viewModel.confirmPhoto();
         navigationService.goBack();
     }

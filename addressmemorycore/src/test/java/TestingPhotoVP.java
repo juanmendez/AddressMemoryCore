@@ -4,8 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
-import java.io.File;
-
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.dependencies.PhotoService;
@@ -40,12 +38,10 @@ public class TestingPhotoVP {
     private PhotoService photoServiceMocked;
     NavigationService navigationService;
     private AddressProvider addressProvider;
-    private String cameraLocation = "/gallery/oldPhoto.png";
-    private String galleryLocation = "/camera/photo.png";
+    private String photoTaken = "/gallery/oldPhoto.png";
+    private String photoPicked = "/camera/photo.png";
 
     private PhotoViewModel viewModel;
-    private File photoTaken = new File(cameraLocation);
-    private File photoPicked = new File(galleryLocation);
 
     @Before
     public void before() throws Exception {
@@ -78,7 +74,7 @@ public class TestingPhotoVP {
         presenter.imageConfirmed();
 
         //so selectedAddress must have the current photo's file path
-        assertEquals( viewModel.getAddress().getPhotoLocation(), photoPicked.toString() );
+        assertEquals( viewModel.getAddress().getPhotoLocation(), photoPicked );
         verify( navigationService ).goBack();
         presenter.inactive(false);
     }

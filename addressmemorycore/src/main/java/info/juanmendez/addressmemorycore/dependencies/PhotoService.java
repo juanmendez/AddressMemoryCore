@@ -2,8 +2,6 @@ package info.juanmendez.addressmemorycore.dependencies;
 
 import android.app.Activity;
 
-import java.io.File;
-
 import rx.Observable;
 
 /**
@@ -16,6 +14,6 @@ import rx.Observable;
  */
 
 public interface PhotoService {
-    Observable<File> takePhoto(Activity activity);
-    Observable<File> pickPhoto(Activity activity);
+    Observable<String> takePhoto(Activity activity);
+    Observable<String> pickPhoto(Activity activity);
 }

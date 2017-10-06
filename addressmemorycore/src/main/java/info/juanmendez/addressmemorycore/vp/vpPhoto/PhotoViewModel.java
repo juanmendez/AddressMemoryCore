@@ -3,8 +3,6 @@ package info.juanmendez.addressmemorycore.vp.vpPhoto;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 
-import java.io.File;
-
 import info.juanmendez.addressmemorycore.BR;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 
@@ -17,7 +15,7 @@ import info.juanmendez.addressmemorycore.models.ShortAddress;
 public class PhotoViewModel extends BaseObservable {
     private ShortAddress address = new ShortAddress();
     private Exception photoException;
-    private String photoTaken;
+    private String photo = "";
 
     //<editor-fold desc="address">
     @Bindable
@@ -28,28 +26,29 @@ public class PhotoViewModel extends BaseObservable {
     public void setAddress(ShortAddress address) {
         this.address = address;
         notifyPropertyChanged(BR.address);
+
+        setPhoto( address.getPhotoLocation() );
     }
 
     public void confirmPhoto(){
-        if( photoTaken != null ){
-            address.setPhotoLocation( photoTaken );
-            notifyPropertyChanged(BR.address);
-        }
+        address.setPhotoLocation(photo);
+        notifyPropertyChanged(BR.address);
     }
 
     public void clearPhoto(){
-        photoTaken = "";
+        photo = "";
+        notifyPropertyChanged(BR.photo);
     }
     //</editor-fold>
 
     //<editor-fold desc="photo">
     @Bindable
-    public File getPhoto() {
-        return new File( photoTaken );
+    public String getPhoto() {
+        return photo;
     }
 
-    public void setPhoto(File photo) {
-        photoTaken = photo.toString();
+    public void setPhoto(String photo) {
+        this.photo = photo;
         notifyPropertyChanged(BR.photo);
     }
     //</editor-fold>

@@ -10,8 +10,10 @@ import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.AddressService;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.dependencies.NetworkService;
+import info.juanmendez.addressmemorycore.dependencies.QuickResponse;
 import info.juanmendez.addressmemorycore.dependencies.Response;
 import info.juanmendez.addressmemorycore.dependencies.WidgetService;
+import info.juanmendez.addressmemorycore.models.Commute;
 import info.juanmendez.addressmemorycore.models.MapMemoryException;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.models.SubmitError;
@@ -152,10 +154,26 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
         }
     }
 
-    public void openNavigationApp(){
+    public void createNavigationIntent(QuickResponse<Intent> response){
 
-        Intent mapIntent = ModelUtils.fromAddress( viewModel.getAddress(), 'b' );
-        view.getActivity().startActivity( mapIntent );
+        ShortAddress address = viewModel.getAddress();
+
+        if( address.getCommute().getType().equals(Commute.UNDECIDED))
+            return;
+
+        address.setTimesVisited( address.getTimesVisited()+1);
+
+        addressProvider.updateAddressAsync(address, new Response<ShortAddress>() {
+            @Override
+            public void onError(Exception exception) {
+
+            }
+
+            @Override
+            public void onResult(ShortAddress result) {
+                response.onResult( ModelUtils.fromAddress( viewModel.getAddress() ) );
+            }
+        });
     }
 
     /**

@@ -14,10 +14,24 @@ import info.juanmendez.addressmemorycore.models.ShortAddress;
  */
 
 public class ModelUtils {
-    public static Intent fromAddress( ShortAddress address, Character mode ){
+    public static Intent fromAddress( ShortAddress address ){
+        Commute commute = address.getCommute();
         String uriString = String.format("%s %s", address.getAddress1(), address.getAddress2() );
         uriString = Uri.encode( uriString );
-        uriString = String.format( "google.navigation:q=%s&mode=%s&time=%s", uriString, mode, System.currentTimeMillis() );
+        uriString = String.format( "google.navigation:q=%s&mode=%s", uriString, commute.getType() );
+
+        if( commute.getType().equals(Commute.DRIVING)){
+            if( commute.getAvoidTolls() ){
+                uriString += "&avoid=t";
+            }
+
+            if( commute.getAvoidXpressway() ){
+                uriString += (commute.getAvoidTolls()?"":"&avoid=") + "h";
+            }
+        }
+
+        uriString = String.format( "%s&time=%s", uriString, System.currentTimeMillis() );
+
         Uri gmnIntentUri = Uri.parse( uriString );
 
         Intent mapIntent = new Intent( Intent.ACTION_VIEW, gmnIntentUri );

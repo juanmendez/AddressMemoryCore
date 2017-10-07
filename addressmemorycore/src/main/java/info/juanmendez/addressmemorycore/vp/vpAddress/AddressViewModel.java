@@ -51,10 +51,7 @@ public class AddressViewModel extends BaseObservable {
 
     private ShortAddress address = new ShortAddress();
     private Exception addressException;
-
-
-
-
+    
     //<editor-fold desc="address">
     @Bindable
     public ShortAddress getAddress() {

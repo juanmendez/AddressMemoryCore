@@ -179,9 +179,13 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
             requestAddressSuggestion();
         }
 
-        if( BR.addressException != brId ){
+        if( AddressViewModel.addressEdits.indexOf(brId) >= 0 ){
             checkCanSubmit();
             checkCanDelete();
+        }
+        else
+        if( AddressViewModel.commuteEdits.indexOf(brId) >= 0 && viewModel.getAddress().getAddressId() > 0 ){
+            addressProvider.updateAddress(viewModel.getAddress());
         }
     }
 }

@@ -3,7 +3,12 @@ package info.juanmendez.addressmemorycore.vp.vpAddress;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.databinding.ObservableBoolean;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import info.juanmendez.addressmemorycore.BR;
+import info.juanmendez.addressmemorycore.models.Commute;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 
 
@@ -13,6 +18,24 @@ import info.juanmendez.addressmemorycore.models.ShortAddress;
  * contact@juanmendez.info
  */
 public class AddressViewModel extends BaseObservable {
+
+    public static List<Integer> addressEdits = new ArrayList<>();
+    static {
+        addressEdits.add(BR._all);
+        addressEdits.add(BR.address);
+        addressEdits.add(BR.address1);
+        addressEdits.add(BR.address2);
+        addressEdits.add(BR.name);
+        addressEdits.add(BR.photo);
+    }
+
+    public static List<Integer> commuteEdits = new ArrayList<>();
+    static{
+        commuteEdits.add(BR.commuteType);
+        commuteEdits.add(BR.avoidTolls);
+        commuteEdits.add(BR.avoidXpressway);
+    }
+
     @Bindable public final ObservableBoolean isOnline = new ObservableBoolean(false);
 
     @Bindable public final ObservableBoolean canDelete = new ObservableBoolean(false);
@@ -22,13 +45,15 @@ public class AddressViewModel extends BaseObservable {
     @Bindable public final ObservableBoolean isGeoOn = new ObservableBoolean(false);
 
     private String commuteType = "";
-    private Boolean commuteExpressway = true;
-    private Boolean commuteTolls = true;
+    private Boolean avoidXpressway = false;
+    private Boolean commuteAvoidTolls = false;
 
 
     private ShortAddress address = new ShortAddress();
     private Exception addressException;
-    private int[] brs = new int[]{BR.address, BR.address1, BR.address2, BR.name, BR.photo};
+
+
+
 
     //<editor-fold desc="address">
     @Bindable
@@ -101,6 +126,42 @@ public class AddressViewModel extends BaseObservable {
     @Bindable
     public String getName() {
         return address.getName();
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="commute.Attrs">
+    @Bindable
+    public String getCommuteType() {
+        return getCommute().getType();
+    }
+
+    public void setCommuteType(String commuteType) {
+        getCommute().setType( commuteType );
+        notifyPropertyChanged(BR.commuteType);
+    }
+
+    @Bindable
+    public Boolean getAvoidXpressway() {
+        return getCommute().getAvoidXpressway();
+    }
+
+    public void setAvoidXpressway(Boolean avoidXpressway) {
+        getCommute().setAvoidXpressway(avoidXpressway);
+        notifyPropertyChanged(BR.avoidXpressway);
+    }
+
+    @Bindable
+    public Boolean getAvoidTolls() {
+        return getCommute().getAvoidTolls();
+    }
+
+    public void setAvoidTolls(Boolean commuteAvoidTolls) {
+        getCommute().setAvoidTolls(commuteAvoidTolls);
+        notifyPropertyChanged(BR.avoidTolls);
+    }
+
+    private Commute getCommute(){
+        return address.getCommute();
     }
     //</editor-fold>
 }

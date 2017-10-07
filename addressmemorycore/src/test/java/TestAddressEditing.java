@@ -13,6 +13,7 @@ import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.dependencies.NetworkService;
 import info.juanmendez.addressmemorycore.dependencies.QuickResponse;
 import info.juanmendez.addressmemorycore.dependencies.Response;
+import info.juanmendez.addressmemorycore.models.Commute;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressViewModel;
 import info.juanmendez.addressmemorycore.models.MapMemoryException;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
@@ -71,6 +72,8 @@ public class TestAddressEditing {
         addressServiceMocked = Whitebox.getInternalState(presenter, "addressService");
         navigationService = Whitebox.getInternalState(presenter, "navigationService");
         provider = Whitebox.getInternalState(presenter, "addressProvider" );
+        provider = spy(provider);
+        Whitebox.setInternalState(presenter,"addressProvider", provider);
 
         //make each mocked object answer with positive results such as networkService.isConnected() returning true.
         applySuccessfulResults();
@@ -148,7 +151,7 @@ public class TestAddressEditing {
         viewModel.setAddress1(geoResult.getAddress1());
         verify(presenter, times(0)).requestAddressSuggestion();
 
-        //so if user updates address1, we fire address sugestion
+        //so if user updates address1, we fire address suggestion
         reset(presenter);
         viewModel.setAddress1("0 South State");
         verify(presenter).requestAddressSuggestion();
@@ -178,6 +181,11 @@ public class TestAddressEditing {
         //we don't provide name, so that is an error saving!!
         verify( response ).onError(any(Exception.class));
 
+        //ok, now lets try to update the commute type.. this should not work!
+        reset( provider );
+        viewModel.setCommuteType("Z");
+        verify(provider, times(0)).updateAddress(any(ShortAddress.class));
+
         //lets do that then!
         reset( response );
         viewModel.setName("Home");
@@ -185,6 +193,10 @@ public class TestAddressEditing {
 
         //fantastic, now this worked!
         verify(response).onResult(any(ShortAddress.class));
+
+        //ok now lets update the transportation mode!
+        viewModel.setCommuteType(Commute.BICYCLE);
+        verify(provider, times(1)).updateAddress(any(ShortAddress.class));
     }
 
     @Test
@@ -217,16 +229,13 @@ public class TestAddressEditing {
 
         String errorCode = "funkyError";
 
-        AddressProvider spiedProvider = spy( provider );
-        Whitebox.setInternalState(presenter, "addressProvider", spiedProvider );
-
         doAnswer( invocation -> {
             List<SubmitError> errors = new ArrayList<SubmitError>();
             errors.add( new SubmitError(errorCode, "lucky"));
             return errors;
-        }).when( spiedProvider ).validate(any(ShortAddress.class));
+        }).when( provider ).validate(any(ShortAddress.class));
 
-        spiedProvider.selectAddress( new ShortAddress());
+        provider.selectAddress( new ShortAddress());
 
         Response<ShortAddress> response = mock( Response.class );
 
@@ -234,14 +243,14 @@ public class TestAddressEditing {
         verify( response ).onError(any(MapMemoryException.class));
 
         reset(response);
-        when( spiedProvider.validate(any(ShortAddress.class)) ).thenReturn( new ArrayList<SubmitError>());
+        when( provider.validate(any(ShortAddress.class)) ).thenReturn( new ArrayList<SubmitError>());
 
         doAnswer(invocation -> {
             ShortAddress address = invocation.getArgumentAt(0, ShortAddress.class );
             Response<ShortAddress>  thisResponse = invocation.getArgumentAt(1, Response.class );
             thisResponse.onResult( address );
             return null;
-        }).when(spiedProvider).updateAddressAsync(any(ShortAddress.class), any(Response.class));
+        }).when(provider).updateAddressAsync(any(ShortAddress.class), any(Response.class));
 
         presenter.saveAddress( response );
         verify( response ).onResult(any(ShortAddress.class));

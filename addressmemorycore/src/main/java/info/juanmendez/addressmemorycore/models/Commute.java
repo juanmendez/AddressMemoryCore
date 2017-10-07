@@ -13,7 +13,7 @@ public class Commute extends RealmObject {
     public static final String DRIVING = "d";
     public static final String BICYCLE = "b";
     public static final String WALKING = "w";
-    public static final String PUBLICTRANSPORTATION = "t";
+    public static final String BUS = "t";
     public static final String UNDECIDED = "u";
 
     private String type = UNDECIDED;

@@ -78,9 +78,9 @@ public class ModelUtils {
 
     public static Commute cloneCommute(Commute commute){
         Commute cloned = new Commute();
-        cloned.setTolls(commute.getTolls());
+        cloned.setAvoidTolls(commute.getAvoidTolls());
         cloned.setType(commute.getType());
-        cloned.setXpressway( commute.getXpressway());
+        cloned.setAvoidXpressway( commute.getAvoidXpressway());
 
         return cloned;
     }

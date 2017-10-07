@@ -21,6 +21,11 @@ public class AddressViewModel extends BaseObservable {
 
     @Bindable public final ObservableBoolean isGeoOn = new ObservableBoolean(false);
 
+    private String commuteType = "";
+    private Boolean commuteExpressway = true;
+    private Boolean commuteTolls = true;
+
+
     private ShortAddress address = new ShortAddress();
     private Exception addressException;
     private int[] brs = new int[]{BR.address, BR.address1, BR.address2, BR.name, BR.photo};

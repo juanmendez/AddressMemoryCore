@@ -25,7 +25,6 @@ public class ShortAddress extends RealmObject{
     String address1;
     String address2;
 
-
     @Index
     int timesVisited;
 

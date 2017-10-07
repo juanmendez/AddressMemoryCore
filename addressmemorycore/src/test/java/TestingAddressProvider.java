@@ -9,6 +9,7 @@ import java.util.List;
 
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.Response;
+import info.juanmendez.addressmemorycore.models.Commute;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressViewModel;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.modules.MapModuleBase;
@@ -96,6 +97,7 @@ public class TestingAddressProvider {
         ShortAddress firstAddress = provider.getAddress(1);
         assertNotNull( firstAddress );
 
+        firstAddress.getCommute().setType(Commute.BICYCLE);
         ShortAddress cloned = ModelUtils.cloneAddress( firstAddress );
 
         assertEquals( cloned.getAddressId(), firstAddress.getAddressId() );
@@ -106,6 +108,9 @@ public class TestingAddressProvider {
         //check for non existing
         assertEquals( cloned.getUrl(), firstAddress.getUrl() );
         assertTrue( "same lat lon", cloned.getLat()==firstAddress.getLat());
+
+        //we want to know if cloning brings the new transportation mode.
+        assertEquals( cloned.getCommute().getType(), Commute.BICYCLE );
     }
 
     @Test

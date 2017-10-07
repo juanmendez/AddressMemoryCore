@@ -188,6 +188,31 @@ public class TestAddressEditing {
     }
 
     @Test
+    public void testSavingWithCommute(){
+
+        presenter.active("");
+        ShortAddress selectedAddress = provider.getSelectedAddress();
+
+        //first item from addresses is selected to update selected address
+        presenter.requestAddressByGeolocation();
+        assertEquals( addresses.get(0).getAddress1(), selectedAddress.getAddress1());
+
+        Response<ShortAddress> response = mock( Response.class );
+        presenter.saveAddress(response);
+
+        //we don't provide name, so that is an error saving!!
+        verify( response ).onError(any(Exception.class));
+
+        //lets do that then!
+        reset( response );
+        viewModel.setName("Home");
+        presenter.saveAddress(response);
+
+        //fantastic, now this worked!
+        verify(response).onResult(any(ShortAddress.class));
+    }
+
+    @Test
     public void testSavingAddressWithErrors(){
 
         String errorCode = "funkyError";

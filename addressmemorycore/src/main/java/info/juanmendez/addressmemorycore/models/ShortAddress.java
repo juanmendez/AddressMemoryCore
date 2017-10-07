@@ -39,6 +39,8 @@ public class ShortAddress extends RealmObject{
     String url;
     String photoLocation = "";
 
+    private Commute commute = new Commute();
+
     public ShortAddress() {
         if( dateUpdated == null ){
             dateUpdated = new Date();
@@ -139,5 +141,13 @@ public class ShortAddress extends RealmObject{
 
     public void setTimesVisited(int timesVisited) {
         this.timesVisited = timesVisited;
+    }
+
+    public Commute getCommute() {
+        return commute;
+    }
+
+    public void setCommute(Commute commute) {
+        this.commute = commute;
     }
 }

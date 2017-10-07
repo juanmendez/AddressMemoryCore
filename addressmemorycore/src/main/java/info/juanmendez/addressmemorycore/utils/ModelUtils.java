@@ -3,6 +3,7 @@ package info.juanmendez.addressmemorycore.utils;
 import android.content.Intent;
 import android.net.Uri;
 
+import info.juanmendez.addressmemorycore.models.Commute;
 import info.juanmendez.addressmemorycore.models.SubmitError;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 
@@ -68,6 +69,18 @@ public class ModelUtils {
         if( !SubmitError.emptyOrNull( address.getPhotoLocation()) ){
             cloned.setPhotoLocation( address.getPhotoLocation() );
         }
+
+        //we need to also clone the Commute object.
+        cloned.setCommute( cloneCommute( address.getCommute()) );
+
+        return cloned;
+    }
+
+    public static Commute cloneCommute(Commute commute){
+        Commute cloned = new Commute();
+        cloned.setTolls(commute.getTolls());
+        cloned.setType(commute.getType());
+        cloned.setXpressway( commute.getXpressway());
 
         return cloned;
     }

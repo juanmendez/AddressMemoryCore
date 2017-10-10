@@ -17,8 +17,8 @@ public class Commute extends RealmObject {
     public static final String UNDECIDED = "u";
 
     private String type = UNDECIDED;
-    private Boolean avoidXpressway = false;
-    private Boolean avoidTolls = false;
+    private boolean avoidXpressway = false;
+    private boolean avoidTolls = false;
 
     public String getType() {
         return type;
@@ -28,7 +28,7 @@ public class Commute extends RealmObject {
         this.type = type;
     }
 
-    public Boolean getAvoidXpressway() {
+    public boolean getAvoidXpressway() {
         return avoidXpressway;
     }
 
@@ -36,7 +36,7 @@ public class Commute extends RealmObject {
         this.avoidXpressway = avoidXpressway;
     }
 
-    public Boolean getAvoidTolls() {
+    public boolean getAvoidTolls() {
         return avoidTolls;
     }
 

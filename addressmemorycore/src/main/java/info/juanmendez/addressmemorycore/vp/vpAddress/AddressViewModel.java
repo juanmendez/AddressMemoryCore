@@ -44,14 +44,16 @@ public class AddressViewModel extends BaseObservable {
 
     @Bindable public final ObservableBoolean isGeoOn = new ObservableBoolean(false);
 
+    @Bindable public final ObservableBoolean onChildFragment = new ObservableBoolean(false);
+
     private String commuteType = "";
-    private Boolean avoidXpressway = false;
-    private Boolean commuteAvoidTolls = false;
+    private boolean avoidXpressway = false;
+    private boolean commuteAvoidTolls = false;
 
 
     private ShortAddress address = new ShortAddress();
     private Exception addressException;
-    
+
     //<editor-fold desc="address">
     @Bindable
     public ShortAddress getAddress() {
@@ -61,6 +63,7 @@ public class AddressViewModel extends BaseObservable {
     public void setAddress(ShortAddress address) {
         this.address = address;
         notifyPropertyChanged(BR._all);
+
     }
     //</editor-fold>
 
@@ -127,6 +130,8 @@ public class AddressViewModel extends BaseObservable {
     //</editor-fold>
 
     //<editor-fold desc="commute.Attrs">
+
+
     @Bindable
     public String getCommuteType() {
         return getCommute().getType();
@@ -138,21 +143,21 @@ public class AddressViewModel extends BaseObservable {
     }
 
     @Bindable
-    public Boolean getAvoidXpressway() {
+    public boolean getAvoidXpressway() {
         return getCommute().getAvoidXpressway();
     }
 
-    public void setAvoidXpressway(Boolean avoidXpressway) {
+    public void setAvoidXpressway(boolean avoidXpressway) {
         getCommute().setAvoidXpressway(avoidXpressway);
         notifyPropertyChanged(BR.avoidXpressway);
     }
 
     @Bindable
-    public Boolean getAvoidTolls() {
+    public boolean getAvoidTolls() {
         return getCommute().getAvoidTolls();
     }
 
-    public void setAvoidTolls(Boolean commuteAvoidTolls) {
+    public void setAvoidTolls(boolean commuteAvoidTolls) {
         getCommute().setAvoidTolls(commuteAvoidTolls);
         notifyPropertyChanged(BR.avoidTolls);
     }

@@ -7,6 +7,7 @@ package info.juanmendez.addressmemorycore.dependencies;
  */
 
 public interface WidgetService {
-    void refreshAddressList();
+    void updateList();
+    void updateWidgets(int widgetIdExcluded);
     void refreshTransporationMode();
 }

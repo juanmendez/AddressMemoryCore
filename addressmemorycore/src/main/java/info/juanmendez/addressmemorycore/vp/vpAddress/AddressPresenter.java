@@ -105,7 +105,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
                 @Override
                 public void onResult(ShortAddress result) {
                     addressProvider.selectAddress( result );
-                    widgetService.refreshAddressList();
+                    widgetService.updateList();
                     viewModel.setAddress(result);
                     response.onResult(result);
                 }
@@ -125,7 +125,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
 
         long addressId = viewModel.getAddress().getAddressId();
         addressProvider.deleteAddressAsync( addressId, response );
-        widgetService.refreshAddressList();
+        widgetService.updateList();
     }
 
     /**

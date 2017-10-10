@@ -6,9 +6,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
-import info.juanmendez.addressmemorycore.utils.ModelUtils;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.modules.MapModuleBase;
+import info.juanmendez.addressmemorycore.utils.ModelUtils;
 import info.juanmendez.addressmemorycore.utils.RxUtils;
 import rx.Subscription;
 
@@ -49,6 +49,8 @@ public class AddressesProxy {
     }
 
     public void onDestroy() {
-        RxUtils.unsubscribe( subscription );
+        if( !addresses.isEmpty() ){
+            RxUtils.unsubscribe( subscription );
+        }
     }
 }

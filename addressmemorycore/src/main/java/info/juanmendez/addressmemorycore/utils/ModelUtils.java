@@ -16,27 +16,36 @@ import info.juanmendez.addressmemorycore.models.ShortAddress;
 public class ModelUtils {
     public static Intent fromAddress( ShortAddress address ){
         Commute commute = address.getCommute();
-        String uriString = String.format("%s %s", address.getAddress1(), address.getAddress2() );
-        uriString = Uri.encode( uriString );
-        uriString = String.format( "google.navigation:q=%s&mode=%s", uriString, commute.getType() );
+        Intent mapIntent;
+        String uriString;
 
-        if( commute.getType().equals(Commute.DRIVING)){
-            if( commute.getAvoidTolls() ){
-                uriString += "&avoid=t";
+        if( commute.getType().equals(Commute.BUS)){
+            uriString = String.format("https://www.google.com/maps/dir/?api=1&destination=%s %s", address.getAddress1(), address.getAddress2() );
+            uriString += "&travelmode=transit";
+
+            mapIntent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uriString));
+        }else{
+            uriString = String.format("%s %s", address.getAddress1(), address.getAddress2() );
+            uriString = Uri.encode( uriString );
+            uriString = String.format( "google.navigation:q=%s&mode=%s", uriString, commute.getType() );
+
+            if( commute.getType().equals(Commute.DRIVING)){
+                if( commute.getAvoidTolls() ){
+                    uriString += "&avoid=t";
+                }
+
+                if( commute.getAvoidXpressway() ){
+                    uriString += (commute.getAvoidTolls()?"":"&avoid=") + "h";
+                }
             }
 
-            if( commute.getAvoidXpressway() ){
-                uriString += (commute.getAvoidTolls()?"":"&avoid=") + "h";
-            }
+            uriString = String.format( "%s&time=%s", uriString, System.currentTimeMillis() );
+
+            Uri gmnIntentUri = Uri.parse( uriString );
+
+            mapIntent = new Intent( Intent.ACTION_VIEW, gmnIntentUri );
+            mapIntent.setPackage( "com.google.android.apps.maps");
         }
-
-        uriString = String.format( "%s&time=%s", uriString, System.currentTimeMillis() );
-
-        Uri gmnIntentUri = Uri.parse( uriString );
-
-        Intent mapIntent = new Intent( Intent.ACTION_VIEW, gmnIntentUri );
-        mapIntent.setPackage( "com.google.android.apps.maps");
-
         return mapIntent;
     }
 

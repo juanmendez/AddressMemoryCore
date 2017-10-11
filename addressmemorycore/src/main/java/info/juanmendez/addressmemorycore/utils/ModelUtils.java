@@ -45,6 +45,7 @@ public class ModelUtils {
 
             mapIntent = new Intent( Intent.ACTION_VIEW, gmnIntentUri );
             mapIntent.setPackage( "com.google.android.apps.maps");
+            mapIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_DOCUMENT|Intent.FLAG_ACTIVITY_NEW_TASK);
         }
         return mapIntent;
     }

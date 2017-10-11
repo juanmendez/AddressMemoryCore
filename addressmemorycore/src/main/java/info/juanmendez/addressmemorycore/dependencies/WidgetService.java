@@ -8,6 +8,6 @@ package info.juanmendez.addressmemorycore.dependencies;
 
 public interface WidgetService {
     void updateList();
-    void updateWidgets(int widgetIdExcluded);
+    void updateWidgets();
     void refreshTransporationMode();
 }

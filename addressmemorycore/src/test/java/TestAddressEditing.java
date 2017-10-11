@@ -193,10 +193,15 @@ public class TestAddressEditing {
 
         //fantastic, now this worked!
         verify(response).onResult(any(ShortAddress.class));
+        reset( provider );
 
         //ok now lets update the transportation mode!
         viewModel.setCommuteType(Commute.BICYCLE);
         verify(provider, times(1)).updateAddress(any(ShortAddress.class));
+
+        viewModel.setAvoidTolls(true);
+        viewModel.setAvoidXpressway(true);
+        verify(provider, times(3)).updateAddress(any(ShortAddress.class));
     }
 
     @Test

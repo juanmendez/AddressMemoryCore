@@ -39,7 +39,7 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
 
     private SuggestView view;
     private SuggestViewModel viewModel;
-
+    private boolean rotated;
     public static final String SUGGEST_VIEW = "suggest_view";
 
     @Override
@@ -72,6 +72,7 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
 
     @Override
     public void inactive(Boolean isRotated) {
+        this.rotated = isRotated;
         networkService.disconnect();
         addressService.onStop();
         viewModel.removeOnPropertyChangedCallback(this);
@@ -123,7 +124,7 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
 
     @Override
     public Boolean getRotated() {
-        return false;
+        return rotated;
     }
 
     @Override

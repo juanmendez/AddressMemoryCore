@@ -10,6 +10,7 @@ import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.AddressService;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.dependencies.NetworkService;
+import info.juanmendez.addressmemorycore.dependencies.PhotoService;
 import info.juanmendez.addressmemorycore.dependencies.QuickResponse;
 import info.juanmendez.addressmemorycore.dependencies.Response;
 import info.juanmendez.addressmemorycore.dependencies.WidgetService;
@@ -44,6 +45,9 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
 
     @Inject
     WidgetService widgetService;
+
+    @Inject
+    PhotoService photoService;
 
     private AddressView view;
     private AddressViewModel viewModel;
@@ -121,10 +125,26 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
         }
     }
 
-    public void deleteAddress( Response<Boolean> response ){
+    public void deleteAddress( QuickResponse<Boolean> response ){
 
-        long addressId = viewModel.getAddress().getAddressId();
-        addressProvider.deleteAddressAsync( addressId, response );
+        ShortAddress addressToDelete = viewModel.getAddress();
+        long addressId = addressToDelete.getAddressId();
+        addressProvider.deleteAddressAsync(addressId, new Response<Boolean>() {
+
+            @Override
+            public void onResult(Boolean success) {
+                if( success && SubmitError.emptyOrNull(addressToDelete.getPhotoLocation()) ){
+                    photoService.deletePhoto( addressToDelete.getPhotoLocation() );
+                }
+
+                response.onResult( success );
+            }
+
+            @Override
+            public void onError(Exception exception) {
+                //TODO make a meaningfull error as exception.
+            }
+        });
         widgetService.updateList();
     }
 

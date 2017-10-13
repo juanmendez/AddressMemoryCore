@@ -13,6 +13,9 @@
 
     <string name="launch_navigation">Abrir Navegación</string>
     <string name="edit">Modificar</string>
-    <string name="avoid_highways">Evitar carreteras</string>
+    <string name="avoid_expressways">Evitar carreteras</string>
     <string name="avoid_tolls">Evitar peajes</string>
+
+    <string name="expressway">carreteras</string>
+    <string name="tolls">peajes</string>
 </resources>

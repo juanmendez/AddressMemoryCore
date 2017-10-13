@@ -8,7 +8,6 @@ import info.juanmendez.addressmemorycore.dependencies.PhotoService;
 import info.juanmendez.addressmemorycore.models.MapMemoryException;
 import info.juanmendez.addressmemorycore.modules.MapModuleBase;
 import info.juanmendez.addressmemorycore.vp.Presenter;
-import rx.Subscription;
 
 /**
  * Created by Juan Mendez on 8/14/2017.
@@ -27,7 +26,6 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
     NavigationService navigationService;
 
     private PhotoView view;
-    private Subscription fileSubscription;
     private PhotoViewModel viewModel;
 
     @Override
@@ -39,7 +37,7 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
 
     //view requests to pick photo from public gallery
     public void requestPickPhoto(){
-        fileSubscription = photoService.pickPhoto(view.getActivity()).subscribe(photoLocation -> {
+        photoService.pickPhoto(view.getActivity()).take(1).subscribe(photoLocation -> {
             viewModel.setPhoto(photoLocation);
         }, throwable -> {
             viewModel.setPhotoException(new MapMemoryException(throwable.getMessage()));
@@ -48,7 +46,7 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
 
     //view requests to take a photo
     public void requestTakePhoto(){
-        fileSubscription = photoService.takePhoto(view.getActivity()).subscribe(photoLocation -> {
+         photoService.takePhoto(view.getActivity()).take(1).subscribe(photoLocation -> {
             viewModel.setPhoto( photoLocation );
         }, throwable -> {
             viewModel.setPhotoException(new MapMemoryException(throwable.getMessage()));
@@ -60,6 +58,10 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
         navigationService.goBack();
     }
 
+    public void deletePhoto(){
+        photoService.deletePhoto( viewModel.getAddress().getPhotoLocation() );
+        viewModel.clearPhoto();
+    }
 
     @Override
     public void active(String action) {
@@ -68,7 +70,5 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
 
     @Override
     public void inactive(Boolean rotated) {
-        //TODO, this should work, but when taking or grabbing the photo then the subscription is canceled.
-        //RxUtils.unsubscribe( fileSubscription );
     }
 }

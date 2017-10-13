@@ -72,7 +72,7 @@ public class TestingAddressProvider {
 
         assertEquals(provider.countAddresses(), addresses.size());
 
-        //ok we are going to delete the selected element. see if provider still accounts for that
+        //ok we are going to deletePhoto the selected element. see if provider still accounts for that
         ShortAddress selectedAddress = provider.getAddress(1);
         provider.selectAddress( selectedAddress );
 

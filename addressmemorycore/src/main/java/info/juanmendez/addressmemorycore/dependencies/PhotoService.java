@@ -16,4 +16,5 @@ import rx.Observable;
 public interface PhotoService {
     Observable<String> takePhoto(Activity activity);
     Observable<String> pickPhoto(Activity activity);
+    void deletePhoto(String photoLocation);
 }

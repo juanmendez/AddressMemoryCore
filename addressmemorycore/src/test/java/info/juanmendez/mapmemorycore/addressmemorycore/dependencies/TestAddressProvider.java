@@ -109,7 +109,7 @@ public class TestAddressProvider implements AddressProvider {
 
             response.onResult(true);
         }else{
-            response.onError( new MapMemoryException("couldn't delete address asynchronously"));
+            response.onError( new MapMemoryException("couldn't deletePhoto address asynchronously"));
         }
     }
 

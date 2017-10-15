@@ -64,7 +64,7 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
     }
 
     @Override
-    public void active(String action) {
+    public void active(String params ) {
         viewModel.setAddress( addressProvider.getSelectedAddress() );
     }
 

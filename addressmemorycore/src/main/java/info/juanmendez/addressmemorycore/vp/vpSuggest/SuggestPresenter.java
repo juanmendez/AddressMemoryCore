@@ -51,7 +51,7 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
     }
 
     @Override
-    public void active(String action) {
+    public void active(String params ) {
 
         viewModel.addOnPropertyChangedCallback(this);
         networkService.reset();

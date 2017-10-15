@@ -71,7 +71,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
     }
 
     @Override
-    public void active( String action ) {
+    public void active( String params ) {
         
         viewModel.setAddress( addressProvider.getSelectedAddress() );
 

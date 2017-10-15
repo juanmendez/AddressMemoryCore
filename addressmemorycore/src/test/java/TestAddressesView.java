@@ -20,11 +20,11 @@ import info.juanmendez.mapmemorycore.addressmemorycore.module.DaggerMapCoreCompo
 import info.juanmendez.mapmemorycore.addressmemorycore.module.MapCoreModule;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.spy;
@@ -52,9 +52,10 @@ public class TestAddressesView {
 
         addressView = mock( AddressesView.class );
         presenter = spy(new AddressesPresenter());
-        viewModel = spy( new AddressesViewModel() );
 
-        Whitebox.setInternalState( presenter, "viewModel", viewModel );
+        //we want to spy the viewModel, so we get it, and put it back as a spied one
+        viewModel = Whitebox.getInternalState( presenter, "viewModel");
+
         navigationService = Whitebox.getInternalState(presenter, "navigationService");
         provider = Whitebox.getInternalState(presenter, "addressProvider" );
 
@@ -72,10 +73,8 @@ public class TestAddressesView {
             presenter.active("");
             presenter.getViewModel(addressView);
             //presenter has to assign to the view the streaming list
-            verify(viewModel, times(1) ).setStreamingAddresses( any(List.class));
-
+            assertFalse( viewModel.getStreamingAddresses().isEmpty() );
             assertNotNull( provider.getSelectedAddress() );
-            assertNotNull( viewModel.getSelectedAddress() );
             presenter.inactive(true);
         }
     }
@@ -89,7 +88,7 @@ public class TestAddressesView {
         presenter.active("");
         presenter.getViewModel(addressView);
         //presenter has to assign to the view the streaming list
-        verify(viewModel).setStreamingAddresses( any(List.class));
+        assertFalse( viewModel.getStreamingAddresses().isEmpty() );
         assertEquals( viewModel.getSelectedAddress().getAddressId(), selectedAddress.getAddressId() );
 
         //ok, now the view is going to provide another selected item

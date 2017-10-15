@@ -28,13 +28,40 @@ public class AddressesPresenter extends Observable.OnPropertyChangedCallback imp
     NavigationService navigationService;
 
     public static final String TAG = "addressesView";
-
     private Boolean rotated = false;
     private AddressesViewModel viewModel;
 
     public AddressesPresenter() {
         MapModuleBase.getInjector().inject(this);
         viewModel = new AddressesViewModel();
+        viewModel.setStreamingAddresses( addressProvider.getAddresses() );
+    }
+
+    @Override
+    public AddressesViewModel getViewModel(AddressesView view) {
+        return viewModel;
+    }
+
+    @Override
+    public void active(String params) {
+        viewModel.setSelectedAddress(addressProvider.getSelectedAddress());
+        viewModel.addOnPropertyChangedCallback( this );
+    }
+
+    @Override
+    public void inactive(Boolean rotated){
+        this.rotated = rotated;
+        viewModel.removeOnPropertyChangedCallback( this );
+    }
+
+    @Override
+    public Boolean getRotated() {
+        return rotated;
+    }
+
+    public void requestNewAddress() {
+        addressProvider.selectAddress( new ShortAddress() );
+        navigationService.request(AddressPresenter.ADDDRESS_EDIT_TAG);
     }
 
     @Override
@@ -53,37 +80,5 @@ public class AddressesPresenter extends Observable.OnPropertyChangedCallback imp
                 }
             }
         }
-    }
-
-    @Override
-    public AddressesViewModel getViewModel(AddressesView view) {
-        return viewModel;
-    }
-
-    @Override
-    public void active(String action) {
-        if( !rotated ){
-            viewModel.setStreamingAddresses( addressProvider.getAddresses() );
-            viewModel.setSelectedAddress(addressProvider.getSelectedAddress());
-            viewModel.addOnPropertyChangedCallback( this );
-        }
-    }
-
-    @Override
-    public void inactive(Boolean rotated){
-        this.rotated = rotated;
-        viewModel.removeOnPropertyChangedCallback( this );
-    }
-
-
-
-    @Override
-    public Boolean getRotated() {
-        return rotated;
-    }
-
-    public void requestNewAddress() {
-        addressProvider.selectAddress( new ShortAddress() );
-        navigationService.request(AddressPresenter.ADDDRESS_EDIT_TAG);
     }
 }

@@ -205,7 +205,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
      * checks if there is connection and open up addressSuggestFragment
      */
     public void requestAddressSuggestion(){
-        if( addressService.isConnected() ){
+        if( addressService.isConnected() && networkService.isConnected() ){
             navigationService.request(SuggestPresenter.SUGGEST_VIEW );
         }
     }

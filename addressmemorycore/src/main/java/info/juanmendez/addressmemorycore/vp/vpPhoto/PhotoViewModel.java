@@ -30,11 +30,6 @@ public class PhotoViewModel extends BaseObservable {
         setPhoto( address.getPhotoLocation() );
     }
 
-    public void confirmPhoto(){
-        address.setPhotoLocation(photo);
-        notifyPropertyChanged(BR.address);
-    }
-
     public void clearPhoto(){
         photo = "";
         notifyPropertyChanged(BR.photo);

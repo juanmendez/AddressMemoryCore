@@ -51,6 +51,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
 
     private AddressView view;
     private AddressViewModel viewModel;
+    private boolean rotated;
 
     public static final String ADDRESS_VIEW_TAG = "viewAddressTag";
     public static final String ADDDRESS_EDIT_TAG = "editAddressTag";
@@ -72,8 +73,10 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
 
     @Override
     public void active( String params ) {
-        
-        viewModel.setAddress( addressProvider.getSelectedAddress() );
+
+        if( !rotated ){
+            viewModel.setAddress( addressProvider.getSelectedAddress() );
+        }
 
         networkService.reset();
         networkService.connect(result -> viewModel.isOnline.set(result));
@@ -83,6 +86,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
 
     @Override
     public void inactive(Boolean rotated) {
+        this.rotated = rotated;
         networkService.disconnect();
         addressService.onStop();
 

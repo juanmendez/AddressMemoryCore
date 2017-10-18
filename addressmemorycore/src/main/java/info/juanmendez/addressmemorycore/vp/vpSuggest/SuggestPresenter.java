@@ -53,13 +53,15 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
     @Override
     public void active(String params ) {
 
+        if( !rotated ){
+            viewModel.setSelectedAddress(addressProvider.getSelectedAddress());
+        }
+
         viewModel.addOnPropertyChangedCallback(this);
         networkService.reset();
 
         //We update addressEdited in that way we generate matching addresses.
         networkService.connect(result -> {});
-
-        viewModel.setSelectedAddress(addressProvider.getSelectedAddress());
 
         addressService.onStart(view.getActivity(), result -> {
             searchForMatchingAddresses();

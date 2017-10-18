@@ -27,6 +27,7 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
 
     private PhotoView view;
     private PhotoViewModel viewModel;
+    private boolean rotated;
 
     @Override
     public PhotoViewModel getViewModel(PhotoView photoView) {
@@ -37,7 +38,7 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
 
     //view requests to pick photo from public gallery
     public void requestPickPhoto(){
-        photoService.pickPhoto(view.getActivity()).take(1).subscribe(photoLocation -> {
+        photoService.pickPhoto(view.getActivity()).subscribe(photoLocation -> {
             viewModel.setPhoto(photoLocation);
         }, throwable -> {
             viewModel.setPhotoException(new MapMemoryException(throwable.getMessage()));
@@ -46,7 +47,7 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
 
     //view requests to take a photo
     public void requestTakePhoto(){
-         photoService.takePhoto(view.getActivity()).take(1).subscribe(photoLocation -> {
+         photoService.takePhoto(view.getActivity()).subscribe(photoLocation -> {
             viewModel.setPhoto( photoLocation );
         }, throwable -> {
             viewModel.setPhotoException(new MapMemoryException(throwable.getMessage()));
@@ -54,7 +55,10 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
     }
 
     public void confirmPhoto(){
-        viewModel.confirmPhoto();
+        if( !viewModel.getPhoto().isEmpty() ){
+            viewModel.getAddress().setPhotoLocation(viewModel.getPhoto());
+        }
+
         navigationService.goBack();
     }
 
@@ -65,10 +69,13 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
 
     @Override
     public void active(String params ) {
-        viewModel.setAddress( addressProvider.getSelectedAddress() );
+        if( !rotated ){
+            viewModel.setAddress( addressProvider.getSelectedAddress() );
+        }
     }
 
     @Override
     public void inactive(Boolean rotated) {
+        this.rotated = rotated;
     }
 }

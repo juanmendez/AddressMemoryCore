@@ -20,6 +20,8 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -33,7 +35,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
 
 public class TestingPhotoVP {
 
-    private PhotoView viewMocked;
+    private PhotoView photoView;
     private PhotoPresenter presenter;
     private PhotoService photoServiceMocked;
     private NavigationService navigationService;
@@ -47,9 +49,9 @@ public class TestingPhotoVP {
     public void before() throws Exception {
         MapModuleBase.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestApp())).build() );
 
-        viewMocked = mock( PhotoView.class );
+        photoView = mock( PhotoView.class );
         presenter = new PhotoPresenter();
-        viewModel = presenter.getViewModel(viewMocked);
+        viewModel = presenter.getViewModel(photoView);
 
         addressProvider = Whitebox.getInternalState(presenter, "addressProvider");
         photoServiceMocked = Whitebox.getInternalState(presenter, "photoService");
@@ -62,7 +64,7 @@ public class TestingPhotoVP {
     @Test
     public void pickPhoto(){
         presenter.active("");
-        reset( viewMocked );
+        reset(photoView);
 
         //address in presenter is just blank
         assertTrue( viewModel.getAddress().getPhotoLocation().isEmpty() );
@@ -83,7 +85,7 @@ public class TestingPhotoVP {
     public void clearPhoto(){
 
         presenter.active("");
-        reset( viewMocked );
+        reset(photoView);
 
         //you pick a photo, then you confirm you want it
         //therefore the address pojo has that photo
@@ -103,7 +105,7 @@ public class TestingPhotoVP {
     @Test
     public void takePhoto(){
         presenter.active("");
-        reset( viewMocked );
+        reset(photoView);
 
         //oh, so you take a selfie, then lets see after confirm you did
         presenter.requestTakePhoto();
@@ -114,6 +116,9 @@ public class TestingPhotoVP {
     }
 
     private void applySuccessfulResults(){
+
+
+        doReturn( "resource_string" ).when(photoView).getString( anyInt() );
 
         doAnswer(invocation -> {
             return Observable.just(photoPicked);

@@ -8,5 +8,5 @@ import info.juanmendez.addressmemorycore.vp.FragmentNav;
  * contact@juanmendez.info
  */
 public interface AddressView extends FragmentNav {
-    //required methods are gone due to AddressViewModel
+    void doToast( String message );
 }

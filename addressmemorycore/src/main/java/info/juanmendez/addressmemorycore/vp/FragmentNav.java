@@ -1,6 +1,7 @@
 package info.juanmendez.addressmemorycore.vp;
 
 import android.app.Activity;
+import android.support.annotation.StringRes;
 
 /**
  * Created by Juan Mendez on 7/15/2017.
@@ -14,4 +15,5 @@ public interface FragmentNav {
     int getId();
     String getTag();
     Activity getActivity();
+    String getString(@StringRes int stringResId );
 }

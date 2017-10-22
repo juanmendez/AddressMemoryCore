@@ -6,6 +6,7 @@ import android.databinding.Observable;
 import javax.inject.Inject;
 
 import info.juanmendez.addressmemorycore.BR;
+import info.juanmendez.addressmemorycore.R;
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.AddressService;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
@@ -16,6 +17,7 @@ import info.juanmendez.addressmemorycore.dependencies.Response;
 import info.juanmendez.addressmemorycore.dependencies.WidgetService;
 import info.juanmendez.addressmemorycore.models.Commute;
 import info.juanmendez.addressmemorycore.models.MapMemoryException;
+import info.juanmendez.addressmemorycore.models.RouteMessage;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.models.SubmitError;
 import info.juanmendez.addressmemorycore.modules.MapModuleBase;
@@ -30,6 +32,9 @@ import info.juanmendez.addressmemorycore.vp.vpSuggest.SuggestPresenter;
  */
 public class AddressPresenter extends Observable.OnPropertyChangedCallback
                                 implements Presenter<AddressViewModel,AddressView> {
+
+    public static final String ADDRESS_JUST_CREATED = AddressPresenter.class.getName() + "/" + "ADDRESS_JUST_CREATED";
+    private static final String ADDRESS_JUST_UPDATED = AddressPresenter.class.getName() + "/" + "ADDRESS_JUST_UPDATED";
 
     @Inject
     AddressProvider addressProvider;
@@ -74,8 +79,15 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
     @Override
     public void active( String params ) {
 
+
         if( !rotated ){
             viewModel.setAddress( addressProvider.getSelectedAddress() );
+
+            if( params.equals(AddressPresenter.ADDRESS_JUST_CREATED)){
+                view.doToast( view.getString(R.string.toast_address_created));
+            }else if( params.equals( AddressPresenter.ADDRESS_JUST_UPDATED)){
+                view.doToast( view.getString(R.string.toast_address_updated));
+            }
         }
 
         networkService.reset();
@@ -105,9 +117,11 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
         return addressProvider.validate(viewModel.getAddress()).isEmpty();
     }
 
-    public void saveAddress(Response<ShortAddress> response) {
+    public void saveAddress(Response<RouteMessage> response) {
 
         if( isAddressValid() ){
+
+            boolean isNew = viewModel.getAddress().getAddressId() == 0;
 
             addressProvider.updateAddressAsync(viewModel.getAddress(), new Response<ShortAddress>() {
                 @Override
@@ -115,12 +129,12 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
                     addressProvider.selectAddress( result );
                     widgetService.updateList();
                     viewModel.setAddress(result);
-                    response.onResult(result);
+                    response.onResult(new RouteMessage(ADDRESS_VIEW_TAG, isNew?ADDRESS_JUST_CREATED:ADDRESS_JUST_UPDATED ));
                 }
 
                 @Override
                 public void onError(Exception exception) {
-                    response.onError( exception );
+                    response.onError( new MapMemoryException( view.getString(R.string.address_save_error) ));
                 }
             });
 
@@ -129,7 +143,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
         }
     }
 
-    public void deleteAddress( QuickResponse<Boolean> response ){
+    public void deleteAddress( Response<String> response ){
 
         ShortAddress addressToDelete = viewModel.getAddress();
         long addressId = addressToDelete.getAddressId();
@@ -141,12 +155,16 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
                     photoService.deletePhoto( addressToDelete.getPhotoLocation() );
                 }
 
-                response.onResult( success );
+                geoResult.setAddress1("");
+                geoResult.setAddress2("");
+                addressProvider.selectAddress( new ShortAddress());
+                viewModel.setAddress( addressProvider.getSelectedAddress() );
+                response.onResult( view.getString( R.string.toast_address_deleted) );
             }
 
             @Override
             public void onError(Exception exception) {
-                //TODO make a meaningfull error as exception.
+                response.onError( new MapMemoryException(view.getString( R.string.delete_error )));
             }
         });
         widgetService.updateList();

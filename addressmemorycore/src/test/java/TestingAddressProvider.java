@@ -24,6 +24,8 @@ import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.doReturn;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.spy;
 
@@ -43,7 +45,7 @@ import static org.powermock.api.mockito.PowerMockito.spy;
 public class TestingAddressProvider {
 
     private AddressViewModel viewModel;
-    private AddressView viewMocked;
+    private AddressView addressView;
     private AddressPresenter presenter;
 
     String navigationTag = "helloNavigation";
@@ -56,9 +58,9 @@ public class TestingAddressProvider {
         getAddresses();
         MapModuleBase.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestApp())).build() );
 
-        viewMocked = mock( AddressView.class );
+        addressView = mock( AddressView.class );
         presenter = spy(new AddressPresenter());
-        viewModel = presenter.getViewModel(viewMocked);
+        viewModel = presenter.getViewModel(addressView);
 
         //through MVP, get your hands on the presenter, and subsequently get its dagger dependency
         provider = Whitebox.getInternalState(presenter, "addressProvider" );
@@ -123,6 +125,7 @@ public class TestingAddressProvider {
     //<editor-fold desc="utils">
     void applySuccessfulResults(){
 
+        doReturn( "resource_string" ).when(addressView).getString( anyInt() );
         for(ShortAddress address: addresses ){
             provider.updateAddress( address );
         }

@@ -14,14 +14,15 @@ import info.juanmendez.addressmemorycore.dependencies.NetworkService;
 import info.juanmendez.addressmemorycore.dependencies.QuickResponse;
 import info.juanmendez.addressmemorycore.dependencies.Response;
 import info.juanmendez.addressmemorycore.models.Commute;
-import info.juanmendez.addressmemorycore.vp.vpAddress.AddressViewModel;
 import info.juanmendez.addressmemorycore.models.MapMemoryException;
+import info.juanmendez.addressmemorycore.models.RouteMessage;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.models.SubmitError;
 import info.juanmendez.addressmemorycore.modules.MapModuleBase;
 import info.juanmendez.addressmemorycore.vp.FragmentNav;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressPresenter;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressView;
+import info.juanmendez.addressmemorycore.vp.vpAddress.AddressViewModel;
 import info.juanmendez.mapmemorycore.addressmemorycore.TestApp;
 import info.juanmendez.mapmemorycore.addressmemorycore.module.DaggerMapCoreComponent;
 import info.juanmendez.mapmemorycore.addressmemorycore.module.MapCoreModule;
@@ -30,6 +31,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
@@ -175,7 +177,7 @@ public class TestAddressEditing {
         presenter.requestAddressByGeolocation();
         assertEquals( addresses.get(0).getAddress1(), selectedAddress.getAddress1());
 
-        Response<ShortAddress> response = mock( Response.class );
+        Response<RouteMessage> response = mock( Response.class );
         presenter.saveAddress(response);
 
         //we don't provide name, so that is an error saving!!
@@ -192,7 +194,7 @@ public class TestAddressEditing {
         presenter.saveAddress(response);
 
         //fantastic, now this worked!
-        verify(response).onResult(any(ShortAddress.class));
+        verify(response).onResult(any(RouteMessage.class));
         reset( provider );
 
         //ok now lets update the transportation mode!
@@ -214,7 +216,7 @@ public class TestAddressEditing {
         presenter.requestAddressByGeolocation();
         assertEquals( addresses.get(0).getAddress1(), selectedAddress.getAddress1());
 
-        Response<ShortAddress> response = mock( Response.class );
+        Response<RouteMessage> response = mock( Response.class );
         presenter.saveAddress(response);
 
         //we don't provide name, so that is an error saving!!
@@ -226,7 +228,7 @@ public class TestAddressEditing {
         presenter.saveAddress(response);
 
         //fantastic, now this worked!
-        verify(response).onResult(any(ShortAddress.class));
+        verify(response).onResult(any(RouteMessage.class));
     }
 
     @Test
@@ -242,7 +244,7 @@ public class TestAddressEditing {
 
         provider.selectAddress( new ShortAddress());
 
-        Response<ShortAddress> response = mock( Response.class );
+        Response<RouteMessage> response = mock( Response.class );
 
         presenter.saveAddress( response );
         verify( response ).onError(any(MapMemoryException.class));
@@ -258,12 +260,14 @@ public class TestAddressEditing {
         }).when(provider).updateAddressAsync(any(ShortAddress.class), any(Response.class));
 
         presenter.saveAddress( response );
-        verify( response ).onResult(any(ShortAddress.class));
+        verify( response ).onResult(any(RouteMessage.class));
     }
 
     //<editor-fold desc="utils">
     void applySuccessfulResults(){
         setAddresses();
+
+        doReturn( "resource_string" ).when( addressView ).getString( anyInt() );
 
         doReturn(true).when(networkServiceMocked).isConnected();
 

@@ -5,7 +5,9 @@ import javax.inject.Inject;
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.dependencies.PhotoService;
+import info.juanmendez.addressmemorycore.dependencies.Response;
 import info.juanmendez.addressmemorycore.models.MapMemoryException;
+import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.modules.MapModuleBase;
 import info.juanmendez.addressmemorycore.vp.Presenter;
 
@@ -57,14 +59,40 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
     public void confirmPhoto(){
         if( !viewModel.getPhoto().isEmpty() ){
             viewModel.getAddress().setPhotoLocation(viewModel.getPhoto());
+        }else{
+            viewModel.getAddress().setPhotoLocation("");
         }
 
         navigationService.goBack();
     }
 
     public void deletePhoto(){
-        photoService.deletePhoto( viewModel.getAddress().getPhotoLocation() );
-        viewModel.clearPhoto();
+
+        ShortAddress selectedAddress = viewModel.getAddress();
+        photoService.deletePhoto( selectedAddress.getPhotoLocation() );
+
+        if( selectedAddress.getAddressId() > 0 ){
+
+            selectedAddress.setPhotoLocation("");
+
+            addressProvider.updateAddressAsync(selectedAddress, new Response<ShortAddress>() {
+
+                @Override
+                public void onError(Exception exception) {
+                }
+
+                @Override
+                public void onResult(ShortAddress result) {
+                    addressProvider.selectAddress( result );
+                    viewModel.setAddress(result);
+                    viewModel.clearPhoto();
+                    navigationService.goBack();
+                }
+            });
+        }else{
+            viewModel.clearPhoto();
+            navigationService.goBack();
+        }
     }
 
     @Override

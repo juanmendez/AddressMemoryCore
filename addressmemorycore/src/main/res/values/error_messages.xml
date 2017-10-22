@@ -10,9 +10,12 @@
     <!--related to address-->
     <string name="address_gone">This address does not exist</string>
     <string name="submitting_address_error">Address is not valid upon submit</string>
+    <string name="delete_error">There has been a problem deleting this address, please try again later</string>
+    <string name="address_save_error">There was a problem saving, please try again.</string>
 
 
     <!--common-->
     <string name="required_field">Field is required</string>
     <string name="address_name_repeated">Another address has the same name</string>
+
 </resources>

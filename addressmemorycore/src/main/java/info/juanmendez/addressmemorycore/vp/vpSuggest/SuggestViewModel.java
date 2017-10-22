@@ -24,7 +24,7 @@ public class SuggestViewModel extends BaseObservable {
     private ShortAddress pickedAddress = new ShortAddress();
 
     //matching addresses.
-    private List<ShortAddress> matchingAddresses = new ArrayList();
+    private List<ShortAddress> matchingAddresses = new ArrayList<>();
 
     //any error?
     private Exception addressException;

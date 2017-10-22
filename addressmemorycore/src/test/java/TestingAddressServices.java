@@ -31,6 +31,7 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -169,6 +170,8 @@ public class TestingAddressServices {
     void applySuccessfulResults(){
         setAddresses();
 
+        doReturn( "resource_string" ).when( addressView ).getString( anyInt() );
+        doReturn( "resource_string" ).when( suggestView ).getString( anyInt() );
         doReturn(true).when(networkServiceMocked).isConnected();
 
         doAnswer(invocation -> {

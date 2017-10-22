@@ -11,5 +11,6 @@ import info.juanmendez.addressmemorycore.vp.FragmentNav;
 public interface NavigationService {
     String getNavigationTag( FragmentNav fragmentNav );
     void request( String tag );
+    void request( String tag, String route );
     boolean goBack();
 }

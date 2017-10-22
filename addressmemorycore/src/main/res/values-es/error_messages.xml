@@ -11,6 +11,8 @@
     <string name="address_gone">Esta dirección no existe</string>
     <string name="submitting_address_error">La dirección se encuentra invalida</string>
     <string name="address_name_repeated">Existe otra dirección con el mismo nombre</string>
+    <string name="delete_error">Occurió un error al borrar esta dirección, por favor intente más tarde</string>
+    <string name="address_save_error">Occurió un error al guardar esta dirección, por favor intente más tarde</string>
 
     <!--common-->
     <string name="required_field">Llene este campo</string>

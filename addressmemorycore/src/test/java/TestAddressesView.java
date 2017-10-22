@@ -23,6 +23,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
@@ -122,6 +123,7 @@ public class TestAddressesView {
     private void applySuccessfulResults(){
         setAddresses();
 
+        doReturn( "resource_string" ).when( addressView ).getString( anyInt() );
         doReturn( navigationTag ).when( navigationService ).getNavigationTag(any(FragmentNav.class));
 
         for(ShortAddress address: addresses ){

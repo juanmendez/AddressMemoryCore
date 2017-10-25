@@ -9,8 +9,6 @@ import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.modules.MapModuleBase;
 import info.juanmendez.addressmemorycore.utils.ModelUtils;
-import info.juanmendez.addressmemorycore.utils.RxUtils;
-import rx.Subscription;
 
 /**
  * Created by Juan Mendez on 9/4/2017.
@@ -19,7 +17,7 @@ import rx.Subscription;
  *
  * This is a proxy used by widgetProvider in order to get all addresses.
  * Addresses are copies as RealmObjects throw an error if used outside the main thread.
- * And naturally Android Widgets don't run in the main thread. Pretty obvious
+ * And naturally Android Widgets don't run in the main thread.
  */
 public class AddressesProxy {
 
@@ -27,7 +25,6 @@ public class AddressesProxy {
     AddressProvider addressProvider;
 
     private List<ShortAddress> addresses = new ArrayList<>();
-    Subscription subscription;
 
     public AddressesProxy() {
         MapModuleBase.getInjector().inject(this);
@@ -35,7 +32,7 @@ public class AddressesProxy {
     }
 
     private void refresh(){
-        subscription = addressProvider.getAddressesAsync().subscribe(shortAddresses -> {
+        addressProvider.getAddressesAsync().subscribe(shortAddresses -> {
             addresses.clear();
 
             for( ShortAddress shortAddress: shortAddresses ){
@@ -49,8 +46,5 @@ public class AddressesProxy {
     }
 
     public void onDestroy() {
-        if( !addresses.isEmpty() ){
-            RxUtils.unsubscribe( subscription );
-        }
     }
 }

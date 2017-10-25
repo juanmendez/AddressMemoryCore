@@ -35,6 +35,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
 
     public static final String ADDRESS_JUST_CREATED = AddressPresenter.class.getName() + "/" + "ADDRESS_JUST_CREATED";
     private static final String ADDRESS_JUST_UPDATED = AddressPresenter.class.getName() + "/" + "ADDRESS_JUST_UPDATED";
+    public static final String NEW_ADDRESS_REQUEST = AddressPresenter.class.getName() + "/" + "NEW_ADDRESS_REQUEST";
 
     @Inject
     AddressProvider addressProvider;
@@ -81,13 +82,19 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
 
 
         if( !rotated ){
-            viewModel.setAddress( addressProvider.getSelectedAddress() );
 
             if( params.equals(AddressPresenter.ADDRESS_JUST_CREATED)){
                 view.doToast( view.getString(R.string.toast_address_created));
             }else if( params.equals( AddressPresenter.ADDRESS_JUST_UPDATED)){
                 view.doToast( view.getString(R.string.toast_address_updated));
+            }else if( params.equals( AddressPresenter.NEW_ADDRESS_REQUEST ) &&
+                      addressProvider.getSelectedAddress().getAddressId() > 0 ){
+                //if there is already an address being edited and is saved
+                //then is ok to include a new one
+                addressProvider.selectAddress( new ShortAddress() );
             }
+
+            viewModel.setAddress(  addressProvider.getSelectedAddress() );
         }
 
         networkService.reset();

@@ -14,7 +14,6 @@ import info.juanmendez.mapmemorycore.addressmemorycore.module.DaggerMapCoreCompo
 import info.juanmendez.mapmemorycore.addressmemorycore.module.MapCoreModule;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
@@ -49,19 +48,7 @@ public class TestingAddressesProxy{
 
         //busted, provider updates happen after proxy.refresh() is called..
         //so we make a secret call to make ends meet.
-        Whitebox.invokeMethod(proxy, "refresh" );
         assertEquals( provider.countAddresses(), proxy.getAddresses().size() );
-
-        //show these objects were not created by realm.
-        long id;
-        ShortAddress currentAddress;
-
-        //proxy provides copies of realmObject, as they raised errors when used outside the main thread
-        for( int i = 0; i < proxy.getAddresses().size(); i++ ){
-            currentAddress = proxy.getAddresses().get(i);
-            id = currentAddress.getAddressId();
-            assertFalse( currentAddress == provider.getAddress(id));
-        }
     }
 
     private List<ShortAddress> getAddresses(){

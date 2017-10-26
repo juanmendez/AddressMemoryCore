@@ -9,5 +9,4 @@ package info.juanmendez.addressmemorycore.dependencies;
 public interface WidgetService {
     void updateList();
     void updateWidgets();
-    void refreshTransporationMode();
 }

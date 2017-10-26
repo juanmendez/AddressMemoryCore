@@ -25,6 +25,7 @@ public interface AddressProvider {
     //get address
     ShortAddress getAddress(long addressId );
     Observable<ShortAddress> getAddressAsync(long addressId);
+    List<ShortAddress> getClonedAddresses();
 
     //update address
     ShortAddress updateAddress(ShortAddress address);

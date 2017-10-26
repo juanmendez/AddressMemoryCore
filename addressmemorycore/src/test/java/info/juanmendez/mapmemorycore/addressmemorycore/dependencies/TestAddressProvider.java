@@ -64,6 +64,11 @@ public class TestAddressProvider implements AddressProvider {
     }
 
     @Override
+    public List<ShortAddress> getClonedAddresses() {
+        return addresses;
+    }
+
+    @Override
     public ShortAddress updateAddress(ShortAddress updated) {
 
         long currentId;

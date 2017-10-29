@@ -45,10 +45,7 @@ public class AddressesPresenter extends Observable.OnPropertyChangedCallback imp
     public void active(String params) {
 
         viewModel.setStreamingAddresses( addressProvider.getAddresses() );
-
-        if( !rotated ){
-            viewModel.setSelectedAddress(addressProvider.getSelectedAddress());
-        }
+        viewModel.setSelectedAddress(addressProvider.getSelectedAddress());
         viewModel.addOnPropertyChangedCallback( this );
     }
 

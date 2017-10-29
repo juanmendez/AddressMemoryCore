@@ -1,7 +1,8 @@
 package info.juanmendez.addressmemorycore.modules;
 
-import info.juanmendez.addressmemorycore.vp.vpAddresses.AddressesPresenter;
+import info.juanmendez.addressmemorycore.vp.AddressesActivityPresenter;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressPresenter;
+import info.juanmendez.addressmemorycore.vp.vpAddresses.AddressesPresenter;
 import info.juanmendez.addressmemorycore.vp.vpAddresses.AddressesProxy;
 import info.juanmendez.addressmemorycore.vp.vpPhoto.PhotoPresenter;
 import info.juanmendez.addressmemorycore.vp.vpSuggest.SuggestPresenter;
@@ -12,6 +13,7 @@ import info.juanmendez.addressmemorycore.vp.vpSuggest.SuggestPresenter;
  * contact@juanmendez.info
  */
 public interface MapInjector {
+    void inject( AddressesActivityPresenter addressesActivityPresenter );
     void inject( AddressesPresenter addressesPresenter );
     void inject( AddressPresenter addressPresenter );
     void inject( PhotoPresenter photoPresenter );

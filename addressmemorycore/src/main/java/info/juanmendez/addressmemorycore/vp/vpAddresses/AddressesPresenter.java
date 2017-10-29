@@ -34,7 +34,6 @@ public class AddressesPresenter extends Observable.OnPropertyChangedCallback imp
     public AddressesPresenter() {
         MapModuleBase.getInjector().inject(this);
         viewModel = new AddressesViewModel();
-        viewModel.setStreamingAddresses( addressProvider.getAddresses() );
     }
 
     @Override
@@ -44,6 +43,9 @@ public class AddressesPresenter extends Observable.OnPropertyChangedCallback imp
 
     @Override
     public void active(String params) {
+
+        viewModel.setStreamingAddresses( addressProvider.getAddresses() );
+
         if( !rotated ){
             viewModel.setSelectedAddress(addressProvider.getSelectedAddress());
         }

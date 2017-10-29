@@ -26,7 +26,9 @@ public class AddressesProxy {
 
     public AddressesProxy() {
         MapModuleBase.getInjector().inject(this);
+        addressProvider.connect();
         addresses = addressProvider.getClonedAddresses();
+        addressProvider.disconnect();
     }
 
     public List<ShortAddress> getAddresses() {

@@ -14,6 +14,10 @@ import rx.Observable;
 
 public interface AddressProvider {
 
+    //these methods are needed for component lifecycle
+    void connect();
+    void disconnect();
+
     //getter-setter selectedAddress
     ShortAddress getSelectedAddress();
     void selectAddress(ShortAddress selectedAddress);

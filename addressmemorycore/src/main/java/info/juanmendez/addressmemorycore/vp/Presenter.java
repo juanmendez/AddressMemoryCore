@@ -16,7 +16,7 @@ public interface Presenter<P,T>{
     P getViewModel(T view);
 
     /**
-     * we don't need to keep in mind what is onStart and onPause
+     * we don't need to keep in mind what is onStart and disconnect
      * instead we use active/inactive
      * @param action
      */

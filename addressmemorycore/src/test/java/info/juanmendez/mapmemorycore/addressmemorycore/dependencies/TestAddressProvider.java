@@ -27,6 +27,16 @@ public class TestAddressProvider implements AddressProvider {
     int totalAdded=0;
 
     @Override
+    public void connect() {
+
+    }
+
+    @Override
+    public void disconnect() {
+
+    }
+
+    @Override
     public ShortAddress getSelectedAddress() {
         return selectedAddress;
     }

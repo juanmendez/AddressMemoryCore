@@ -63,11 +63,11 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
     public static final String ADDDRESS_EDIT_TAG = "editAddressTag";
 
     /**
-     * This property remind us of the last geoResult, and in case that is never requested then
+     * This property remind us of the last mGeoResult, and in case that is never requested then
      * the address values are empty strings. This result is used to figure out if the user is
      * editing any of the address fields.
      */
-    private ShortAddress geoResult = new ShortAddress();
+    private ShortAddress mGeoResult = new ShortAddress();
 
     @Override
     public AddressViewModel getViewModel(AddressView view) {
@@ -162,8 +162,8 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
                     photoService.deletePhoto( addressToDelete.getPhotoLocation() );
                 }
 
-                geoResult.setAddress1("");
-                geoResult.setAddress2("");
+                mGeoResult.setAddress1("");
+                mGeoResult.setAddress2("");
                 addressProvider.selectAddress( new ShortAddress());
                 mViewModel.setAddress( addressProvider.getSelectedAddress() );
                 response.onResult( mView.getString( R.string.toast_address_deleted) );
@@ -186,7 +186,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
             addressService.geolocateAddress(new Response<ShortAddress>() {
                 @Override
                 public void onResult(ShortAddress result) {
-                    geoResult = result;
+                    mGeoResult = result;
                     mViewModel.getAddress().setMapId( result.getMapId() );
                     mViewModel.setAddress1( result.getAddress1() );
                     mViewModel.setAddress2( result.getAddress2() );
@@ -238,11 +238,11 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
     @Override
     public void onPropertyChanged(Observable observable, int brId) {
 
-        if( BR.address1==brId && !mViewModel.getAddress1().equals(geoResult.getAddress1()) ){
+        if( BR.address1==brId && !mViewModel.getAddress1().equals(mGeoResult.getAddress1()) ){
             requestAddressSuggestion();
         }
         else
-        if( BR.address2==brId && !mViewModel.getAddress2().equals(geoResult.getAddress2()) ){
+        if( BR.address2==brId && !mViewModel.getAddress2().equals(mGeoResult.getAddress2()) ){
             requestAddressSuggestion();
         }
 

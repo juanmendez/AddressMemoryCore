@@ -13,49 +13,49 @@ import info.juanmendez.addressmemorycore.models.ShortAddress;
  */
 
 public class PhotoViewModel extends BaseObservable {
-    private ShortAddress address = new ShortAddress();
-    private Exception photoException;
-    private String photo = "";
+    private ShortAddress mAddress = new ShortAddress();
+    private Exception mPhotoException;
+    private String mPhoto = "";
 
-    //<editor-fold desc="address">
+    //<editor-fold desc="mAddress">
     @Bindable
     public ShortAddress getAddress() {
-        return address;
+        return mAddress;
     }
 
     public void setAddress(ShortAddress address) {
-        this.address = address;
+        mAddress = address;
         notifyPropertyChanged(BR.address);
 
         setPhoto( address.getPhotoLocation() );
     }
 
     public void clearPhoto(){
-        photo = "";
+        mPhoto = "";
         notifyPropertyChanged(BR.photo);
     }
     //</editor-fold>
 
-    //<editor-fold desc="photo">
+    //<editor-fold desc="mPhoto">
     @Bindable
     public String getPhoto() {
-        return photo;
+        return mPhoto;
     }
 
     public void setPhoto(String photo) {
-        this.photo = photo;
+        mPhoto = photo;
         notifyPropertyChanged(BR.photo);
     }
     //</editor-fold>
 
-    //<editor-fold desc="photoException">
+    //<editor-fold desc="mPhotoException">
     @Bindable
     public Exception getPhotoException() {
-        return photoException;
+        return mPhotoException;
     }
 
     public void setPhotoException(Exception photoException) {
-        this.photoException = photoException;
+        mPhotoException = photoException;
         notifyPropertyChanged(BR.addressException);
     }
     //</editor-fold>

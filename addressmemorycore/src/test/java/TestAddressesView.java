@@ -36,29 +36,29 @@ import static org.powermock.api.mockito.PowerMockito.spy;
  * contact@juanmendez.info
  */
 public class TestAddressesView {
-    private AddressesView addressView;
-    private AddressesPresenter presenter;
-    private NavigationService navigationService;
-    private AddressProvider provider;
+    private AddressesView mAddressView;
+    private AddressesPresenter mPresenter;
+    private NavigationService mNavigationService;
+    private AddressProvider mProvider;
 
-    private String navigationTag = "helloNavigation";
-    private List<ShortAddress> addresses = new ArrayList<>();
+    private String mNavigationTag = "helloNavigation";
+    private List<ShortAddress> mAddresses = new ArrayList<>();
 
-    private AddressesViewModel viewModel;
+    private AddressesViewModel mViewModel;
 
     @Before
     public void before() throws Exception {
 
         MapModuleBase.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestApp())).build() );
 
-        addressView = mock( AddressesView.class );
-        presenter = spy(new AddressesPresenter());
+        mAddressView = mock( AddressesView.class );
+        mPresenter = spy(new AddressesPresenter());
 
-        //we want to spy the viewModel, so we get it, and put it back as a spied one
-        viewModel = Whitebox.getInternalState( presenter, "viewModel");
+        //we want to spy the mViewModel, so we get it, and put it back as a spied one
+        mViewModel = Whitebox.getInternalState(mPresenter, "mViewModel");
 
-        navigationService = Whitebox.getInternalState(presenter, "navigationService");
-        provider = Whitebox.getInternalState(presenter, "addressProvider" );
+        mNavigationService = Whitebox.getInternalState(mPresenter, "navigationService");
+        mProvider = Whitebox.getInternalState(mPresenter, "addressProvider" );
 
         //make each mocked object answer with positive results such as networkService.isConnected() returning true.
         applySuccessfulResults();
@@ -71,93 +71,93 @@ public class TestAddressesView {
         int rotate = 1;
 
         for( int i =0; i<=rotate; i++){
-            presenter.active("");
-            presenter.getViewModel(addressView);
-            //presenter has to assign to the view the streaming list
-            assertFalse( viewModel.getStreamingAddresses().isEmpty() );
-            assertNotNull( provider.getSelectedAddress() );
-            presenter.inactive(true);
+            mPresenter.active("");
+            mPresenter.getViewModel(mAddressView);
+            //mPresenter has to assign to the view the streaming list
+            assertFalse( mViewModel.getStreamingAddresses().isEmpty() );
+            assertNotNull( mProvider.getSelectedAddress() );
+            mPresenter.inactive(true);
         }
     }
 
     @Test
     public void testMakingSelection(){
-        //provider has been updated elsewhere
-        ShortAddress selectedAddress = provider.getAddress(1);
-        provider.selectAddress(ModelUtils.cloneAddress(selectedAddress) );
+        //mProvider has been updated elsewhere
+        ShortAddress selectedAddress = mProvider.getAddress(1);
+        mProvider.selectAddress(ModelUtils.cloneAddress(selectedAddress) );
 
-        presenter.active("");
-        presenter.getViewModel(addressView);
-        //presenter has to assign to the view the streaming list
-        assertFalse( viewModel.getStreamingAddresses().isEmpty() );
-        assertEquals( viewModel.getSelectedAddress().getAddressId(), selectedAddress.getAddressId() );
+        mPresenter.active("");
+        mPresenter.getViewModel(mAddressView);
+        //mPresenter has to assign to the view the streaming list
+        assertFalse( mViewModel.getStreamingAddresses().isEmpty() );
+        assertEquals( mViewModel.getSelectedAddress().getAddressId(), selectedAddress.getAddressId() );
 
         //ok, now the view is going to provide another selected item
-        selectedAddress = addresses.get(1);
-        viewModel.setSelectedAddress( selectedAddress );
+        selectedAddress = mAddresses.get(1);
+        mViewModel.setSelectedAddress( selectedAddress );
 
-        //that should force the provider to update its selectedAddress
-        assertEquals( viewModel.getSelectedAddress().getAddressId(), provider.getSelectedAddress().getAddressId() );
+        //that should force the mProvider to update its selectedAddress
+        assertEquals( mViewModel.getSelectedAddress().getAddressId(), mProvider.getSelectedAddress().getAddressId() );
 
         //in the app then we head to another fragment. See if that's happening
-        verify( navigationService ).request( eq(AddressPresenter.ADDRESS_VIEW_TAG) );
-        presenter.inactive(true);
+        verify(mNavigationService).request( eq(AddressPresenter.ADDRESS_VIEW_TAG) );
+        mPresenter.inactive(true);
     }
 
     @Test
     public void testMakingNewAddress(){
 
-        ShortAddress selectedAddress = provider.getAddress(1);
-        provider.selectAddress(ModelUtils.cloneAddress(selectedAddress) );
+        ShortAddress selectedAddress = mProvider.getAddress(1);
+        mProvider.selectAddress(ModelUtils.cloneAddress(selectedAddress) );
 
-        presenter.active("");
-        presenter.requestNewAddress();
+        mPresenter.active("");
+        mPresenter.requestNewAddress();
 
         //in the app then we head to another fragment. See if that's happening
-        verify( navigationService ).request( eq(AddressPresenter.ADDDRESS_EDIT_TAG) );
-        assertEquals( provider.getSelectedAddress().getAddressId(), 0 );
-        presenter.inactive(true);
+        verify(mNavigationService).request( eq(AddressPresenter.ADDDRESS_EDIT_TAG) );
+        assertEquals( mProvider.getSelectedAddress().getAddressId(), 0 );
+        mPresenter.inactive(true);
     }
 
     //<editor-fold desc="utils">
     private void applySuccessfulResults(){
         setAddresses();
 
-        doReturn( "resource_string" ).when( addressView ).getString( anyInt() );
-        doReturn( navigationTag ).when( navigationService ).getNavigationTag(any(FragmentNav.class));
+        doReturn( "resource_string" ).when(mAddressView).getString( anyInt() );
+        doReturn(mNavigationTag).when(mNavigationService).getNavigationTag(any(FragmentNav.class));
 
-        for(ShortAddress address: addresses ){
-            provider.updateAddress( address );
+        for(ShortAddress address: mAddresses){
+            mProvider.updateAddress( address );
         }
     }
 
     private void setAddresses(){
 
         ShortAddress address;
-        //lets add an address, and see if addressesView has updated its addresses
+        //lets add an address, and see if addressesView has updated its mAddresses
         address = new ShortAddress();
         address.setName( "1");
         address.setAddress1("0 N. State");
         address.setAddress2( "Chicago, 60641" );
-        addresses.add( address );
+        mAddresses.add( address );
 
         address = new ShortAddress();
         address.setName( "2");
         address.setAddress1("1 N. State");
         address.setAddress2( "Chicago, 60641" );
-        addresses.add( address );
+        mAddresses.add( address );
 
         address = new ShortAddress();
         address.setName( "3");
         address.setAddress1("2 N. State");
         address.setAddress2( "Chicago, 60641" );
-        addresses.add( address );
+        mAddresses.add( address );
 
         address = new ShortAddress();
         address.setName( "4");
         address.setAddress1("3 N. State");
         address.setAddress2( "Chicago, 60641" );
-        addresses.add( address );
+        mAddresses.add( address );
     }
     //</editor-fold>
 }

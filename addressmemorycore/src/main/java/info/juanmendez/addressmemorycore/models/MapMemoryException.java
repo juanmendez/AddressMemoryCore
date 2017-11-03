@@ -11,7 +11,7 @@ import java.util.List;
 
 public class MapMemoryException extends  Exception {
 
-    List<SubmitError> errors = new ArrayList<>();
+    private List<SubmitError> mErrors = new ArrayList<>();
 
     //TODO: add constant error messages
     public MapMemoryException(String message) {
@@ -23,11 +23,11 @@ public class MapMemoryException extends  Exception {
     }
 
     public List<SubmitError> getErrors() {
-        return errors;
+        return mErrors;
     }
 
     public MapMemoryException setErrors(List<SubmitError> errors) {
-        this.errors = errors;
+        mErrors = errors;
 
         return this;
     }

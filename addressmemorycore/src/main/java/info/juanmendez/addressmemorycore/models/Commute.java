@@ -16,31 +16,31 @@ public class Commute extends RealmObject {
     public static final String BUS = "t";
     public static final String UNDECIDED = "u";
 
-    private String type = UNDECIDED;
-    private boolean avoidXpressway = false;
-    private boolean avoidTolls = false;
+    private String mType = UNDECIDED;
+    private boolean mAvoidXpressway = false;
+    private boolean mAvoidTolls = false;
 
     public String getType() {
-        return type;
+        return mType;
     }
 
     public void setType(String type) {
-        this.type = type;
+        mType = type;
     }
 
     public boolean getAvoidXpressway() {
-        return avoidXpressway;
+        return mAvoidXpressway;
     }
 
     public void setAvoidXpressway(Boolean avoidXpressway) {
-        this.avoidXpressway = avoidXpressway;
+        mAvoidXpressway = avoidXpressway;
     }
 
     public boolean getAvoidTolls() {
-        return avoidTolls;
+        return mAvoidTolls;
     }
 
     public void setAvoidTolls(Boolean avoidTolls) {
-        this.avoidTolls = avoidTolls;
+        mAvoidTolls = avoidTolls;
     }
 }

@@ -24,16 +24,16 @@ import static org.powermock.api.mockito.PowerMockito.mock;
 
 @Module
 public class MapCoreModule {
-    private TestApp app;
+    private TestApp mApp;
 
     public MapCoreModule(TestApp app) {
-        this.app = app;
+        mApp = app;
     }
 
     @Singleton
     @Provides
     public AddressProvider getAddressProvider(){
-        return app.getAddressProvider();
+        return mApp.getAddressProvider();
     }
 
     @Provides
@@ -44,7 +44,7 @@ public class MapCoreModule {
     @Singleton
     @Provides
     public Application getApplication(){
-        return app.getApplication();
+        return mApp.getApplication();
     }
 
     @Singleton

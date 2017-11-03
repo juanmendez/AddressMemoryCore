@@ -6,20 +6,20 @@ package info.juanmendez.addressmemorycore.models;
  * contact@juanmendez.info
  */
 public class SubmitError{
-    String field;
-    String message;
+    String mField;
+    String mMessage;
 
     public SubmitError(String field, String message) {
-        this.field = field;
-        this.message = message;
+        mField = field;
+        mMessage = message;
     }
 
     public String getField() {
-        return field;
+        return mField;
     }
 
     public String getMessage() {
-        return message;
+        return mMessage;
     }
 
     public static Boolean emptyOrNull( String field ){

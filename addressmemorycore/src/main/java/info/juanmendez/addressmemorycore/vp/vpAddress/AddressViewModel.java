@@ -46,22 +46,22 @@ public class AddressViewModel extends BaseObservable {
 
     @Bindable public final ObservableBoolean onChildFragment = new ObservableBoolean(false);
 
-    private String commuteType = "";
-    private boolean avoidXpressway = false;
-    private boolean commuteAvoidTolls = false;
+    private String mCommuteType = "";
+    private boolean mAvoidXpressway = false;
+    private boolean mCommuteAvoidTolls = false;
 
 
-    private ShortAddress address = new ShortAddress();
-    private Exception addressException;
+    private ShortAddress mAddress = new ShortAddress();
+    private Exception mAddressException;
 
-    //<editor-fold desc="address">
+    //<editor-fold desc="mAddress">
     @Bindable
     public ShortAddress getAddress() {
-        return address;
+        return mAddress;
     }
 
     public void setAddress(ShortAddress address) {
-        this.address = address;
+        mAddress = address;
         notifyPropertyChanged(BR._all);
 
     }
@@ -71,14 +71,14 @@ public class AddressViewModel extends BaseObservable {
         notifyPropertyChanged(BR.address);
     }
 
-    //<editor-fold desc="addressException">
+    //<editor-fold desc="mAddressException">
     @Bindable
     public Exception getAddressException() {
-        return addressException;
+        return mAddressException;
     }
 
     public void setAddressException(Exception addressException) {
-        this.addressException = addressException;
+        mAddressException = addressException;
         notifyPropertyChanged(BR.addressException);
     }
     //</editor-fold>
@@ -86,21 +86,21 @@ public class AddressViewModel extends BaseObservable {
     //<editor-fold desc="Address values">
     @Bindable
     public String getAddress1() {
-        return address.getAddress1();
+        return mAddress.getAddress1();
     }
 
     public void setAddress1(String address1) {
-        address.setAddress1( address1 );
+        mAddress.setAddress1( address1 );
         notifyPropertyChanged(BR.address1);
     }
 
     @Bindable
     public String getAddress2() {
-        return address.getAddress2();
+        return mAddress.getAddress2();
     }
 
     public void setAddress2(String address2) {
-        address.setAddress2( address2 );
+        mAddress.setAddress2( address2 );
         notifyPropertyChanged(BR.address2);
     }
     //</editor-fold>
@@ -108,24 +108,24 @@ public class AddressViewModel extends BaseObservable {
     //<editor-fold desc="photo">
     @Bindable
     public String getPhoto() {
-        return address.getPhotoLocation();
+        return mAddress.getPhotoLocation();
     }
 
     public void setPhoto(String photo) {
-        address.setPhotoLocation( photo );
+        mAddress.setPhotoLocation( photo );
         notifyPropertyChanged(BR.photo);
     }
     //</editor-fold>
 
     //<editor-fold desc="name">
     public void setName(String name) {
-        address.setName(name);
+        mAddress.setName(name);
         notifyPropertyChanged(BR.name);
     }
 
     @Bindable
     public String getName() {
-        return address.getName();
+        return mAddress.getName();
     }
     //</editor-fold>
 
@@ -163,7 +163,7 @@ public class AddressViewModel extends BaseObservable {
     }
 
     private Commute getCommute(){
-        return address.getCommute();
+        return mAddress.getCommute();
     }
     //</editor-fold>
 }

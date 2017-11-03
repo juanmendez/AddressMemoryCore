@@ -16,107 +16,107 @@ import io.realm.annotations.PrimaryKey;
 public class ShortAddress extends RealmObject{
 
     @PrimaryKey
-    private long addressId;
+    private long mAddressId;
 
     @Index
-    String name = "";
+    String mName = "";
 
 
-    String address1 = "";
-    String address2 = "";
-
-    @Index
-    int timesVisited;
+    String mAddress1 = "";
+    String mAddress2 = "";
 
     @Index
-    Date dateUpdated;
+    int mTimesVisited;
+
+    @Index
+    Date mDateUpdated;
 
     //this is a google id if we were to get it from autocomplete
     String mapId;
 
-    double lat;
-    double lon;
-    String url;
-    String photoLocation = "";
+    double mLat;
+    double mLon;
+    String mUrl;
+    String mPhotoLocation = "";
 
-    private Commute commute = new Commute();
+    private Commute mCommute = new Commute();
 
     public ShortAddress() {
-        if( dateUpdated == null ){
-            dateUpdated = new Date();
+        if( mDateUpdated == null ){
+            mDateUpdated = new Date();
         }
     }
 
     public ShortAddress(long addressId) {
-        this.addressId = addressId;
+        mAddressId = addressId;
     }
 
     public void setAddressId(long addressId) {
-        this.addressId = addressId;
+        mAddressId = addressId;
     }
 
     public void setDateUpdated(Date dateUpdated) {
-        this.dateUpdated = dateUpdated;
+        mDateUpdated = dateUpdated;
     }
 
     public long getAddressId() {
-        return addressId;
+        return mAddressId;
     }
 
     public String getName() {
-        return name;
+        return mName;
     }
 
     public void setName(String name) {
-        this.name = SubmitError.emptyOrNull(name)?"":name;
+        mName = SubmitError.emptyOrNull(name)?"":name;
     }
 
     public String getAddress1() {
-        return address1;
+        return mAddress1;
     }
 
     public void setAddress1(String address1) {
-        this.address1 = SubmitError.emptyOrNull(address1)?"":address1;
+        mAddress1 = SubmitError.emptyOrNull(address1)?"":address1;
     }
 
     public String getAddress2() {
-        return address2;
+        return mAddress2;
     }
 
     public void setAddress2(String address2) {
-        this.address2 =  SubmitError.emptyOrNull(address2)?"":address2;
+        mAddress2 =  SubmitError.emptyOrNull(address2)?"":address2;
     }
 
     public double getLat() {
-        return lat;
+        return mLat;
     }
 
     public void setLat(double lat) {
-        this.lat = lat;
+        mLat = lat;
     }
 
     public double getLon() {
-        return lon;
+        return mLon;
     }
 
     public void setLon(double lon) {
-        this.lon = lon;
+        mLon = lon;
     }
 
     public String getUrl() {
-        return url;
+        return mUrl;
     }
 
     public void setUrl(String url) {
-        this.url = url;
+        mUrl = url;
     }
 
     public String getPhotoLocation() {
-        return photoLocation;
+        return mPhotoLocation;
     }
 
     public void setPhotoLocation(String photoLocation) {
-        this.photoLocation = photoLocation;
+        mPhotoLocation = photoLocation;
     }
 
     public String getMapId() {
@@ -124,30 +124,30 @@ public class ShortAddress extends RealmObject{
     }
 
     public void setMapId(String mapId) {
-        this.mapId = SubmitError.emptyOrNull(mapId)?"":mapId;
+        mapId = SubmitError.emptyOrNull(mapId)?"":mapId;
     }
 
     public Date getDateUpdated() {
-        return dateUpdated;
+        return mDateUpdated;
     }
 
     public void updateDateModified() {
-        this.dateUpdated = new Date();
+        mDateUpdated = new Date();
     }
 
     public int getTimesVisited() {
-        return timesVisited;
+        return mTimesVisited;
     }
 
     public void setTimesVisited(int timesVisited) {
-        this.timesVisited = timesVisited;
+        mTimesVisited = timesVisited;
     }
 
     public Commute getCommute() {
-        return commute;
+        return mCommute;
     }
 
     public void setCommute(Commute commute) {
-        this.commute = commute;
+        mCommute = commute;
     }
 }

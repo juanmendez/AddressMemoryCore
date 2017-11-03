@@ -20,49 +20,49 @@ import info.juanmendez.addressmemorycore.models.ShortAddress;
 public class SuggestViewModel extends BaseObservable {
 
     //given address, we pull its address1 as a bindable
-    private ShortAddress selectedAddress = new ShortAddress();
-    private ShortAddress pickedAddress = new ShortAddress();
+    private ShortAddress mSelectedAddress = new ShortAddress();
+    private ShortAddress mPickedAddress = new ShortAddress();
 
     //matching addresses.
-    private List<ShortAddress> matchingAddresses = new ArrayList<>();
+    private List<ShortAddress> mMatchingAddresses = new ArrayList<>();
 
     //any error?
-    private Exception addressException;
+    private Exception mAddressException;
 
-    private String lastAddressTyped = "";
+    private String mLastAddressTyped = "";
 
     public void setSelectedAddress(ShortAddress selectedAddress) {
-        this.selectedAddress = selectedAddress;
+        mSelectedAddress = selectedAddress;
         notifyPropertyChanged(BR.addressEdited);
     }
 
-    //<editor-fold desc="matchingAddresses">
+    //<editor-fold desc="mMatchingAddresses">
     @Bindable
     public List<ShortAddress> getMatchingAddresses() {
-        return matchingAddresses;
+        return mMatchingAddresses;
     }
 
     public void setMatchingAddresses(List<ShortAddress> addresses) {
-        this.matchingAddresses.clear();
-        this.matchingAddresses.addAll(addresses);
+        mMatchingAddresses.clear();
+        mMatchingAddresses.addAll(addresses);
         notifyPropertyChanged(BR.matchingAddresses);
     }
 
     public void clearMatchingResults(){
-        this.matchingAddresses.clear();
+        mMatchingAddresses.clear();
         notifyPropertyChanged(BR.matchingAddresses);
     }
     //</editor-fold>
 
 
-    //<editor-fold desc="pickedAddress">
+    //<editor-fold desc="mPickedAddress">
     @Bindable
     public ShortAddress getPickedAddress() {
-        return pickedAddress;
+        return mPickedAddress;
     }
 
     public void setPickedAddress(ShortAddress pickedAddress) {
-        this.pickedAddress = pickedAddress;
+        mPickedAddress = pickedAddress;
         notifyPropertyChanged(BR.pickedAddress);
     }
     //</editor-fold>
@@ -70,24 +70,24 @@ public class SuggestViewModel extends BaseObservable {
     //<editor-fold desc="addressEdited">
     @Bindable
     public String getAddressEdited() {
-        return selectedAddress.getAddress1();
+        return mSelectedAddress.getAddress1();
     }
 
     public void setAddressEdited(String addressEdited) {
-        lastAddressTyped = addressEdited;
-        selectedAddress.setAddress1(addressEdited);
+        mLastAddressTyped = addressEdited;
+        mSelectedAddress.setAddress1(addressEdited);
         notifyPropertyChanged(BR.addressEdited);
     }
     //</editor-fold>
 
-    //<editor-fold desc="addressException">
+    //<editor-fold desc="mAddressException">
     @Bindable
     public Exception getAddressException() {
-        return addressException;
+        return mAddressException;
     }
 
     public void setAddressException(Exception addressException) {
-        this.addressException = addressException;
+        mAddressException = addressException;
         notifyPropertyChanged(BR.addressException);
     }
     //</editor-fold>

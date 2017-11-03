@@ -37,33 +37,33 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
     @Inject
     NavigationService navigationService;
 
-    private SuggestView view;
-    private SuggestViewModel viewModel;
-    private boolean rotated;
+    private SuggestView mView;
+    private SuggestViewModel mViewModel;
+    private boolean mRotated;
     public static final String SUGGEST_VIEW = "suggest_view";
 
     @Override
     public SuggestViewModel getViewModel(SuggestView view) {
-        this.view = view;
+        mView = view;
         MapModuleBase.getInjector().inject(this);
-        viewModel = new SuggestViewModel();
-        return viewModel;
+        mViewModel = new SuggestViewModel();
+        return mViewModel;
     }
 
     @Override
     public void active(String params ) {
 
-        if( !rotated ){
-            viewModel.setSelectedAddress(addressProvider.getSelectedAddress());
+        if( !mRotated){
+            mViewModel.setSelectedAddress(addressProvider.getSelectedAddress());
         }
 
-        viewModel.addOnPropertyChangedCallback(this);
+        mViewModel.addOnPropertyChangedCallback(this);
         networkService.reset();
 
         //We update addressEdited in that way we generate matching addresses.
         networkService.connect(result -> {});
 
-        addressService.onStart(view.getActivity(), result -> {
+        addressService.onStart(mView.getActivity(), result -> {
             searchForMatchingAddresses();
         });
     }
@@ -74,35 +74,35 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
 
     @Override
     public void inactive(Boolean isRotated) {
-        this.rotated = isRotated;
+        mRotated = isRotated;
         networkService.disconnect();
         addressService.onStop();
-        viewModel.removeOnPropertyChangedCallback(this);
+        mViewModel.removeOnPropertyChangedCallback(this);
     }
 
     /**
-     * Through addressService we look for matching addresses and update the viewModel
-     * so the matching address are reflected in the view.
+     * Through addressService we look for matching addresses and update the mViewModel
+     * so the matching address are reflected in the mView.
      * TODO: make exception messages come from resource strings
      */
     private void searchForMatchingAddresses(){
 
-        String query = viewModel.getAddressEdited();
+        String query = mViewModel.getAddressEdited();
 
         if( !addressService.isConnected() ) {
-            viewModel.setAddressException(new MapMemoryException("There is no connection"));
+            mViewModel.setAddressException(new MapMemoryException("There is no connection"));
         } else if( query.trim().isEmpty() ) {
-            viewModel.clearMatchingResults();
+            mViewModel.clearMatchingResults();
         } else {
             addressService.suggestAddress(query, new Response<List<ShortAddress>>() {
                 @Override
                 public void onResult(List<ShortAddress> results ) {
-                    viewModel.setMatchingAddresses(results);
+                    mViewModel.setMatchingAddresses(results);
                 }
 
                 @Override
                 public void onError(Exception exception) {
-                    viewModel.setAddressException(exception);
+                    mViewModel.setAddressException(exception);
                 }
             });
         }
@@ -112,7 +112,7 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
      * User has selected one address!
      */
     public void updateFromPickedAddress(){
-        ShortAddress pickedAddress = viewModel.getPickedAddress();
+        ShortAddress pickedAddress = mViewModel.getPickedAddress();
         if( pickedAddress != null ){
             ShortAddress selectedAddress = addressProvider.getSelectedAddress();
             selectedAddress.setAddress1( pickedAddress.getAddress1() );
@@ -126,7 +126,7 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
 
     @Override
     public Boolean getRotated() {
-        return rotated;
+        return mRotated;
     }
 
     @Override

@@ -13,7 +13,7 @@ import info.juanmendez.addressmemorycore.modules.MapModuleBase;
  * www.juanmendez.info
  * contact@juanmendez.info
  *
- * This is a proxy used by widgetProvider in order to get all addresses.
+ * This is a proxy used by widgetProvider in order to get all mAddresses.
  * Addresses are copies as RealmObjects throw an error if used outside the main thread.
  * And naturally Android Widgets don't run in the main thread.
  */
@@ -22,17 +22,17 @@ public class AddressesProxy {
     @Inject
     AddressProvider addressProvider;
 
-    private List<ShortAddress> addresses;
+    private List<ShortAddress> mAddresses;
 
     public AddressesProxy() {
         MapModuleBase.getInjector().inject(this);
         addressProvider.connect();
-        addresses = addressProvider.getClonedAddresses();
+        mAddresses = addressProvider.getClonedAddresses();
         addressProvider.disconnect();
     }
 
     public List<ShortAddress> getAddresses() {
-        return addresses;
+        return mAddresses;
     }
 
     public void onDestroy() {

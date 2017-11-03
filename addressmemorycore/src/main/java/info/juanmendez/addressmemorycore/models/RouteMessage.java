@@ -5,23 +5,23 @@ package info.juanmendez.addressmemorycore.models;
  * www.juanmendez.info
  * contact@juanmendez.info
  *
- * Route messages provide information to navigate from one view into another along with a route.
+ * Route messages provide information to navigate from one view into another along with a mRoute.
  */
 
 public class RouteMessage {
-    String location = "";
-    String route = "";
+    String mLocation = "";
+    String mRoute = "";
     
     public RouteMessage(String location, String route) {
-        this.location = location;
-        this.route = route;
+        mLocation = location;
+        mRoute = route;
     }
 
     public String getLocation() {
-        return location;
+        return mLocation;
     }
 
     public String getRoute() {
-        return route;
+        return mRoute;
     }
 }

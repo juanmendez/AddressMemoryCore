@@ -28,36 +28,36 @@ public class AddressesPresenter extends Observable.OnPropertyChangedCallback imp
     NavigationService navigationService;
 
     public static final String TAG = "addressesView";
-    private Boolean rotated = false;
-    private AddressesViewModel viewModel;
+    private Boolean mRotated = false;
+    private AddressesViewModel mViewModel;
 
     public AddressesPresenter() {
         MapModuleBase.getInjector().inject(this);
-        viewModel = new AddressesViewModel();
+        mViewModel = new AddressesViewModel();
     }
 
     @Override
     public AddressesViewModel getViewModel(AddressesView view) {
-        return viewModel;
+        return mViewModel;
     }
 
     @Override
     public void active(String params) {
 
-        viewModel.setStreamingAddresses( addressProvider.getAddresses() );
-        viewModel.setSelectedAddress(addressProvider.getSelectedAddress());
-        viewModel.addOnPropertyChangedCallback( this );
+        mViewModel.setStreamingAddresses( addressProvider.getAddresses() );
+        mViewModel.setSelectedAddress(addressProvider.getSelectedAddress());
+        mViewModel.addOnPropertyChangedCallback( this );
     }
 
     @Override
     public void inactive(Boolean rotated){
-        this.rotated = rotated;
-        viewModel.removeOnPropertyChangedCallback( this );
+        mRotated = rotated;
+        mViewModel.removeOnPropertyChangedCallback( this );
     }
 
     @Override
     public Boolean getRotated() {
-        return rotated;
+        return mRotated;
     }
 
     public void requestNewAddress() {
@@ -69,10 +69,10 @@ public class AddressesPresenter extends Observable.OnPropertyChangedCallback imp
     public void onPropertyChanged(Observable observable, int brId) {
 
         if(BR.selectedAddress == brId ){
-            ShortAddress selectedAddress = viewModel.getSelectedAddress();
+            ShortAddress selectedAddress = mViewModel.getSelectedAddress();
 
             if( selectedAddress != null ){
-                addressProvider.selectAddress( ModelUtils.cloneAddress(viewModel.getSelectedAddress()) );
+                addressProvider.selectAddress( ModelUtils.cloneAddress(mViewModel.getSelectedAddress()) );
 
                 if( selectedAddress.getAddressId() > 0 ){
                     navigationService.request(AddressPresenter.ADDRESS_VIEW_TAG);

@@ -27,40 +27,40 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
     @Inject
     NavigationService navigationService;
 
-    private PhotoView view;
-    private PhotoViewModel viewModel;
-    private boolean rotated;
+    private PhotoView mView;
+    private PhotoViewModel mViewModel;
+    private boolean mRotated;
 
     @Override
     public PhotoViewModel getViewModel(PhotoView photoView) {
-        this.view = photoView;
+        mView = photoView;
         MapModuleBase.getInjector().inject(this);
-        return viewModel = new PhotoViewModel();
+        return mViewModel = new PhotoViewModel();
     }
 
-    //view requests to pick photo from public gallery
+    //mView requests to pick photo from public gallery
     public void requestPickPhoto(){
-        photoService.pickPhoto(view.getActivity()).subscribe(photoLocation -> {
-            viewModel.setPhoto(photoLocation);
+        photoService.pickPhoto(mView.getActivity()).subscribe(photoLocation -> {
+            mViewModel.setPhoto(photoLocation);
         }, throwable -> {
-            viewModel.setPhotoException(new MapMemoryException(throwable.getMessage()));
+            mViewModel.setPhotoException(new MapMemoryException(throwable.getMessage()));
         });
     }
 
-    //view requests to take a photo
+    //mView requests to take a photo
     public void requestTakePhoto(){
-         photoService.takePhoto(view.getActivity()).subscribe(photoLocation -> {
-            viewModel.setPhoto( photoLocation );
+         photoService.takePhoto(mView.getActivity()).subscribe(photoLocation -> {
+            mViewModel.setPhoto( photoLocation );
         }, throwable -> {
-            viewModel.setPhotoException(new MapMemoryException(throwable.getMessage()));
+            mViewModel.setPhotoException(new MapMemoryException(throwable.getMessage()));
         });
     }
 
     public void confirmPhoto(){
-        if( !viewModel.getPhoto().isEmpty() ){
-            viewModel.getAddress().setPhotoLocation(viewModel.getPhoto());
+        if( !mViewModel.getPhoto().isEmpty() ){
+            mViewModel.getAddress().setPhotoLocation(mViewModel.getPhoto());
         }else{
-            viewModel.getAddress().setPhotoLocation("");
+            mViewModel.getAddress().setPhotoLocation("");
         }
 
         navigationService.goBack();
@@ -68,7 +68,7 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
 
     public void deletePhoto(){
 
-        ShortAddress selectedAddress = viewModel.getAddress();
+        ShortAddress selectedAddress = mViewModel.getAddress();
         photoService.deletePhoto( selectedAddress.getPhotoLocation() );
 
         if( selectedAddress.getAddressId() > 0 ){
@@ -84,26 +84,26 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
                 @Override
                 public void onResult(ShortAddress result) {
                     addressProvider.selectAddress( result );
-                    viewModel.setAddress(result);
-                    viewModel.clearPhoto();
+                    mViewModel.setAddress(result);
+                    mViewModel.clearPhoto();
                     navigationService.goBack();
                 }
             });
         }else{
-            viewModel.clearPhoto();
+            mViewModel.clearPhoto();
             navigationService.goBack();
         }
     }
 
     @Override
     public void active(String params ) {
-        if( !rotated ){
-            viewModel.setAddress( addressProvider.getSelectedAddress() );
+        if( !mRotated){
+            mViewModel.setAddress( addressProvider.getSelectedAddress() );
         }
     }
 
     @Override
     public void inactive(Boolean rotated) {
-        this.rotated = rotated;
+        mRotated = rotated;
     }
 }

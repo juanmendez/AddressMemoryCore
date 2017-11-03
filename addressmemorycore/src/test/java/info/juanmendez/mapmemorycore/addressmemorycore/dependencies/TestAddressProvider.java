@@ -20,9 +20,9 @@ import rx.Observable;
 
 public class TestAddressProvider implements AddressProvider {
 
-    List<ShortAddress> addresses = new ArrayList<>();
-    ShortAddress selectedAddress = new ShortAddress();
-    long lastId;
+    private List<ShortAddress> mAddresses = new ArrayList<>();
+    private ShortAddress mSelectedAddress = new ShortAddress();
+    private long mLastId;
 
     int totalAdded=0;
 
@@ -38,28 +38,28 @@ public class TestAddressProvider implements AddressProvider {
 
     @Override
     public ShortAddress getSelectedAddress() {
-        return selectedAddress;
+        return mSelectedAddress;
     }
 
     @Override
     public void selectAddress(ShortAddress selectedAddress) {
-        this.selectedAddress = selectedAddress;
+        mSelectedAddress = selectedAddress;
     }
 
     @Override
     public List<ShortAddress> getAddresses() {
-        return addresses;
+        return mAddresses;
     }
 
     @Override
     public Observable<List<ShortAddress>> getAddressesAsync() {
-        return Observable.just(addresses);
+        return Observable.just(mAddresses);
     }
 
     @Override
     public ShortAddress getAddress(long addressId) {
 
-        for(ShortAddress address: addresses ){
+        for(ShortAddress address: mAddresses){
 
             if( addressId == address.getAddressId() )
                 return address;
@@ -75,7 +75,7 @@ public class TestAddressProvider implements AddressProvider {
 
     @Override
     public List<ShortAddress> getClonedAddresses() {
-        return addresses;
+        return mAddresses;
     }
 
     @Override
@@ -84,18 +84,18 @@ public class TestAddressProvider implements AddressProvider {
         long currentId;
 
         //here we update
-        for(ShortAddress address: addresses ){
+        for(ShortAddress address: mAddresses){
             currentId = updated.getAddressId();
 
             if( currentId != 0 && currentId == address.getAddressId() ){
-                int location = addresses.indexOf(address);
-                return addresses.set( location, updated );
+                int location = mAddresses.indexOf(address);
+                return mAddresses.set( location, updated );
             }
         }
 
         //here we add
-        updated.setAddressId(lastId+=1);
-        addresses.add( updated );
+        updated.setAddressId(mLastId +=1);
+        mAddresses.add( updated );
         totalAdded++;
         return updated;
     }
@@ -116,10 +116,10 @@ public class TestAddressProvider implements AddressProvider {
         ShortAddress address = getAddress( addressId);
 
         if( address != null ){
-            addresses.remove(address);
+            mAddresses.remove(address);
 
-            if( address == selectedAddress ){
-                selectedAddress = new ShortAddress();
+            if( address == mSelectedAddress){
+                mSelectedAddress = new ShortAddress();
             }
 
             response.onResult(true);
@@ -135,7 +135,7 @@ public class TestAddressProvider implements AddressProvider {
 
     @Override
     public long countAddresses() {
-        return addresses.size();
+        return mAddresses.size();
     }
 
     @Override

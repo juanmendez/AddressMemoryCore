@@ -15,26 +15,26 @@ import info.juanmendez.addressmemorycore.models.ShortAddress;
  * contact@juanmendez.info
  */
 public class AddressesViewModel extends BaseObservable {
-    private ShortAddress selectedAddress;
-    private List<ShortAddress> streamingAddresses;
+    private ShortAddress mSelectedAddress;
+    private List<ShortAddress> mStreamingAddresses;
 
     @Bindable
     public List<ShortAddress> getStreamingAddresses() {
-        return streamingAddresses;
+        return mStreamingAddresses;
     }
 
     public void setStreamingAddresses(List<ShortAddress> streamingAddresses) {
-        this.streamingAddresses = streamingAddresses;
+        mStreamingAddresses = streamingAddresses;
         notifyPropertyChanged(BR.streamingAddresses);
     }
 
     @Bindable
     public ShortAddress getSelectedAddress() {
-        return selectedAddress;
+        return mSelectedAddress;
     }
 
     public void setSelectedAddress(ShortAddress selectedAddress) {
-        this.selectedAddress = selectedAddress;
+        mSelectedAddress = selectedAddress;
         notifyPropertyChanged(BR.selectedAddress);
     }
 }

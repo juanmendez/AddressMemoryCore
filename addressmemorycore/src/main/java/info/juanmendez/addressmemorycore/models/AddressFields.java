@@ -8,7 +8,7 @@ package info.juanmendez.addressmemorycore.models;
 
 public class AddressFields {
 
-    public static final String ADDRESSID = "addressId";
+    public static final String ADDRESSID = "mAddressId";
 
     public static final String  NAME = "mName";
     public static final String ADDRESS1 = "mAddress1";
@@ -20,5 +20,5 @@ public class AddressFields {
 
     public static final String DATEUPDATED = "mDateUpdated";
     public static final String TIMESVISITED = "mTimesVisited";
-    public static final String MAPID = "mapId";
+    public static final String MAPID = "mMapId";
 }

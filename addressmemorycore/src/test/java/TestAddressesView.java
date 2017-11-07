@@ -9,7 +9,7 @@ import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.modules.MapModuleBase;
-import info.juanmendez.addressmemorycore.utils.ModelUtils;
+import info.juanmendez.addressmemorycore.utils.AddressUtils;
 import info.juanmendez.addressmemorycore.vp.FragmentNav;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressPresenter;
 import info.juanmendez.addressmemorycore.vp.vpAddresses.AddressesPresenter;
@@ -84,7 +84,7 @@ public class TestAddressesView {
     public void testMakingSelection(){
         //mProvider has been updated elsewhere
         ShortAddress selectedAddress = mProvider.getAddress(1);
-        mProvider.selectAddress(ModelUtils.cloneAddress(selectedAddress) );
+        mProvider.selectAddress(AddressUtils.cloneAddress(selectedAddress) );
 
         mPresenter.active("");
         mPresenter.getViewModel(mAddressView);
@@ -108,7 +108,7 @@ public class TestAddressesView {
     public void testMakingNewAddress(){
 
         ShortAddress selectedAddress = mProvider.getAddress(1);
-        mProvider.selectAddress(ModelUtils.cloneAddress(selectedAddress) );
+        mProvider.selectAddress(AddressUtils.cloneAddress(selectedAddress) );
 
         mPresenter.active("");
         mPresenter.requestNewAddress();

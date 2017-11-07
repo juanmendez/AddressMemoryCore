@@ -13,7 +13,7 @@ import info.juanmendez.addressmemorycore.models.ShortAddress;
  * contact@juanmendez.info
  */
 
-public class ModelUtils {
+public class AddressUtils {
     public static Intent fromAddress( ShortAddress address ){
         Commute commute = address.getCommute();
         Intent mapIntent;

@@ -13,7 +13,7 @@ import info.juanmendez.addressmemorycore.models.Commute;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressViewModel;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.modules.MapModuleBase;
-import info.juanmendez.addressmemorycore.utils.ModelUtils;
+import info.juanmendez.addressmemorycore.utils.AddressUtils;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressPresenter;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressView;
 import info.juanmendez.mapmemorycore.addressmemorycore.TestApp;
@@ -100,7 +100,7 @@ public class TestingAddressProvider {
         assertNotNull( firstAddress );
 
         firstAddress.getCommute().setType(Commute.BICYCLE);
-        ShortAddress cloned = ModelUtils.cloneAddress( firstAddress );
+        ShortAddress cloned = AddressUtils.cloneAddress( firstAddress );
 
         assertEquals( cloned.getAddressId(), firstAddress.getAddressId() );
         assertEquals( cloned.getAddress1(), firstAddress.getAddress1() );

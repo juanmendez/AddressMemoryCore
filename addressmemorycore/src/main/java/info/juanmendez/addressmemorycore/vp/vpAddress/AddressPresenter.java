@@ -21,7 +21,7 @@ import info.juanmendez.addressmemorycore.models.RouteMessage;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.models.SubmitError;
 import info.juanmendez.addressmemorycore.modules.MapModuleBase;
-import info.juanmendez.addressmemorycore.utils.ModelUtils;
+import info.juanmendez.addressmemorycore.utils.AddressUtils;
 import info.juanmendez.addressmemorycore.vp.Presenter;
 import info.juanmendez.addressmemorycore.vp.vpSuggest.SuggestPresenter;
 
@@ -220,7 +220,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
 
             @Override
             public void onResult(ShortAddress result) {
-                response.onResult( ModelUtils.fromAddress( mViewModel.getAddress() ) );
+                response.onResult( AddressUtils.fromAddress( mViewModel.getAddress() ) );
             }
         });
     }

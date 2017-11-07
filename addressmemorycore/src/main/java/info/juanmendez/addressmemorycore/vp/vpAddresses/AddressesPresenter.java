@@ -9,7 +9,7 @@ import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.modules.MapModuleBase;
-import info.juanmendez.addressmemorycore.utils.ModelUtils;
+import info.juanmendez.addressmemorycore.utils.AddressUtils;
 import info.juanmendez.addressmemorycore.vp.PresenterRotated;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressPresenter;
 
@@ -72,7 +72,7 @@ public class AddressesPresenter extends Observable.OnPropertyChangedCallback imp
             ShortAddress selectedAddress = mViewModel.getSelectedAddress();
 
             if( selectedAddress != null ){
-                addressProvider.selectAddress( ModelUtils.cloneAddress(mViewModel.getSelectedAddress()) );
+                addressProvider.selectAddress( AddressUtils.cloneAddress(mViewModel.getSelectedAddress()) );
 
                 if( selectedAddress.getAddressId() > 0 ){
                     navigationService.request(AddressPresenter.ADDRESS_VIEW_TAG);

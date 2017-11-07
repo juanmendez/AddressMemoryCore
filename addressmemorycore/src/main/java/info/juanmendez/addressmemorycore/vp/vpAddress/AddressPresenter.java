@@ -3,6 +3,8 @@ package info.juanmendez.addressmemorycore.vp.vpAddress;
 import android.content.Intent;
 import android.databinding.Observable;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import info.juanmendez.addressmemorycore.BR;
@@ -80,7 +82,6 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
     @Override
     public void active( String params ) {
 
-
         if( !mRotated){
 
             if( params.equals(AddressPresenter.ADDRESS_JUST_CREATED)){
@@ -112,21 +113,31 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
         mViewModel.removeOnPropertyChangedCallback(this);
     }
 
+    /**
+     * Aside from returning if the form values are valid,
+     * this method also feeds mViewModel.submitErrors.
+     */
     private void checkCanSubmit(){
-        mViewModel.canSubmit.set( isAddressValid() );
+        List<SubmitError> submitErrors = getInvalidFields();
+        mViewModel.submitErrors.clear();
+        mViewModel.submitErrors.addAll( submitErrors );
+        mViewModel.canSubmit.set( submitErrors.isEmpty() );
     }
 
+    /**
+     * Delete is only available for stored addresses
+     */
     private void checkCanDelete(){
         mViewModel.canDelete.set( SubmitError.initialized(mViewModel.getAddress().getAddressId()) );
     }
 
-    private boolean isAddressValid(){
-        return addressProvider.validate(mViewModel.getAddress()).isEmpty();
+    private List<SubmitError> getInvalidFields(){
+        return addressProvider.validate(mViewModel.getAddress());
     }
 
     public void saveAddress(Response<RouteMessage> response) {
 
-        if( isAddressValid() ){
+        if( getInvalidFields().isEmpty() ){
 
             boolean isNew = mViewModel.getAddress().getAddressId() == 0;
 

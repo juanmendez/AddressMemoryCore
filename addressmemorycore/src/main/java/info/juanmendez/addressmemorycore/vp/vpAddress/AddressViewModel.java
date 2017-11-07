@@ -2,6 +2,7 @@ package info.juanmendez.addressmemorycore.vp.vpAddress;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
+import android.databinding.ObservableArrayList;
 import android.databinding.ObservableBoolean;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 import info.juanmendez.addressmemorycore.BR;
 import info.juanmendez.addressmemorycore.models.Commute;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
+import info.juanmendez.addressmemorycore.models.SubmitError;
 
 
 /**
@@ -46,10 +48,11 @@ public class AddressViewModel extends BaseObservable {
 
     @Bindable public final ObservableBoolean onChildFragment = new ObservableBoolean(false);
 
+    @Bindable public final ObservableArrayList<SubmitError> submitErrors = new ObservableArrayList<>();
+
     private String mCommuteType = "";
     private boolean mAvoidXpressway = false;
     private boolean mCommuteAvoidTolls = false;
-
 
     private ShortAddress mAddress = new ShortAddress();
     private Exception mAddressException;

@@ -2,6 +2,7 @@ package info.juanmendez.addressmemorycore.vp.vpAddresses;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
+import android.databinding.ObservableBoolean;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ import info.juanmendez.addressmemorycore.models.ShortAddress;
 public class AddressesViewModel extends BaseObservable {
     private ShortAddress mSelectedAddress;
     private List<ShortAddress> mStreamingAddresses;
+    @Bindable public ObservableBoolean isDoublePane = new ObservableBoolean();
 
     @Bindable
     public List<ShortAddress> getStreamingAddresses() {

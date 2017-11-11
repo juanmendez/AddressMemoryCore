@@ -17,7 +17,7 @@
     <!--common-->
     <string name="required_field">Field is required</string>
     <string name="address_name_repeated">Another address has the same name</string>
-    <string name="edit_offline">offline, please fill in the form</string>
-    <string name="view_offline">offline</string>
+    <string name="edit_offline">fill in form while offline</string>
+    <string name="view_offline">you appear offline</string>
 
 </resources>

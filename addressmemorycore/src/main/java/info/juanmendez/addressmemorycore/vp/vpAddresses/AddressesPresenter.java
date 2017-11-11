@@ -27,7 +27,7 @@ public class AddressesPresenter extends Observable.OnPropertyChangedCallback imp
     @Inject
     NavigationService navigationService;
 
-    public static final String TAG = "addressesView";
+    public static final String ADDRESSES_TAG = "addressesView";
     private Boolean mRotated = false;
     private AddressesViewModel mViewModel;
 

@@ -16,4 +16,6 @@
 
     <!--common-->
     <string name="required_field">Llene este campo</string>
+    <string name="edit_offline">sin internet, escriba toda la información</string>
+    <string name="view_offline">sin conección</string>
 </resources>

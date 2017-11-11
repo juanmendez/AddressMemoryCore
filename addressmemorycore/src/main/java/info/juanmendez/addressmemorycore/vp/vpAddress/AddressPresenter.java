@@ -85,9 +85,9 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
         if( !mRotated){
 
             if( params.equals(AddressPresenter.ADDRESS_JUST_CREATED)){
-                mView.doToast( mView.getString(R.string.toast_address_created));
+                mView.iToast( mView.getString(R.string.toast_address_created));
             }else if( params.equals( AddressPresenter.ADDRESS_JUST_UPDATED)){
-                mView.doToast( mView.getString(R.string.toast_address_updated));
+                mView.iToast( mView.getString(R.string.toast_address_updated));
             }else if( params.equals( AddressPresenter.NEW_ADDRESS_REQUEST ) &&
                       addressProvider.getSelectedAddress().getAddressId() > 0 ){
                 //if there is already an address being edited and is saved
@@ -99,7 +99,11 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
         }
 
         networkService.reset();
-        networkService.connect(result -> mViewModel.isOnline.set(result));
+
+        networkService.connect(result ->{
+            mViewModel.isOnline.set(result);
+        } );
+
         addressService.onStart(mView.getActivity(), result -> mViewModel.isGeoOn.set(result));
         mViewModel.addOnPropertyChangedCallback(this);
     }

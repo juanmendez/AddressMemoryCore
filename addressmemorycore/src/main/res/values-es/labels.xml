@@ -13,11 +13,11 @@
 
     <string name="launch_navigation">Abrir Navegación</string>
     <string name="edit">Modificar</string>
-    <string name="avoid_expressways">Evitar carreteras</string>
-    <string name="avoid_tolls">Evitar peajes</string>
+    <string name="avoid_expressways">Evitar carretera</string>
+    <string name="avoid_tolls">Evitar peaje</string>
 
-    <string name="expressway">carreteras</string>
-    <string name="tolls">peajes</string>
+    <string name="expressway">carretera</string>
+    <string name="tolls">peaje</string>
 
     <string name="toast_address_created">La dirección ha sido agregada</string>
     <string name="toast_address_updated">La dirección fue modificada</string>

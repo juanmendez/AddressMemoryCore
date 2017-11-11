@@ -102,6 +102,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
 
         networkService.connect(result ->{
             mViewModel.isOnline.set(result);
+            mViewModel.notifyPropertyChanged( BR.isOnline );
         } );
 
         addressService.onStart(mView.getActivity(), result -> mViewModel.isGeoOn.set(result));

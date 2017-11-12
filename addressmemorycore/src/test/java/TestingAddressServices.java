@@ -67,22 +67,22 @@ public class TestingAddressServices extends TestAddressMemoryCore{
     public void before() throws Exception {
 
         addressView = mock( AddressView.class );
-        addressPresenter = new AddressPresenter(m);
+        addressPresenter = new AddressPresenter(coreModule);
         addressViewModel = addressPresenter.getViewModel(addressView);
 
         suggestView = mock( SuggestView.class );
-        suggestPresenter = new SuggestPresenter(m);
+        suggestPresenter = new SuggestPresenter(coreModule);
         suggestViewModel = suggestPresenter.getViewModel( suggestView );
 
-        networkServiceMocked = m.getNetworkService();
-        addressServiceMocked = m.getAddressService();
-        addressProvider = m.getAddressProvider();
-        navigationService = m.getNavigationService();
+        networkServiceMocked = coreModule.getNetworkService();
+        addressServiceMocked = coreModule.getAddressService();
+        addressProvider = coreModule.getAddressProvider();
+        navigationService = coreModule.getNavigationService();
 
         //addressService and networkService are not singletons, so we want to save ourselves doing extra work
         //by using the same mocked objects from presenter
-        Whitebox.setInternalState( suggestPresenter, "addressService",addressServiceMocked );
-        Whitebox.setInternalState( suggestPresenter, "networkService",networkServiceMocked );
+        Whitebox.setInternalState( suggestPresenter, "mAddressService",addressServiceMocked );
+        Whitebox.setInternalState( suggestPresenter, "mNetworkService",networkServiceMocked );
 
         //make each mocked object answer with positive results such as networkService.isConnected() returning true.
         applySuccessfulResults();

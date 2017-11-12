@@ -53,11 +53,11 @@ public class TestingAddressProvider extends TestAddressMemoryCore{
         getAddresses();
 
         addressView = mock( AddressView.class );
-        presenter = spy(new AddressPresenter(m));
+        presenter = spy(new AddressPresenter(coreModule));
         viewModel = presenter.getViewModel(addressView);
 
         //through MVP, get your hands on the presenter, and subsequently get its dagger dependency
-        mAddressProvider = m.getAddressProvider();
+        mAddressProvider = coreModule.getAddressProvider();
 
         //make each mocked object answer with positive results such as networkService.isConnected() returning true.
         applySuccessfulResults();

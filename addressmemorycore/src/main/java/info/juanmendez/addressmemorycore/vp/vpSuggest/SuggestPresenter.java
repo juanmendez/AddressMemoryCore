@@ -25,23 +25,21 @@ import info.juanmendez.addressmemorycore.vp.PresenterRotated;
 public class SuggestPresenter extends Observable.OnPropertyChangedCallback implements PresenterRotated<SuggestViewModel,SuggestView> {
 
 
-    AddressProvider addressProvider;
-    AddressService addressService;
-    NetworkService networkService;
-    NavigationService navigationService;
+    private AddressProvider mAddressProvider;
+    private AddressService mAddressService;
+    private NetworkService mNetworkService;
+    private NavigationService mNavigationService;
 
-    private CoreModule mCoreModule;
     private SuggestView mView;
     private SuggestViewModel mViewModel;
     private boolean mRotated;
     public static final String SUGGEST_VIEW = "suggest_view";
 
     public SuggestPresenter(CoreModule coreModule) {
-        mCoreModule = coreModule;
-        addressProvider = mCoreModule.getAddressProvider();
-        addressService = mCoreModule.getAddressService();
-        networkService = mCoreModule.getNetworkService();
-        navigationService = mCoreModule.getNavigationService();
+        mAddressProvider = coreModule.getAddressProvider();
+        mAddressService = coreModule.getAddressService();
+        mNetworkService = coreModule.getNetworkService();
+        mNavigationService = coreModule.getNavigationService();
     }
 
     @Override
@@ -56,34 +54,34 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
     public void active(String params ) {
 
         if( !mRotated){
-            mViewModel.setSelectedAddress(addressProvider.getSelectedAddress());
+            mViewModel.setSelectedAddress(mAddressProvider.getSelectedAddress());
         }
 
         mViewModel.addOnPropertyChangedCallback(this);
-        networkService.reset();
+        mNetworkService.reset();
 
         //We update addressEdited in that way we generate matching addresses.
-        networkService.connect(result -> {});
+        mNetworkService.connect(result -> {});
 
-        addressService.onStart(mView.getActivity(), result -> {
+        mAddressService.onStart(mView.getActivity(), result -> {
             searchForMatchingAddresses();
         });
     }
 
     public String getAddressEdited(){
-        return addressProvider.getSelectedAddress().getAddress1();
+        return mAddressProvider.getSelectedAddress().getAddress1();
     }
 
     @Override
     public void inactive(Boolean isRotated) {
         mRotated = isRotated;
-        networkService.disconnect();
-        addressService.onStop();
+        mNetworkService.disconnect();
+        mAddressService.onStop();
         mViewModel.removeOnPropertyChangedCallback(this);
     }
 
     /**
-     * Through addressService we look for matching addresses and update the mViewModel
+     * Through mAddressService we look for matching addresses and update the mViewModel
      * so the matching address are reflected in the mView.
      * TODO: make exception messages come from resource strings
      */
@@ -91,12 +89,12 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
 
         String query = mViewModel.getAddressEdited();
 
-        if( !addressService.isConnected() ) {
+        if( !mAddressService.isConnected() ) {
             mViewModel.setAddressException(new MapMemoryException("There is no connection"));
         } else if( query.trim().isEmpty() ) {
             mViewModel.clearMatchingResults();
         } else {
-            addressService.suggestAddress(query, new Response<List<ShortAddress>>() {
+            mAddressService.suggestAddress(query, new Response<List<ShortAddress>>() {
                 @Override
                 public void onResult(List<ShortAddress> results ) {
                     mViewModel.setMatchingAddresses(results);
@@ -116,13 +114,13 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
     public void updateFromPickedAddress(){
         ShortAddress pickedAddress = mViewModel.getPickedAddress();
         if( pickedAddress != null ){
-            ShortAddress selectedAddress = addressProvider.getSelectedAddress();
+            ShortAddress selectedAddress = mAddressProvider.getSelectedAddress();
             selectedAddress.setAddress1( pickedAddress.getAddress1() );
             selectedAddress.setAddress2( pickedAddress.getAddress2() );
             selectedAddress.setMapId( pickedAddress.getMapId() );
             selectedAddress.setLat( pickedAddress.getLat() );
             selectedAddress.setLon( pickedAddress.getLon() );
-            navigationService.goBack();
+            mNavigationService.goBack();
         }
     }
 

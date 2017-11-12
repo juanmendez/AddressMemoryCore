@@ -49,12 +49,12 @@ public class TestingPhotoVP extends TestAddressMemoryCore{
         MapModuleBase.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestApp())).build() );
 
         photoView = mock( PhotoView.class );
-        presenter = new PhotoPresenter(m);
+        presenter = new PhotoPresenter(coreModule);
         viewModel = presenter.getViewModel(photoView);
 
-        addressProvider = m.getAddressProvider();
-        photoServiceMocked = m.getPhotoService();
-        navigationService = m.getNavigationService();
+        addressProvider = coreModule.getAddressProvider();
+        photoServiceMocked = coreModule.getPhotoService();
+        navigationService = coreModule.getNavigationService();
 
         //make each mocked object answer with positive results such as networkService.isConnected() returning true.
         applySuccessfulResults();

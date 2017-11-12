@@ -46,13 +46,13 @@ public class TestAddressesView extends TestAddressMemoryCore{
     public void before() throws Exception {
 
         mAddressView = mock( AddressesView.class );
-        mPresenter = spy(new AddressesPresenter(m));
+        mPresenter = spy(new AddressesPresenter(coreModule));
 
         //we want to spy the mViewModel, so we get it, and put it back as a spied one
         mViewModel = Whitebox.getInternalState(mPresenter, "mViewModel");
 
-        mNavigationService = m.getNavigationService();
-        mProvider = m.getAddressProvider();
+        mNavigationService = coreModule.getNavigationService();
+        mProvider = coreModule.getAddressProvider();
 
         //make each mocked object answer with positive results such as networkService.isConnected() returning true.
         applySuccessfulResults();

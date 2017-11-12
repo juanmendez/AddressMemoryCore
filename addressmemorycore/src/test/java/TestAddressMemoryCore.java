@@ -20,7 +20,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
  */
 
 public class TestAddressMemoryCore {
-    CoreModule m;
+    CoreModule coreModule;
 
     public TestAddressMemoryCore(){
 
@@ -30,8 +30,8 @@ public class TestAddressMemoryCore {
             return "Mocked Error Message " + invocation.getArgumentAt(0, Integer.class ).toString();
         }).when( application ).getString( Mockito.anyInt() );
 
-        m = new CoreModule();
-        m.applyApplication(application)
+        coreModule = new CoreModule();
+        coreModule.applyApplication(application)
                 .applyAddressProvider( new TestAddressProvider() )
                 .applyAddressService( mock( AddressService.class ) )
                 .applyNavigationService( mock(NavigationService.class)  )

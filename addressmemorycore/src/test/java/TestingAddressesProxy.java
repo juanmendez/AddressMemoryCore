@@ -1,6 +1,5 @@
 import org.junit.Before;
 import org.junit.Test;
-import org.powermock.reflect.Whitebox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +26,8 @@ public class TestingAddressesProxy extends TestAddressMemoryCore{
 
     @Test
     public void testProxy() throws Exception {
-        AddressesProxy proxy = new AddressesProxy(m.getAddressProvider());
-        AddressProvider provider = m.getAddressProvider();
+        AddressesProxy proxy = new AddressesProxy(coreModule.getAddressProvider());
+        AddressProvider provider = coreModule.getAddressProvider();
         assertNotNull( provider );
 
         List<ShortAddress> addresses = getAddresses();

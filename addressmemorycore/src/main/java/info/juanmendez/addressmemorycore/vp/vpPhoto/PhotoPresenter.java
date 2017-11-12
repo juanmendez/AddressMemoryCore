@@ -16,9 +16,9 @@ import info.juanmendez.addressmemorycore.vp.Presenter;
  */
 public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
 
-    PhotoService photoService;
-    AddressProvider addressProvider;
-    NavigationService navigationService;
+    private PhotoService mPhotoService;
+    private AddressProvider mAddressProvider;
+    private NavigationService mNavigationService;
 
     private CoreModule mCoreModule;
     private PhotoView mView;
@@ -27,9 +27,9 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
 
     public PhotoPresenter(CoreModule coreModule) {
         mCoreModule = coreModule;
-        photoService = mCoreModule.getPhotoService();
-        addressProvider = mCoreModule.getAddressProvider();
-        navigationService = mCoreModule.getNavigationService();
+        mPhotoService = mCoreModule.getPhotoService();
+        mAddressProvider = mCoreModule.getAddressProvider();
+        mNavigationService = mCoreModule.getNavigationService();
     }
 
     @Override
@@ -40,7 +40,7 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
 
     //mView requests to pick photo from public gallery
     public void requestPickPhoto(){
-        photoService.pickPhoto(mView.getActivity()).subscribe(photoLocation -> {
+        mPhotoService.pickPhoto(mView.getActivity()).subscribe(photoLocation -> {
             mViewModel.setPhoto(photoLocation);
         }, throwable -> {
             mViewModel.setPhotoException(new MapMemoryException(throwable.getMessage()));
@@ -49,7 +49,7 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
 
     //mView requests to take a photo
     public void requestTakePhoto(){
-         photoService.takePhoto(mView.getActivity()).subscribe(photoLocation -> {
+         mPhotoService.takePhoto(mView.getActivity()).subscribe(photoLocation -> {
             mViewModel.setPhoto( photoLocation );
         }, throwable -> {
             mViewModel.setPhotoException(new MapMemoryException(throwable.getMessage()));
@@ -63,19 +63,19 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
             mViewModel.getAddress().setPhotoLocation("");
         }
 
-        navigationService.goBack();
+        mNavigationService.goBack();
     }
 
     public void deletePhoto(){
 
         ShortAddress selectedAddress = mViewModel.getAddress();
-        photoService.deletePhoto( selectedAddress.getPhotoLocation() );
+        mPhotoService.deletePhoto( selectedAddress.getPhotoLocation() );
 
         if( selectedAddress.getAddressId() > 0 ){
 
             selectedAddress.setPhotoLocation("");
 
-            addressProvider.updateAddressAsync(selectedAddress, new Response<ShortAddress>() {
+            mAddressProvider.updateAddressAsync(selectedAddress, new Response<ShortAddress>() {
 
                 @Override
                 public void onError(Exception exception) {
@@ -83,22 +83,22 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
 
                 @Override
                 public void onResult(ShortAddress result) {
-                    addressProvider.selectAddress( result );
+                    mAddressProvider.selectAddress( result );
                     mViewModel.setAddress(result);
                     mViewModel.clearPhoto();
-                    navigationService.goBack();
+                    mNavigationService.goBack();
                 }
             });
         }else{
             mViewModel.clearPhoto();
-            navigationService.goBack();
+            mNavigationService.goBack();
         }
     }
 
     @Override
     public void active(String params ) {
         if( !mRotated){
-            mViewModel.setAddress( addressProvider.getSelectedAddress() );
+            mViewModel.setAddress( mAddressProvider.getSelectedAddress() );
         }
     }
 

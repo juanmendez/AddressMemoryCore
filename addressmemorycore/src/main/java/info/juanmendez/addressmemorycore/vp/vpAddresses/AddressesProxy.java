@@ -16,12 +16,11 @@ import info.juanmendez.addressmemorycore.models.ShortAddress;
  */
 public class AddressesProxy {
 
-    //TODO rename to mAddressProvider
-    AddressProvider addressProvider;
+    private AddressProvider mAddressProvider;
     private List<ShortAddress> mAddresses;
 
     public AddressesProxy( AddressProvider addressProvider) {
-        this.addressProvider = addressProvider;
+        mAddressProvider = addressProvider;
 
         addressProvider.connect();
         mAddresses = addressProvider.getClonedAddresses();

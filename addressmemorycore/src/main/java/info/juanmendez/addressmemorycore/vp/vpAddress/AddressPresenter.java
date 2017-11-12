@@ -37,16 +37,14 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
     private static final String ADDRESS_JUST_UPDATED = AddressPresenter.class.getName() + "/" + "ADDRESS_JUST_UPDATED";
     public static final String NEW_ADDRESS_REQUEST = AddressPresenter.class.getName() + "/" + "NEW_ADDRESS_REQUEST";
 
-    AddressProvider addressProvider;
-    AddressService addressService;
-    NetworkService networkService;
-    NavigationService navigationService;
-    WidgetService widgetService;
-    PhotoService photoService;
-
+    private AddressProvider mAddressProvider;
+    private AddressService mAddressService;
+    private NetworkService mNetworkService;
+    private NavigationService mNavigationService;
+    private WidgetService mWidgetService;
+    private PhotoService mPhotoService;
 
     private AddressView mView;
-    private CoreModule mCoreModule;
     private AddressViewModel mViewModel;
     private boolean mRotated;
 
@@ -61,13 +59,13 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
     private ShortAddress mGeoResult = new ShortAddress();
 
     public AddressPresenter(CoreModule coreModule) {
-        mCoreModule = coreModule;
-        addressProvider = mCoreModule.getAddressProvider();
-        addressService = mCoreModule.getAddressService();
-        networkService = mCoreModule.getNetworkService();
-        navigationService = mCoreModule.getNavigationService();
-        widgetService = mCoreModule.getWidgetService();
-        photoService = mCoreModule.getPhotoService();
+
+        mAddressProvider = coreModule.getAddressProvider();
+        mAddressService = coreModule.getAddressService();
+        mNetworkService = coreModule.getNetworkService();
+        mNavigationService = coreModule.getNavigationService();
+        mWidgetService = coreModule.getWidgetService();
+        mPhotoService = coreModule.getPhotoService();
     }
 
     @Override
@@ -86,31 +84,31 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
             }else if( params.equals( AddressPresenter.ADDRESS_JUST_UPDATED)){
                 mView.iToast( mView.getString(R.string.toast_address_updated));
             }else if( params.equals( AddressPresenter.NEW_ADDRESS_REQUEST ) &&
-                      addressProvider.getSelectedAddress().getAddressId() > 0 ){
+                      mAddressProvider.getSelectedAddress().getAddressId() > 0 ){
                 //if there is already an address being edited and is saved
                 //then is ok to include a new one
-                addressProvider.selectAddress( new ShortAddress() );
+                mAddressProvider.selectAddress( new ShortAddress() );
             }
 
-            mViewModel.setAddress(  addressProvider.getSelectedAddress() );
+            mViewModel.setAddress(  mAddressProvider.getSelectedAddress() );
         }
 
-        networkService.reset();
+        mNetworkService.reset();
 
-        networkService.connect(result ->{
+        mNetworkService.connect(result ->{
             mViewModel.isOnline.set(result);
             mViewModel.notifyPropertyChanged( BR.isOnline );
         } );
 
-        addressService.onStart(mView.getActivity(), result -> mViewModel.isGeoOn.set(result));
+        mAddressService.onStart(mView.getActivity(), result -> mViewModel.isGeoOn.set(result));
         mViewModel.addOnPropertyChangedCallback(this);
     }
 
     @Override
     public void inactive(Boolean rotated) {
         mRotated = rotated;
-        networkService.disconnect();
-        addressService.onStop();
+        mNetworkService.disconnect();
+        mAddressService.onStop();
 
         mViewModel.removeOnPropertyChangedCallback(this);
     }
@@ -134,7 +132,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
     }
 
     private List<SubmitError> getInvalidFields(){
-        return addressProvider.validate(mViewModel.getAddress());
+        return mAddressProvider.validate(mViewModel.getAddress());
     }
 
     public void saveAddress(Response<RouteMessage> response) {
@@ -143,11 +141,11 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
 
             boolean isNew = mViewModel.getAddress().getAddressId() == 0;
 
-            addressProvider.updateAddressAsync(mViewModel.getAddress(), new Response<ShortAddress>() {
+            mAddressProvider.updateAddressAsync(mViewModel.getAddress(), new Response<ShortAddress>() {
                 @Override
                 public void onResult(ShortAddress result) {
-                    addressProvider.selectAddress( result );
-                    widgetService.updateList();
+                    mAddressProvider.selectAddress( result );
+                    mWidgetService.updateList();
                     mViewModel.setAddress(result);
                     response.onResult(new RouteMessage(ADDRESS_VIEW_TAG, isNew?ADDRESS_JUST_CREATED:ADDRESS_JUST_UPDATED ));
                 }
@@ -159,7 +157,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
             });
 
         }else{
-            response.onError( MapMemoryException.build("On Submit there are errors").setErrors( addressProvider.validate(mViewModel.getAddress()) ) );
+            response.onError( MapMemoryException.build("On Submit there are errors").setErrors( mAddressProvider.validate(mViewModel.getAddress()) ) );
         }
     }
 
@@ -167,18 +165,18 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
 
         ShortAddress addressToDelete = mViewModel.getAddress();
         long addressId = addressToDelete.getAddressId();
-        addressProvider.deleteAddressAsync(addressId, new Response<Boolean>() {
+        mAddressProvider.deleteAddressAsync(addressId, new Response<Boolean>() {
 
             @Override
             public void onResult(Boolean success) {
                 if( success && SubmitError.emptyOrNull(addressToDelete.getPhotoLocation()) ){
-                    photoService.deletePhoto( addressToDelete.getPhotoLocation() );
+                    mPhotoService.deletePhoto( addressToDelete.getPhotoLocation() );
                 }
 
                 mGeoResult.setAddress1("");
                 mGeoResult.setAddress2("");
-                addressProvider.selectAddress( new ShortAddress());
-                mViewModel.setAddress( addressProvider.getSelectedAddress() );
+                mAddressProvider.selectAddress( new ShortAddress());
+                mViewModel.setAddress( mAddressProvider.getSelectedAddress() );
                 response.onResult( mView.getString( R.string.toast_address_deleted) );
             }
 
@@ -187,7 +185,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
                 response.onError( new MapMemoryException(mView.getString( R.string.delete_error )));
             }
         });
-        widgetService.updateList();
+        mWidgetService.updateList();
     }
 
     /**
@@ -195,8 +193,8 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
      * this is done in an asynchronous way
      */
     public void requestAddressByGeolocation(){
-        if( addressService.isConnected() ){
-            addressService.geolocateAddress(new Response<ShortAddress>() {
+        if( mAddressService.isConnected() ){
+            mAddressService.geolocateAddress(new Response<ShortAddress>() {
                 @Override
                 public void onResult(ShortAddress result) {
                     mGeoResult = result;
@@ -212,7 +210,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
                 }
             });
         }else{
-            mViewModel.setAddressException( new MapMemoryException("networkService has no connection") );
+            mViewModel.setAddressException( new MapMemoryException("mNetworkService has no connection") );
         }
     }
 
@@ -225,7 +223,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
 
         address.setTimesVisited( address.getTimesVisited()+1);
 
-        addressProvider.updateAddressAsync(address, new Response<ShortAddress>() {
+        mAddressProvider.updateAddressAsync(address, new Response<ShortAddress>() {
             @Override
             public void onError(Exception exception) {
 
@@ -243,8 +241,8 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
      * checks if there is connection and open up addressSuggestFragment
      */
     public void requestAddressSuggestion(){
-        if( addressService.isConnected() && networkService.isConnected() ){
-            navigationService.request(SuggestPresenter.SUGGEST_VIEW );
+        if( mAddressService.isConnected() && mNetworkService.isConnected() ){
+            mNavigationService.request(SuggestPresenter.SUGGEST_VIEW );
         }
     }
 
@@ -264,7 +262,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
             checkCanDelete();
         }
         else if( AddressViewModel.commuteEdits.indexOf(brId) >= 0 && mViewModel.getAddress().getAddressId() > 0 ){
-            addressProvider.updateAddress(mViewModel.getAddress());
+            mAddressProvider.updateAddress(mViewModel.getAddress());
         }
     }
 }

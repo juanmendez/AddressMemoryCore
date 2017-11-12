@@ -61,15 +61,15 @@ public class TestAddressEditing extends  TestAddressMemoryCore {
     public void before() throws Exception {
 
         addressView = mock( AddressView.class );
-        presenter = spy(new AddressPresenter(m));
+        presenter = spy(new AddressPresenter(coreModule));
         viewModel = presenter.getViewModel(addressView);
 
-        networkServiceMocked = m.getNetworkService();
-        addressServiceMocked = m.getAddressService();
-        navigationService = m.getNavigationService();
-        provider = m.getAddressProvider();
+        networkServiceMocked = coreModule.getNetworkService();
+        addressServiceMocked = coreModule.getAddressService();
+        navigationService = coreModule.getNavigationService();
+        provider = coreModule.getAddressProvider();
         provider = spy(provider);
-        Whitebox.setInternalState(presenter,"addressProvider", provider);
+        Whitebox.setInternalState(presenter,"mAddressProvider", provider);
 
         //make each mocked object answer with positive results such as networkService.isConnected() returning true.
         applySuccessfulResults();

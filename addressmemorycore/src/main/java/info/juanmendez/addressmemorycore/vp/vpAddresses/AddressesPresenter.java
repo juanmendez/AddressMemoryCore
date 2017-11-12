@@ -19,18 +19,17 @@ import info.juanmendez.addressmemorycore.vp.vpAddress.AddressPresenter;
 
 public class AddressesPresenter extends Observable.OnPropertyChangedCallback implements PresenterRotated<AddressesViewModel, AddressesView> {
 
-    AddressProvider addressProvider;
-    NavigationService navigationService;
+    private AddressProvider mAddressProvider;
+    private NavigationService mNavigationService;
 
     public static final String ADDRESSES_TAG = "addressesView";
     private Boolean mRotated = false;
     private AddressesViewModel mViewModel;
-    private CoreModule mCoreModule;
 
     public AddressesPresenter( CoreModule coreModule ) {
-        mCoreModule = coreModule;
-        addressProvider = mCoreModule.getAddressProvider();
-        navigationService = mCoreModule.getNavigationService();
+
+        mAddressProvider = coreModule.getAddressProvider();
+        mNavigationService = coreModule.getNavigationService();
 
         mViewModel = new AddressesViewModel();
     }
@@ -43,8 +42,8 @@ public class AddressesPresenter extends Observable.OnPropertyChangedCallback imp
     @Override
     public void active(String params) {
 
-        mViewModel.setStreamingAddresses( addressProvider.getAddresses() );
-        mViewModel.setSelectedAddress(addressProvider.getSelectedAddress());
+        mViewModel.setStreamingAddresses( mAddressProvider.getAddresses() );
+        mViewModel.setSelectedAddress(mAddressProvider.getSelectedAddress());
         mViewModel.addOnPropertyChangedCallback( this );
     }
 
@@ -60,8 +59,8 @@ public class AddressesPresenter extends Observable.OnPropertyChangedCallback imp
     }
 
     public void requestNewAddress() {
-        addressProvider.selectAddress( new ShortAddress() );
-        navigationService.request(AddressPresenter.ADDDRESS_EDIT_TAG);
+        mAddressProvider.selectAddress( new ShortAddress() );
+        mNavigationService.request(AddressPresenter.ADDDRESS_EDIT_TAG);
     }
 
     @Override
@@ -71,12 +70,12 @@ public class AddressesPresenter extends Observable.OnPropertyChangedCallback imp
             ShortAddress selectedAddress = mViewModel.getSelectedAddress();
 
             if( selectedAddress != null ){
-                addressProvider.selectAddress( AddressUtils.cloneAddress(mViewModel.getSelectedAddress()) );
+                mAddressProvider.selectAddress( AddressUtils.cloneAddress(mViewModel.getSelectedAddress()) );
 
                 if( selectedAddress.getAddressId() > 0 ){
-                    navigationService.request(AddressPresenter.ADDRESS_VIEW_TAG);
+                    mNavigationService.request(AddressPresenter.ADDRESS_VIEW_TAG);
                 }else{
-                    navigationService.request(AddressPresenter.ADDDRESS_EDIT_TAG);
+                    mNavigationService.request(AddressPresenter.ADDDRESS_EDIT_TAG);
                 }
             }
         }

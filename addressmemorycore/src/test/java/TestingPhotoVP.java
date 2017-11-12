@@ -6,13 +6,9 @@ import org.junit.Test;
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.dependencies.PhotoService;
-import info.juanmendez.addressmemorycore.modules.MapModuleBase;
 import info.juanmendez.addressmemorycore.vp.vpPhoto.PhotoPresenter;
 import info.juanmendez.addressmemorycore.vp.vpPhoto.PhotoView;
 import info.juanmendez.addressmemorycore.vp.vpPhoto.PhotoViewModel;
-import info.juanmendez.mapmemorycore.addressmemorycore.TestApp;
-import info.juanmendez.mapmemorycore.addressmemorycore.module.DaggerMapCoreComponent;
-import info.juanmendez.mapmemorycore.addressmemorycore.module.MapCoreModule;
 import rx.Observable;
 
 import static junit.framework.Assert.assertEquals;
@@ -46,7 +42,6 @@ public class TestingPhotoVP extends TestAddressMemoryCore{
 
     @Before
     public void before() throws Exception {
-        MapModuleBase.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestApp())).build() );
 
         photoView = mock( PhotoView.class );
         presenter = new PhotoPresenter(coreModule);

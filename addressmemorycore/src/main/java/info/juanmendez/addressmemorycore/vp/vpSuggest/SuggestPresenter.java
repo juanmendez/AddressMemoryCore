@@ -13,7 +13,6 @@ import info.juanmendez.addressmemorycore.dependencies.Response;
 import info.juanmendez.addressmemorycore.models.MapMemoryException;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.modules.CoreModule;
-import info.juanmendez.addressmemorycore.modules.MapModuleBase;
 import info.juanmendez.addressmemorycore.vp.PresenterRotated;
 
 /**
@@ -45,7 +44,6 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
     @Override
     public SuggestViewModel getViewModel(SuggestView view) {
         mView = view;
-        MapModuleBase.getInjector().inject(this);
         mViewModel = new SuggestViewModel();
         return mViewModel;
     }

@@ -2,13 +2,11 @@ package info.juanmendez.addressmemorycore.vp.vpAddresses;
 
 import android.databinding.Observable;
 
-import javax.inject.Inject;
-
 import info.juanmendez.addressmemorycore.BR;
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
-import info.juanmendez.addressmemorycore.modules.MapModuleBase;
+import info.juanmendez.addressmemorycore.modules.CoreModule;
 import info.juanmendez.addressmemorycore.utils.AddressUtils;
 import info.juanmendez.addressmemorycore.vp.PresenterRotated;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressPresenter;
@@ -21,18 +19,19 @@ import info.juanmendez.addressmemorycore.vp.vpAddress.AddressPresenter;
 
 public class AddressesPresenter extends Observable.OnPropertyChangedCallback implements PresenterRotated<AddressesViewModel, AddressesView> {
 
-    @Inject
     AddressProvider addressProvider;
-
-    @Inject
     NavigationService navigationService;
 
     public static final String ADDRESSES_TAG = "addressesView";
     private Boolean mRotated = false;
     private AddressesViewModel mViewModel;
+    private CoreModule mCoreModule;
 
-    public AddressesPresenter() {
-        MapModuleBase.getInjector().inject(this);
+    public AddressesPresenter( CoreModule coreModule ) {
+        mCoreModule = coreModule;
+        addressProvider = mCoreModule.getAddressProvider();
+        navigationService = mCoreModule.getNavigationService();
+
         mViewModel = new AddressesViewModel();
     }
 

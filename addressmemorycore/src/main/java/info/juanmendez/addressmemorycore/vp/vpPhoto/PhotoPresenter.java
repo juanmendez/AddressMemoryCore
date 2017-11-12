@@ -1,14 +1,12 @@
 package info.juanmendez.addressmemorycore.vp.vpPhoto;
 
-import javax.inject.Inject;
-
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.dependencies.PhotoService;
 import info.juanmendez.addressmemorycore.dependencies.Response;
 import info.juanmendez.addressmemorycore.models.MapMemoryException;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
-import info.juanmendez.addressmemorycore.modules.MapModuleBase;
+import info.juanmendez.addressmemorycore.modules.CoreModule;
 import info.juanmendez.addressmemorycore.vp.Presenter;
 
 /**
@@ -18,23 +16,25 @@ import info.juanmendez.addressmemorycore.vp.Presenter;
  */
 public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
 
-    @Inject
     PhotoService photoService;
-
-    @Inject
     AddressProvider addressProvider;
-
-    @Inject
     NavigationService navigationService;
 
+    private CoreModule mCoreModule;
     private PhotoView mView;
     private PhotoViewModel mViewModel;
     private boolean mRotated;
 
+    public PhotoPresenter(CoreModule coreModule) {
+        mCoreModule = coreModule;
+        photoService = mCoreModule.getPhotoService();
+        addressProvider = mCoreModule.getAddressProvider();
+        navigationService = mCoreModule.getNavigationService();
+    }
+
     @Override
     public PhotoViewModel getViewModel(PhotoView photoView) {
         mView = photoView;
-        MapModuleBase.getInjector().inject(this);
         return mViewModel = new PhotoViewModel();
     }
 

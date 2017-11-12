@@ -8,16 +8,12 @@ import java.util.List;
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
-import info.juanmendez.addressmemorycore.modules.MapModuleBase;
 import info.juanmendez.addressmemorycore.utils.AddressUtils;
 import info.juanmendez.addressmemorycore.vp.FragmentNav;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressPresenter;
 import info.juanmendez.addressmemorycore.vp.vpAddresses.AddressesPresenter;
 import info.juanmendez.addressmemorycore.vp.vpAddresses.AddressesView;
 import info.juanmendez.addressmemorycore.vp.vpAddresses.AddressesViewModel;
-import info.juanmendez.mapmemorycore.addressmemorycore.TestApp;
-import info.juanmendez.mapmemorycore.addressmemorycore.module.DaggerMapCoreComponent;
-import info.juanmendez.mapmemorycore.addressmemorycore.module.MapCoreModule;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -35,7 +31,7 @@ import static org.powermock.api.mockito.PowerMockito.spy;
  * www.juanmendez.info
  * contact@juanmendez.info
  */
-public class TestAddressesView {
+public class TestAddressesView extends TestAddressMemoryCore{
     private AddressesView mAddressView;
     private AddressesPresenter mPresenter;
     private NavigationService mNavigationService;
@@ -49,16 +45,14 @@ public class TestAddressesView {
     @Before
     public void before() throws Exception {
 
-        MapModuleBase.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestApp())).build() );
-
         mAddressView = mock( AddressesView.class );
-        mPresenter = spy(new AddressesPresenter());
+        mPresenter = spy(new AddressesPresenter(m));
 
         //we want to spy the mViewModel, so we get it, and put it back as a spied one
         mViewModel = Whitebox.getInternalState(mPresenter, "mViewModel");
 
-        mNavigationService = Whitebox.getInternalState(mPresenter, "navigationService");
-        mProvider = Whitebox.getInternalState(mPresenter, "addressProvider" );
+        mNavigationService = m.getNavigationService();
+        mProvider = m.getAddressProvider();
 
         //make each mocked object answer with positive results such as networkService.isConnected() returning true.
         applySuccessfulResults();

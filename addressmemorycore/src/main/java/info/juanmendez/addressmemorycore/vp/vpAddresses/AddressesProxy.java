@@ -2,11 +2,8 @@ package info.juanmendez.addressmemorycore.vp.vpAddresses;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
-import info.juanmendez.addressmemorycore.modules.MapModuleBase;
 
 /**
  * Created by Juan Mendez on 9/4/2017.
@@ -19,13 +16,13 @@ import info.juanmendez.addressmemorycore.modules.MapModuleBase;
  */
 public class AddressesProxy {
 
-    @Inject
+    //TODO rename to mAddressProvider
     AddressProvider addressProvider;
-
     private List<ShortAddress> mAddresses;
 
-    public AddressesProxy() {
-        MapModuleBase.getInjector().inject(this);
+    public AddressesProxy( AddressProvider addressProvider) {
+        this.addressProvider = addressProvider;
+
         addressProvider.connect();
         mAddresses = addressProvider.getClonedAddresses();
         addressProvider.disconnect();

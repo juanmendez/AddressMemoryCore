@@ -5,8 +5,6 @@ import android.databinding.Observable;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import info.juanmendez.addressmemorycore.BR;
 import info.juanmendez.addressmemorycore.R;
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
@@ -22,7 +20,7 @@ import info.juanmendez.addressmemorycore.models.MapMemoryException;
 import info.juanmendez.addressmemorycore.models.RouteMessage;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.models.SubmitError;
-import info.juanmendez.addressmemorycore.modules.MapModuleBase;
+import info.juanmendez.addressmemorycore.modules.CoreModule;
 import info.juanmendez.addressmemorycore.utils.AddressUtils;
 import info.juanmendez.addressmemorycore.vp.Presenter;
 import info.juanmendez.addressmemorycore.vp.vpSuggest.SuggestPresenter;
@@ -39,25 +37,16 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
     private static final String ADDRESS_JUST_UPDATED = AddressPresenter.class.getName() + "/" + "ADDRESS_JUST_UPDATED";
     public static final String NEW_ADDRESS_REQUEST = AddressPresenter.class.getName() + "/" + "NEW_ADDRESS_REQUEST";
 
-    @Inject
     AddressProvider addressProvider;
-
-    @Inject
     AddressService addressService;
-
-    @Inject
     NetworkService networkService;
-
-    @Inject
     NavigationService navigationService;
-
-    @Inject
     WidgetService widgetService;
-
-    @Inject
     PhotoService photoService;
 
+
     private AddressView mView;
+    private CoreModule mCoreModule;
     private AddressViewModel mViewModel;
     private boolean mRotated;
 
@@ -71,11 +60,19 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
      */
     private ShortAddress mGeoResult = new ShortAddress();
 
+    public AddressPresenter(CoreModule coreModule) {
+        mCoreModule = coreModule;
+        addressProvider = mCoreModule.getAddressProvider();
+        addressService = mCoreModule.getAddressService();
+        networkService = mCoreModule.getNetworkService();
+        navigationService = mCoreModule.getNavigationService();
+        widgetService = mCoreModule.getWidgetService();
+        photoService = mCoreModule.getPhotoService();
+    }
+
     @Override
     public AddressViewModel getViewModel(AddressView view) {
         mView = view;
-        MapModuleBase.getInjector().inject(this);
-
         return mViewModel = new AddressViewModel();
     }
 
@@ -266,8 +263,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
             checkCanSubmit();
             checkCanDelete();
         }
-        else
-        if( AddressViewModel.commuteEdits.indexOf(brId) >= 0 && mViewModel.getAddress().getAddressId() > 0 ){
+        else if( AddressViewModel.commuteEdits.indexOf(brId) >= 0 && mViewModel.getAddress().getAddressId() > 0 ){
             addressProvider.updateAddress(mViewModel.getAddress());
         }
     }

@@ -14,7 +14,6 @@ import info.juanmendez.addressmemorycore.dependencies.NetworkService;
 import info.juanmendez.addressmemorycore.dependencies.QuickResponse;
 import info.juanmendez.addressmemorycore.dependencies.Response;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
-import info.juanmendez.addressmemorycore.modules.MapModuleBase;
 import info.juanmendez.addressmemorycore.vp.FragmentNav;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressPresenter;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressView;
@@ -22,9 +21,6 @@ import info.juanmendez.addressmemorycore.vp.vpAddress.AddressViewModel;
 import info.juanmendez.addressmemorycore.vp.vpSuggest.SuggestPresenter;
 import info.juanmendez.addressmemorycore.vp.vpSuggest.SuggestView;
 import info.juanmendez.addressmemorycore.vp.vpSuggest.SuggestViewModel;
-import info.juanmendez.mapmemorycore.addressmemorycore.TestApp;
-import info.juanmendez.mapmemorycore.addressmemorycore.module.DaggerMapCoreComponent;
-import info.juanmendez.mapmemorycore.addressmemorycore.module.MapCoreModule;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -45,7 +41,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
  * www.juanmendez.info
  * contact@juanmendez.info
  */
-public class TestingAddressServices {
+public class TestingAddressServices extends TestAddressMemoryCore{
 
     List<ShortAddress> addresses = new ArrayList<>();
 
@@ -70,20 +66,18 @@ public class TestingAddressServices {
     @Before
     public void before() throws Exception {
 
-        MapModuleBase.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestApp())).build() );
-
         addressView = mock( AddressView.class );
-        addressPresenter = new AddressPresenter();
+        addressPresenter = new AddressPresenter(m);
         addressViewModel = addressPresenter.getViewModel(addressView);
 
         suggestView = mock( SuggestView.class );
-        suggestPresenter = new SuggestPresenter();
+        suggestPresenter = new SuggestPresenter(m);
         suggestViewModel = suggestPresenter.getViewModel( suggestView );
 
-        networkServiceMocked = Whitebox.getInternalState(addressPresenter, "networkService");
-        addressServiceMocked = Whitebox.getInternalState(addressPresenter, "addressService");
-        addressProvider = Whitebox.getInternalState(suggestPresenter, "addressProvider");
-        navigationService = Whitebox.getInternalState(addressPresenter, "navigationService");
+        networkServiceMocked = m.getNetworkService();
+        addressServiceMocked = m.getAddressService();
+        addressProvider = m.getAddressProvider();
+        navigationService = m.getNavigationService();
 
         //addressService and networkService are not singletons, so we want to save ourselves doing extra work
         //by using the same mocked objects from presenter
@@ -121,11 +115,11 @@ public class TestingAddressServices {
         addressPresenter.inactive(false);
 
         //we switch now to suggestPresenter, we want to ensure
-        //when landing there are already matching addresses!
+        //when landing there are already matching mAddresses!
         suggestPresenter.active("");
         assertFalse( suggestViewModel.getMatchingAddresses().isEmpty() );
 
-        //how about clearing the address edited. There should be no matching addresses
+        //how about clearing the address edited. There should be no matching mAddresses
         suggestViewModel.setAddressEdited("");
         assertTrue( suggestViewModel.getMatchingAddresses().isEmpty() );
 
@@ -150,7 +144,7 @@ public class TestingAddressServices {
         suggestViewModel.setAddressEdited("100 N. LaSalle");
         assertFalse( suggestViewModel.getMatchingAddresses().isEmpty() );
 
-        //we have matching addresses, and we are going to pick on the second one as our selected address!
+        //we have matching mAddresses, and we are going to pick on the second one as our selected address!
         ShortAddress pickedAddress = suggestViewModel.getMatchingAddresses().get(1);
         suggestViewModel.setPickedAddress( pickedAddress );
 
@@ -212,7 +206,7 @@ public class TestingAddressServices {
     private List<ShortAddress> setAddresses(){
 
         ShortAddress address;
-        //lets add an address, and see if addressesView has updated its addresses
+        //lets add an address, and see if addressesView has updated its mAddresses
         address = new ShortAddress();
         address.setName( "1");
         address.setAddress1("0 N. State");

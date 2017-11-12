@@ -7,11 +7,7 @@ import java.util.List;
 
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
-import info.juanmendez.addressmemorycore.modules.MapModuleBase;
 import info.juanmendez.addressmemorycore.vp.vpAddresses.AddressesProxy;
-import info.juanmendez.mapmemorycore.addressmemorycore.TestApp;
-import info.juanmendez.mapmemorycore.addressmemorycore.module.DaggerMapCoreComponent;
-import info.juanmendez.mapmemorycore.addressmemorycore.module.MapCoreModule;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -22,17 +18,17 @@ import static junit.framework.Assert.assertTrue;
  * www.juanmendez.info
  * contact@juanmendez.info
  */
-public class TestingAddressesProxy{
+public class TestingAddressesProxy extends TestAddressMemoryCore{
 
     @Before
     public void before() throws Exception {
-        MapModuleBase.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestApp())).build() );
+
     }
 
     @Test
     public void testProxy() throws Exception {
-        AddressesProxy proxy = new AddressesProxy();
-        AddressProvider provider = Whitebox.getInternalState( proxy, "addressProvider" );
+        AddressesProxy proxy = new AddressesProxy(m.getAddressProvider());
+        AddressProvider provider = m.getAddressProvider();
         assertNotNull( provider );
 
         List<ShortAddress> addresses = getAddresses();
@@ -46,7 +42,7 @@ public class TestingAddressesProxy{
             assertTrue( address.isValid() );
         }
 
-        //busted, provider updates happen after proxy.refresh() is called..
+        //busted, mAddressProvider updates happen after proxy.refresh() is called..
         //so we make a secret call to make ends meet.
         assertEquals( provider.countAddresses(), proxy.getAddresses().size() );
     }
@@ -56,7 +52,7 @@ public class TestingAddressesProxy{
         List<ShortAddress> addresses = new ArrayList<>();
 
         ShortAddress address;
-        //lets add an address, and see if addressesView has updated its addresses
+        //lets add an address, and see if addressesView has updated its mAddresses
         address = new ShortAddress();
         address.setName( "1");
         address.setAddress1("0 N. State");

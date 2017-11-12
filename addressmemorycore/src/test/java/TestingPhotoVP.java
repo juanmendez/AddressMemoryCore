@@ -2,7 +2,6 @@ import android.app.Activity;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.powermock.reflect.Whitebox;
 
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
@@ -33,7 +32,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
  * contact@juanmendez.info
  */
 
-public class TestingPhotoVP {
+public class TestingPhotoVP extends TestAddressMemoryCore{
 
     private PhotoView photoView;
     private PhotoPresenter presenter;
@@ -50,12 +49,12 @@ public class TestingPhotoVP {
         MapModuleBase.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestApp())).build() );
 
         photoView = mock( PhotoView.class );
-        presenter = new PhotoPresenter();
+        presenter = new PhotoPresenter(m);
         viewModel = presenter.getViewModel(photoView);
 
-        addressProvider = Whitebox.getInternalState(presenter, "addressProvider");
-        photoServiceMocked = Whitebox.getInternalState(presenter, "photoService");
-        navigationService = Whitebox.getInternalState(presenter, "navigationService");
+        addressProvider = m.getAddressProvider();
+        photoServiceMocked = m.getPhotoService();
+        navigationService = m.getNavigationService();
 
         //make each mocked object answer with positive results such as networkService.isConnected() returning true.
         applySuccessfulResults();

@@ -4,8 +4,6 @@ import android.databinding.Observable;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import info.juanmendez.addressmemorycore.BR;
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.AddressService;
@@ -14,6 +12,7 @@ import info.juanmendez.addressmemorycore.dependencies.NetworkService;
 import info.juanmendez.addressmemorycore.dependencies.Response;
 import info.juanmendez.addressmemorycore.models.MapMemoryException;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
+import info.juanmendez.addressmemorycore.modules.CoreModule;
 import info.juanmendez.addressmemorycore.modules.MapModuleBase;
 import info.juanmendez.addressmemorycore.vp.PresenterRotated;
 
@@ -25,22 +24,25 @@ import info.juanmendez.addressmemorycore.vp.PresenterRotated;
 
 public class SuggestPresenter extends Observable.OnPropertyChangedCallback implements PresenterRotated<SuggestViewModel,SuggestView> {
 
-    @Inject
+
     AddressProvider addressProvider;
-
-    @Inject
     AddressService addressService;
-
-    @Inject
     NetworkService networkService;
-
-    @Inject
     NavigationService navigationService;
 
+    private CoreModule mCoreModule;
     private SuggestView mView;
     private SuggestViewModel mViewModel;
     private boolean mRotated;
     public static final String SUGGEST_VIEW = "suggest_view";
+
+    public SuggestPresenter(CoreModule coreModule) {
+        mCoreModule = coreModule;
+        addressProvider = mCoreModule.getAddressProvider();
+        addressService = mCoreModule.getAddressService();
+        networkService = mCoreModule.getNetworkService();
+        navigationService = mCoreModule.getNavigationService();
+    }
 
     @Override
     public SuggestViewModel getViewModel(SuggestView view) {

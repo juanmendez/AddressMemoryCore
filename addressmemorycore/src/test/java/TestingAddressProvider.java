@@ -2,7 +2,6 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.powermock.reflect.Whitebox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,15 +9,11 @@ import java.util.List;
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.Response;
 import info.juanmendez.addressmemorycore.models.Commute;
-import info.juanmendez.addressmemorycore.vp.vpAddress.AddressViewModel;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
-import info.juanmendez.addressmemorycore.modules.MapModuleBase;
 import info.juanmendez.addressmemorycore.utils.AddressUtils;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressPresenter;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressView;
-import info.juanmendez.mapmemorycore.addressmemorycore.TestApp;
-import info.juanmendez.mapmemorycore.addressmemorycore.module.DaggerMapCoreComponent;
-import info.juanmendez.mapmemorycore.addressmemorycore.module.MapCoreModule;
+import info.juanmendez.addressmemorycore.vp.vpAddress.AddressViewModel;
 
 import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
@@ -42,28 +37,27 @@ import static org.powermock.api.mockito.PowerMockito.spy;
  * work in parallel and can be switched while testing. The good news is DroidAddressProvider is set to work
  * with our Android environment.
  */
-public class TestingAddressProvider {
+public class TestingAddressProvider extends TestAddressMemoryCore{
 
     private AddressViewModel viewModel;
     private AddressView addressView;
     private AddressPresenter presenter;
 
     String navigationTag = "helloNavigation";
-    AddressProvider provider;
+    AddressProvider mAddressProvider;
 
-    List<ShortAddress> addresses = new ArrayList<>();
+    List<ShortAddress> mAddresses = new ArrayList<>();
 
     @Before
     public void before() throws Exception {
         getAddresses();
-        MapModuleBase.setInjector( DaggerMapCoreComponent.builder().mapCoreModule(new MapCoreModule(new TestApp())).build() );
 
         addressView = mock( AddressView.class );
-        presenter = spy(new AddressPresenter());
+        presenter = spy(new AddressPresenter(m));
         viewModel = presenter.getViewModel(addressView);
 
         //through MVP, get your hands on the presenter, and subsequently get its dagger dependency
-        provider = Whitebox.getInternalState(presenter, "addressProvider" );
+        mAddressProvider = m.getAddressProvider();
 
         //make each mocked object answer with positive results such as networkService.isConnected() returning true.
         applySuccessfulResults();
@@ -72,17 +66,17 @@ public class TestingAddressProvider {
     @Test
     public void testAddressProvider(){
 
-        assertEquals(provider.countAddresses(), addresses.size());
+        assertEquals(mAddressProvider.countAddresses(), mAddresses.size());
 
-        //ok we are going to deletePhoto the selected element. see if provider still accounts for that
-        ShortAddress selectedAddress = provider.getAddress(1);
-        provider.selectAddress( selectedAddress );
+        //ok we are going to deletePhoto the selected element. see if mAddressProvider still accounts for that
+        ShortAddress selectedAddress = mAddressProvider.getAddress(1);
+        mAddressProvider.selectAddress( selectedAddress );
 
-        provider.deleteAddressAsync(1, new Response<Boolean>() {
+        mAddressProvider.deleteAddressAsync(1, new Response<Boolean>() {
             @Override
             public void onResult(Boolean result) {
                 Assert.assertTrue( result );
-                assertEquals( provider.countAddresses(), addresses.size()-1 );
+                assertEquals( mAddressProvider.countAddresses(), mAddresses.size()-1 );
             }
 
             @Override
@@ -91,12 +85,12 @@ public class TestingAddressProvider {
             }
         });
 
-        assertFalse(provider.getSelectedAddress() == selectedAddress );
+        assertFalse(mAddressProvider.getSelectedAddress() == selectedAddress );
     }
 
     @Test
     public void testCloningAddresses(){
-        ShortAddress firstAddress = provider.getAddress(1);
+        ShortAddress firstAddress = mAddressProvider.getAddress(1);
         assertNotNull( firstAddress );
 
         firstAddress.getCommute().setType(Commute.BICYCLE);
@@ -117,7 +111,7 @@ public class TestingAddressProvider {
 
     @Test
     public void testAsync(){
-        provider.getAddressAsync(4).subscribe(shortAddress -> {
+        mAddressProvider.getAddressAsync(4).subscribe(shortAddress -> {
            assertNotNull(shortAddress);
         });
     }
@@ -126,38 +120,38 @@ public class TestingAddressProvider {
     void applySuccessfulResults(){
 
         doReturn( "resource_string" ).when(addressView).getString( anyInt() );
-        for(ShortAddress address: addresses ){
-            provider.updateAddress( address );
+        for(ShortAddress address: mAddresses){
+            mAddressProvider.updateAddress( address );
         }
     }
 
     void getAddresses(){
 
         ShortAddress address;
-        //lets add an address, and see if addressesView has updated its addresses
+        //lets add an address, and see if addressesView has updated its mAddresses
         address = new ShortAddress();
         address.setName( "1");
         address.setAddress1("0 N. State");
         address.setAddress2( "Chicago, 60641" );
-        addresses.add( address );
+        mAddresses.add( address );
 
         address = new ShortAddress();
         address.setName( "2");
         address.setAddress1("1 N. State");
         address.setAddress2( "Chicago, 60641" );
-        addresses.add( address );
+        mAddresses.add( address );
 
         address = new ShortAddress();
         address.setName( "3");
         address.setAddress1("2 N. State");
         address.setAddress2( "Chicago, 60641" );
-        addresses.add( address );
+        mAddresses.add( address );
 
         address = new ShortAddress();
         address.setName( "4");
         address.setAddress1("3 N. State");
         address.setAddress2( "Chicago, 60641" );
-        addresses.add( address );
+        mAddresses.add( address );
     }
     //</editor-fold>
 }

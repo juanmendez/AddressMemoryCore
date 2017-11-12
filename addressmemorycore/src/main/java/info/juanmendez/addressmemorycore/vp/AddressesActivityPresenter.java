@@ -1,9 +1,6 @@
 package info.juanmendez.addressmemorycore.vp;
 
-import javax.inject.Inject;
-
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
-import info.juanmendez.addressmemorycore.modules.MapModuleBase;
 
 /**
  * Created by Juan Mendez on 10/28/2017.
@@ -13,18 +10,17 @@ import info.juanmendez.addressmemorycore.modules.MapModuleBase;
 
 public class AddressesActivityPresenter {
 
-    @Inject
-    AddressProvider addressProvider;
+    AddressProvider mAddressProvider;
 
-    public AddressesActivityPresenter() {
-        MapModuleBase.getInjector().inject(this);
+    public AddressesActivityPresenter(AddressProvider addressProvider) {
+        mAddressProvider = addressProvider;
     }
 
     public void onResume(){
-        addressProvider.connect();
+        mAddressProvider.connect();
     }
 
     public void onPause(){
-        addressProvider.disconnect();
+        mAddressProvider.disconnect();
     }
 }

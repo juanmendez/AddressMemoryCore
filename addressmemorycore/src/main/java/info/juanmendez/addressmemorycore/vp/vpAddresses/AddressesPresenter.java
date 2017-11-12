@@ -6,7 +6,7 @@ import info.juanmendez.addressmemorycore.BR;
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
-import info.juanmendez.addressmemorycore.modules.CoreModule;
+import info.juanmendez.addressmemorycore.modules.AddressCoreModule;
 import info.juanmendez.addressmemorycore.utils.AddressUtils;
 import info.juanmendez.addressmemorycore.vp.PresenterRotated;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressPresenter;
@@ -26,10 +26,10 @@ public class AddressesPresenter extends Observable.OnPropertyChangedCallback imp
     private Boolean mRotated = false;
     private AddressesViewModel mViewModel;
 
-    public AddressesPresenter( CoreModule coreModule ) {
+    public AddressesPresenter( AddressCoreModule module ) {
 
-        mAddressProvider = coreModule.getAddressProvider();
-        mNavigationService = coreModule.getNavigationService();
+        mAddressProvider = module.getAddressProvider();
+        mNavigationService = module.getNavigationService();
 
         mViewModel = new AddressesViewModel();
     }

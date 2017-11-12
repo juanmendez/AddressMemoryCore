@@ -6,7 +6,7 @@ import java.util.List;
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.Response;
 import info.juanmendez.addressmemorycore.models.AddressFields;
-import info.juanmendez.addressmemorycore.models.MapMemoryException;
+import info.juanmendez.addressmemorycore.models.AddressException;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.models.SubmitError;
 import rx.Observable;
@@ -107,7 +107,7 @@ public class TestAddressProvider implements AddressProvider {
         if( updated != null ){
             response.onResult(updated);
         }else{
-            response.onError( new MapMemoryException("couldn't update address asynchronously"));
+            response.onError( new AddressException("couldn't update address asynchronously"));
         }
     }
 
@@ -124,7 +124,7 @@ public class TestAddressProvider implements AddressProvider {
 
             response.onResult(true);
         }else{
-            response.onError( new MapMemoryException("couldn't deletePhoto address asynchronously"));
+            response.onError( new AddressException("couldn't deletePhoto address asynchronously"));
         }
     }
 

@@ -4,9 +4,9 @@ import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.dependencies.PhotoService;
 import info.juanmendez.addressmemorycore.dependencies.Response;
-import info.juanmendez.addressmemorycore.models.MapMemoryException;
+import info.juanmendez.addressmemorycore.models.AddressException;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
-import info.juanmendez.addressmemorycore.modules.CoreModule;
+import info.juanmendez.addressmemorycore.modules.AddressCoreModule;
 import info.juanmendez.addressmemorycore.vp.Presenter;
 
 /**
@@ -20,16 +20,14 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
     private AddressProvider mAddressProvider;
     private NavigationService mNavigationService;
 
-    private CoreModule mCoreModule;
     private PhotoView mView;
     private PhotoViewModel mViewModel;
     private boolean mRotated;
 
-    public PhotoPresenter(CoreModule coreModule) {
-        mCoreModule = coreModule;
-        mPhotoService = mCoreModule.getPhotoService();
-        mAddressProvider = mCoreModule.getAddressProvider();
-        mNavigationService = mCoreModule.getNavigationService();
+    public PhotoPresenter(AddressCoreModule module) {
+        mPhotoService = module.getPhotoService();
+        mAddressProvider = module.getAddressProvider();
+        mNavigationService = module.getNavigationService();
     }
 
     @Override
@@ -43,7 +41,7 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
         mPhotoService.pickPhoto(mView.getActivity()).subscribe(photoLocation -> {
             mViewModel.setPhoto(photoLocation);
         }, throwable -> {
-            mViewModel.setPhotoException(new MapMemoryException(throwable.getMessage()));
+            mViewModel.setPhotoException(new AddressException(throwable.getMessage()));
         });
     }
 
@@ -52,7 +50,7 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
          mPhotoService.takePhoto(mView.getActivity()).subscribe(photoLocation -> {
             mViewModel.setPhoto( photoLocation );
         }, throwable -> {
-            mViewModel.setPhotoException(new MapMemoryException(throwable.getMessage()));
+            mViewModel.setPhotoException(new AddressException(throwable.getMessage()));
         });
     }
 

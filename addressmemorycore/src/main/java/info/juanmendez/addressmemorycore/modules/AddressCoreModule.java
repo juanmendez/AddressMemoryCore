@@ -15,7 +15,7 @@ import info.juanmendez.addressmemorycore.dependencies.WidgetService;
  * contact@juanmendez.info
  */
 
-public class CoreModule {
+public class AddressCoreModule {
 
     Application mApplication;
     AddressProvider mAddressProvider;
@@ -29,7 +29,7 @@ public class CoreModule {
         return mApplication;
     }
 
-    public CoreModule applyApplication(Application application) {
+    public AddressCoreModule applyApplication(Application application) {
         mApplication = application;
         return this;
     }
@@ -38,7 +38,7 @@ public class CoreModule {
         return mAddressProvider;
     }
 
-    public CoreModule applyAddressProvider(AddressProvider addressProvider) {
+    public AddressCoreModule applyAddressProvider(AddressProvider addressProvider) {
         mAddressProvider = addressProvider;
         return this;
     }
@@ -47,7 +47,7 @@ public class CoreModule {
         return mAddressService;
     }
 
-    public CoreModule applyAddressService(AddressService addressService) {
+    public AddressCoreModule applyAddressService(AddressService addressService) {
         mAddressService = addressService;
         return this;
     }
@@ -56,7 +56,7 @@ public class CoreModule {
         return mPhotoService;
     }
 
-    public CoreModule applyPhotoService(PhotoService photoService) {
+    public AddressCoreModule applyPhotoService(PhotoService photoService) {
         mPhotoService = photoService;
         return this;
     }
@@ -65,7 +65,7 @@ public class CoreModule {
         return mNetworkService;
     }
 
-    public CoreModule applyNetworkService(NetworkService networkService) {
+    public AddressCoreModule applyNetworkService(NetworkService networkService) {
         mNetworkService = networkService;
         return this;
     }
@@ -74,7 +74,7 @@ public class CoreModule {
         return mNavigationService;
     }
 
-    public CoreModule applyNavigationService(NavigationService navigationService) {
+    public AddressCoreModule applyNavigationService(NavigationService navigationService) {
         mNavigationService = navigationService;
         return this;
     }
@@ -83,7 +83,7 @@ public class CoreModule {
         return mWidgetService;
     }
 
-    public CoreModule applyWidgetService(WidgetService widgetService) {
+    public AddressCoreModule applyWidgetService(WidgetService widgetService) {
         mWidgetService = widgetService;
         return this;
     }

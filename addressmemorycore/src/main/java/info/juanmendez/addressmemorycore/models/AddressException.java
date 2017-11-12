@@ -9,24 +9,24 @@ import java.util.List;
  * contact@juanmendez.info
  */
 
-public class MapMemoryException extends  Exception {
+public class AddressException extends  Exception {
 
     private List<SubmitError> mErrors = new ArrayList<>();
 
     //TODO: add constant error messages
-    public MapMemoryException(String message) {
+    public AddressException(String message) {
         super(message);
     }
 
-    public static MapMemoryException build( String message ){
-        return new MapMemoryException( message );
+    public static AddressException build(String message ){
+        return new AddressException( message );
     }
 
     public List<SubmitError> getErrors() {
         return mErrors;
     }
 
-    public MapMemoryException setErrors(List<SubmitError> errors) {
+    public AddressException setErrors(List<SubmitError> errors) {
         mErrors = errors;
 
         return this;

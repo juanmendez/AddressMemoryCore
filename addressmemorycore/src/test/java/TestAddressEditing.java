@@ -14,7 +14,7 @@ import info.juanmendez.addressmemorycore.dependencies.NetworkService;
 import info.juanmendez.addressmemorycore.dependencies.QuickResponse;
 import info.juanmendez.addressmemorycore.dependencies.Response;
 import info.juanmendez.addressmemorycore.models.Commute;
-import info.juanmendez.addressmemorycore.models.MapMemoryException;
+import info.juanmendez.addressmemorycore.models.AddressException;
 import info.juanmendez.addressmemorycore.models.RouteMessage;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.models.SubmitError;
@@ -242,7 +242,7 @@ public class TestAddressEditing extends  TestAddressMemoryCore {
         Response<RouteMessage> response = mock( Response.class );
 
         presenter.saveAddress( response );
-        verify( response ).onError(any(MapMemoryException.class));
+        verify( response ).onError(any(AddressException.class));
 
         reset(response);
         when( provider.validate(any(ShortAddress.class)) ).thenReturn( new ArrayList<SubmitError>());

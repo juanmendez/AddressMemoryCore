@@ -16,11 +16,11 @@ import info.juanmendez.addressmemorycore.dependencies.QuickResponse;
 import info.juanmendez.addressmemorycore.dependencies.Response;
 import info.juanmendez.addressmemorycore.dependencies.WidgetService;
 import info.juanmendez.addressmemorycore.models.Commute;
-import info.juanmendez.addressmemorycore.models.MapMemoryException;
+import info.juanmendez.addressmemorycore.models.AddressException;
 import info.juanmendez.addressmemorycore.models.RouteMessage;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.models.SubmitError;
-import info.juanmendez.addressmemorycore.modules.CoreModule;
+import info.juanmendez.addressmemorycore.modules.AddressCoreModule;
 import info.juanmendez.addressmemorycore.utils.AddressUtils;
 import info.juanmendez.addressmemorycore.vp.Presenter;
 import info.juanmendez.addressmemorycore.vp.vpSuggest.SuggestPresenter;
@@ -58,14 +58,14 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
      */
     private ShortAddress mGeoResult = new ShortAddress();
 
-    public AddressPresenter(CoreModule coreModule) {
+    public AddressPresenter(AddressCoreModule module) {
 
-        mAddressProvider = coreModule.getAddressProvider();
-        mAddressService = coreModule.getAddressService();
-        mNetworkService = coreModule.getNetworkService();
-        mNavigationService = coreModule.getNavigationService();
-        mWidgetService = coreModule.getWidgetService();
-        mPhotoService = coreModule.getPhotoService();
+        mAddressProvider = module.getAddressProvider();
+        mAddressService = module.getAddressService();
+        mNetworkService = module.getNetworkService();
+        mNavigationService = module.getNavigationService();
+        mWidgetService = module.getWidgetService();
+        mPhotoService = module.getPhotoService();
     }
 
     @Override
@@ -152,12 +152,12 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
 
                 @Override
                 public void onError(Exception exception) {
-                    response.onError( new MapMemoryException( mView.getString(R.string.address_save_error) ));
+                    response.onError( new AddressException( mView.getString(R.string.address_save_error) ));
                 }
             });
 
         }else{
-            response.onError( MapMemoryException.build("On Submit there are errors").setErrors( mAddressProvider.validate(mViewModel.getAddress()) ) );
+            response.onError( AddressException.build("On Submit there are errors").setErrors( mAddressProvider.validate(mViewModel.getAddress()) ) );
         }
     }
 
@@ -182,7 +182,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
 
             @Override
             public void onError(Exception exception) {
-                response.onError( new MapMemoryException(mView.getString( R.string.delete_error )));
+                response.onError( new AddressException(mView.getString( R.string.delete_error )));
             }
         });
         mWidgetService.updateList();
@@ -210,7 +210,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
                 }
             });
         }else{
-            mViewModel.setAddressException( new MapMemoryException("mNetworkService has no connection") );
+            mViewModel.setAddressException( new AddressException("mNetworkService has no connection") );
         }
     }
 

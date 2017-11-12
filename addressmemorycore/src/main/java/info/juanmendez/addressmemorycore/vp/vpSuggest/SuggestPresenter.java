@@ -10,9 +10,9 @@ import info.juanmendez.addressmemorycore.dependencies.AddressService;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.dependencies.NetworkService;
 import info.juanmendez.addressmemorycore.dependencies.Response;
-import info.juanmendez.addressmemorycore.models.MapMemoryException;
+import info.juanmendez.addressmemorycore.models.AddressException;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
-import info.juanmendez.addressmemorycore.modules.CoreModule;
+import info.juanmendez.addressmemorycore.modules.AddressCoreModule;
 import info.juanmendez.addressmemorycore.vp.PresenterRotated;
 
 /**
@@ -34,11 +34,11 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
     private boolean mRotated;
     public static final String SUGGEST_VIEW = "suggest_view";
 
-    public SuggestPresenter(CoreModule coreModule) {
-        mAddressProvider = coreModule.getAddressProvider();
-        mAddressService = coreModule.getAddressService();
-        mNetworkService = coreModule.getNetworkService();
-        mNavigationService = coreModule.getNavigationService();
+    public SuggestPresenter(AddressCoreModule module) {
+        mAddressProvider = module.getAddressProvider();
+        mAddressService = module.getAddressService();
+        mNetworkService = module.getNetworkService();
+        mNavigationService = module.getNavigationService();
     }
 
     @Override
@@ -88,7 +88,7 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
         String query = mViewModel.getAddressEdited();
 
         if( !mAddressService.isConnected() ) {
-            mViewModel.setAddressException(new MapMemoryException("There is no connection"));
+            mViewModel.setAddressException(new AddressException("There is no connection"));
         } else if( query.trim().isEmpty() ) {
             mViewModel.clearMatchingResults();
         } else {

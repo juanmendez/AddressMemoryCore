@@ -46,8 +46,6 @@ public class AddressViewModel extends BaseObservable {
 
     @Bindable public final ObservableBoolean isGeoOn = new ObservableBoolean(false);
 
-    @Bindable public final ObservableBoolean onChildFragment = new ObservableBoolean(false);
-
     @Bindable public final ObservableArrayList<SubmitError> submitErrors = new ObservableArrayList<>();
 
     private String mCommuteType = "";

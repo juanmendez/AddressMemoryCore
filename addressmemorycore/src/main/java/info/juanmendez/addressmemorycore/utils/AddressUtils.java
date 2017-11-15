@@ -51,53 +51,57 @@ public class AddressUtils {
     }
 
     public static ShortAddress cloneAddress(ShortAddress address ){
+        return copyAddress( address, new ShortAddress());
+    }
 
-        ShortAddress cloned = new ShortAddress(address.getAddressId());
+    public static ShortAddress copyAddress(ShortAddress originalAddress, ShortAddress copiedAddress ){
 
-        if( !SubmitError.emptyOrNull( address.getName()) ){
-            cloned.setName( address.getName() );
+        copiedAddress.setAddressId( originalAddress.getAddressId() );
+
+        if( !SubmitError.emptyOrNull( originalAddress.getName()) ){
+            copiedAddress.setName( originalAddress.getName() );
         }
 
-        if( !SubmitError.emptyOrNull( address.getAddress1()) ){
-            cloned.setAddress1( address.getAddress1() );
+        if( !SubmitError.emptyOrNull( originalAddress.getAddress1()) ){
+            copiedAddress.setAddress1( originalAddress.getAddress1() );
         }
 
-        if( !SubmitError.emptyOrNull( address.getAddress2()) ){
-            cloned.setAddress2( address.getAddress2() );
+        if( !SubmitError.emptyOrNull( originalAddress.getAddress2()) ){
+            copiedAddress.setAddress2( originalAddress.getAddress2() );
         }
 
-        if( SubmitError.initialized(address.getTimesVisited()) ){
-            cloned.setTimesVisited( address.getTimesVisited() );
+        if( SubmitError.initialized(originalAddress.getTimesVisited()) ){
+            copiedAddress.setTimesVisited( originalAddress.getTimesVisited() );
         }
 
-        if( address.getDateUpdated() != null ){
-            cloned.setDateUpdated( address.getDateUpdated() );
+        if( originalAddress.getDateUpdated() != null ){
+            copiedAddress.setDateUpdated( originalAddress.getDateUpdated() );
         }
 
-        if( !SubmitError.emptyOrNull( address.getMapId()) ){
-            cloned.setMapId( address.getMapId() );
+        if( !SubmitError.emptyOrNull( originalAddress.getMapId()) ){
+            copiedAddress.setMapId( originalAddress.getMapId() );
         }
 
-        if( SubmitError.initialized(address.getLat()) ){
-            cloned.setLat( address.getLat() );
+        if( SubmitError.initialized(originalAddress.getLat()) ){
+            copiedAddress.setLat( originalAddress.getLat() );
         }
 
-        if( SubmitError.initialized(address.getLon()) ){
-            cloned.setLon( address.getLon() );
+        if( SubmitError.initialized(originalAddress.getLon()) ){
+            copiedAddress.setLon( originalAddress.getLon() );
         }
 
-        if( !SubmitError.emptyOrNull( address.getUrl()) ){
-            cloned.setUrl( address.getUrl() );
+        if( !SubmitError.emptyOrNull( originalAddress.getUrl()) ){
+            copiedAddress.setUrl( originalAddress.getUrl() );
         }
 
-        if( !SubmitError.emptyOrNull( address.getPhotoLocation()) ){
-            cloned.setPhotoLocation( address.getPhotoLocation() );
+        if( !SubmitError.emptyOrNull( originalAddress.getPhotoLocation()) ){
+            copiedAddress.setPhotoLocation( originalAddress.getPhotoLocation() );
         }
 
         //we need to also clone the Commute object.
-        cloned.setCommute( cloneCommute( address.getCommute()) );
+        copiedAddress.setCommute( cloneCommute( originalAddress.getCommute()) );
 
-        return cloned;
+        return copiedAddress;
     }
 
     public static Commute cloneCommute(Commute commute){

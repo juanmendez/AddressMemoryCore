@@ -44,7 +44,7 @@ public class TestAddressProvider implements AddressProvider {
 
     @Override
     public void selectAddress(ShortAddress selectedAddress) {
-        mSelectedAddress = selectedAddress;
+        mSelectedAddress = AddressUtils.cloneAddress(selectedAddress);
     }
 
     @Override
@@ -89,10 +89,8 @@ public class TestAddressProvider implements AddressProvider {
             currentId = updated.getAddressId();
 
             if( currentId != 0 && currentId == address.getAddressId() ){
-                int location = mAddresses.indexOf(address);
-                mAddresses.set( location, AddressUtils.cloneAddress( updated ) );
-
-                return mAddresses.get( location );
+                AddressUtils.copyAddress( updated, address );
+                return address;
             }
         }
 

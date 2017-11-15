@@ -10,7 +10,6 @@ import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.dependencies.PhotoService;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
-import info.juanmendez.addressmemorycore.utils.AddressUtils;
 import info.juanmendez.addressmemorycore.vp.vpPhoto.PhotoPresenter;
 import info.juanmendez.addressmemorycore.vp.vpPhoto.PhotoView;
 import info.juanmendez.addressmemorycore.vp.vpPhoto.PhotoViewModel;
@@ -123,7 +122,7 @@ public class TestingPhotoVP extends TestAddressMemoryCore{
     @Test
     public void confirmSavingPhoto(){
         //we want a copy not the original to emulate realm has its own copy
-        selectedAddress = AddressUtils.cloneAddress(addressProvider.getAddress(1));
+        selectedAddress = addressProvider.getAddress(1);
 
         addressProvider.selectAddress(selectedAddress);
         presenter.active("");

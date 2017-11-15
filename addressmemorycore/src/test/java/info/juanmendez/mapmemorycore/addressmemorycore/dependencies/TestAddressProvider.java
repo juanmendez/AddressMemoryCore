@@ -9,6 +9,7 @@ import info.juanmendez.addressmemorycore.models.AddressFields;
 import info.juanmendez.addressmemorycore.models.AddressException;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.models.SubmitError;
+import info.juanmendez.addressmemorycore.utils.AddressUtils;
 import rx.Observable;
 
 
@@ -89,7 +90,9 @@ public class TestAddressProvider implements AddressProvider {
 
             if( currentId != 0 && currentId == address.getAddressId() ){
                 int location = mAddresses.indexOf(address);
-                return mAddresses.set( location, updated );
+                mAddresses.set( location, AddressUtils.cloneAddress( updated ) );
+
+                return mAddresses.get( location );
             }
         }
 

@@ -3,9 +3,14 @@ import android.app.Activity;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.dependencies.PhotoService;
+import info.juanmendez.addressmemorycore.models.ShortAddress;
+import info.juanmendez.addressmemorycore.utils.AddressUtils;
 import info.juanmendez.addressmemorycore.vp.vpPhoto.PhotoPresenter;
 import info.juanmendez.addressmemorycore.vp.vpPhoto.PhotoView;
 import info.juanmendez.addressmemorycore.vp.vpPhoto.PhotoViewModel;
@@ -37,8 +42,10 @@ public class TestingPhotoVP extends TestAddressMemoryCore{
     private AddressProvider addressProvider;
     private String photoTaken = "/gallery/oldPhoto.png";
     private String photoPicked = "/camera/photo.png";
-
     private PhotoViewModel viewModel;
+
+    private List<ShortAddress> addresses = new ArrayList<>();
+    private ShortAddress selectedAddress;
 
     @Before
     public void before() throws Exception {
@@ -109,6 +116,27 @@ public class TestingPhotoVP extends TestAddressMemoryCore{
         presenter.inactive(false);
     }
 
+    /**
+     * While user picks on a photo, we should automatically save
+     * if addressSelected is already part of the database.
+     */
+    @Test
+    public void confirmSavingPhoto(){
+        //we want a copy not the original to emulate realm has its own copy
+        selectedAddress = AddressUtils.cloneAddress(addressProvider.getAddress(1));
+
+        addressProvider.selectAddress(selectedAddress);
+        presenter.active("");
+        assertTrue( viewModel.getAddress().getAddressId() > 0 );
+
+        presenter.requestPickPhoto();
+        assertEquals( viewModel.getPhoto(), photoPicked);
+
+        //ok we confirm.. selectedAddress must have photoPicked in its photo location.
+        presenter.confirmPhoto();
+        assertEquals( addressProvider.getAddress(1).getPhotoLocation(), photoPicked );
+    }
+
     private void applySuccessfulResults(){
 
 
@@ -122,5 +150,35 @@ public class TestingPhotoVP extends TestAddressMemoryCore{
         doAnswer(invocation -> {
             return Observable.just(photoTaken);
         }).when(photoServiceMocked).takePhoto(any(Activity.class));
+
+        ShortAddress address;
+        //lets add an address, and see if addressesView has updated its mAddresses
+        address = new ShortAddress();
+        address.setName( "1");
+        address.setAddress1("0 N. State");
+        address.setAddress2( "Chicago, 60641" );
+        addresses.add( address );
+
+        address = new ShortAddress();
+        address.setName( "2");
+        address.setAddress1("1 N. State");
+        address.setAddress2( "Chicago, 60641" );
+        addresses.add( address );
+
+        address = new ShortAddress();
+        address.setName( "3");
+        address.setAddress1("2 N. State");
+        address.setAddress2( "Chicago, 60641" );
+        addresses.add( address );
+
+        address = new ShortAddress();
+        address.setName( "4");
+        address.setAddress1("3 N. State");
+        address.setAddress2( "Chicago, 60641" );
+        addresses.add( address );
+
+        for(ShortAddress thisAddress: addresses ){
+            addressProvider.updateAddress( thisAddress );
+        }
     }
 }

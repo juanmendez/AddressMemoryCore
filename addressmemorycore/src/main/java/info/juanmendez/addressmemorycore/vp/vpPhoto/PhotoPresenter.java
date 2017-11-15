@@ -57,11 +57,25 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
     public void confirmPhoto(){
         if( !mViewModel.getPhoto().isEmpty() ){
             mViewModel.getAddress().setPhotoLocation(mViewModel.getPhoto());
+
+            mAddressProvider.updateAddressAsync(mViewModel.getAddress(), new Response<ShortAddress>() {
+                @Override
+                public void onError(Exception exception) {
+
+                }
+
+                @Override
+                public void onResult(ShortAddress result) {
+                    mAddressProvider.selectAddress( result );
+                    mViewModel.setAddress(result);
+                    mNavigationService.goBack();
+                }
+            });
+
         }else{
             mViewModel.getAddress().setPhotoLocation("");
+            mNavigationService.goBack();
         }
-
-        mNavigationService.goBack();
     }
 
     public void deletePhoto(){

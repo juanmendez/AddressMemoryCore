@@ -8,6 +8,7 @@ import info.juanmendez.addressmemorycore.models.AddressException;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.modules.AddressCoreModule;
 import info.juanmendez.addressmemorycore.utils.AddressUtils;
+import info.juanmendez.addressmemorycore.utils.ValueUtils;
 import info.juanmendez.addressmemorycore.vp.Presenter;
 
 /**
@@ -40,8 +41,10 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
     //mView requests to pick photo from public gallery
     public void requestPickPhoto(){
         mPhotoService.pickPhoto(mView.getActivity()).subscribe(photoLocation -> {
-            mViewModel.setPhoto(photoLocation);
-            mViewModel.isModified.set(true);
+            if(!ValueUtils.emptyOrNull(photoLocation)){
+                mViewModel.setPhoto( photoLocation );
+                mViewModel.isModified.set(true);
+            }
         }, throwable -> {
             mViewModel.setPhotoException(new AddressException(throwable.getMessage()));
         });
@@ -50,8 +53,10 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
     //mView requests to take a photo
     public void requestTakePhoto(){
          mPhotoService.takePhoto(mView.getActivity()).subscribe(photoLocation -> {
-            mViewModel.setPhoto( photoLocation );
-             mViewModel.isModified.set(true);
+            if(!ValueUtils.emptyOrNull(photoLocation)){
+                mViewModel.setPhoto( photoLocation );
+                mViewModel.isModified.set(true);
+            }
         }, throwable -> {
             mViewModel.setPhotoException(new AddressException(throwable.getMessage()));
         });

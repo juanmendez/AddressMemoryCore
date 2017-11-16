@@ -7,6 +7,7 @@ import info.juanmendez.addressmemorycore.dependencies.Response;
 import info.juanmendez.addressmemorycore.models.AddressException;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.modules.AddressCoreModule;
+import info.juanmendez.addressmemorycore.utils.AddressUtils;
 import info.juanmendez.addressmemorycore.vp.Presenter;
 
 /**
@@ -40,6 +41,7 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
     public void requestPickPhoto(){
         mPhotoService.pickPhoto(mView.getActivity()).subscribe(photoLocation -> {
             mViewModel.setPhoto(photoLocation);
+            mViewModel.isModified.set(true);
         }, throwable -> {
             mViewModel.setPhotoException(new AddressException(throwable.getMessage()));
         });
@@ -49,6 +51,7 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
     public void requestTakePhoto(){
          mPhotoService.takePhoto(mView.getActivity()).subscribe(photoLocation -> {
             mViewModel.setPhoto( photoLocation );
+             mViewModel.isModified.set(true);
         }, throwable -> {
             mViewModel.setPhotoException(new AddressException(throwable.getMessage()));
         });
@@ -56,26 +59,39 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
 
     public void confirmPhoto(){
         if( !mViewModel.getPhoto().isEmpty() ){
-            mViewModel.getAddress().setPhotoLocation(mViewModel.getPhoto());
 
-            mAddressProvider.updateAddressAsync(mViewModel.getAddress(), new Response<ShortAddress>() {
-                @Override
-                public void onError(Exception exception) {
+            ShortAddress address = mViewModel.getAddress();
+            long id = address.getAddressId();
+            address.setPhotoLocation(mViewModel.getPhoto());
 
-                }
+            if( id > 0 ){
 
-                @Override
-                public void onResult(ShortAddress result) {
-                    mAddressProvider.selectAddress( result );
-                    mViewModel.setAddress(result);
-                    mNavigationService.goBack();
-                }
-            });
+                //update photoLocation only
+                ShortAddress realmAddress = AddressUtils.cloneAddress(mAddressProvider.getAddress(id ));
+                realmAddress.setPhotoLocation(mViewModel.getPhoto());
 
+                mAddressProvider.updateAddressAsync(realmAddress, new Response<ShortAddress>() {
+                    @Override
+                    public void onError(Exception exception) {
+                    }
+
+                    @Override
+                    public void onResult(ShortAddress addressResult) {
+                        mNavigationService.goBack();
+                    }
+                });
+            }else{
+                mNavigationService.goBack();
+            }
         }else{
             mViewModel.getAddress().setPhotoLocation("");
             mNavigationService.goBack();
         }
+    }
+
+    public void cancelPhoto(){
+        mViewModel.setPhoto("");
+        mNavigationService.goBack();
     }
 
     public void deletePhoto(){

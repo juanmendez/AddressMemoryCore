@@ -2,6 +2,7 @@ package info.juanmendez.addressmemorycore.vp.vpPhoto;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
+import android.databinding.ObservableBoolean;
 
 import info.juanmendez.addressmemorycore.BR;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
@@ -17,6 +18,8 @@ public class PhotoViewModel extends BaseObservable {
     private Exception mPhotoException;
     private String mPhoto = "";
 
+    @Bindable public final ObservableBoolean isModified = new ObservableBoolean(false);
+
     //<editor-fold desc="mAddress">
     @Bindable
     public ShortAddress getAddress() {
@@ -26,8 +29,8 @@ public class PhotoViewModel extends BaseObservable {
     public void setAddress(ShortAddress address) {
         mAddress = address;
         notifyPropertyChanged(BR.address);
-
         setPhoto( address.getPhotoLocation() );
+        isModified.set(false);
     }
 
     public void clearPhoto(){

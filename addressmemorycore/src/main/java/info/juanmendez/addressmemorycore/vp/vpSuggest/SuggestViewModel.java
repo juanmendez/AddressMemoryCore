@@ -2,6 +2,7 @@ package info.juanmendez.addressmemorycore.vp.vpSuggest;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
+import android.databinding.ObservableBoolean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,8 @@ public class SuggestViewModel extends BaseObservable {
     private Exception mAddressException;
 
     private String mLastAddressTyped = "";
+
+    @Bindable public final ObservableBoolean keyboardOn = new ObservableBoolean(false);
 
     public void setSelectedAddress(ShortAddress selectedAddress) {
         mSelectedAddress = selectedAddress;

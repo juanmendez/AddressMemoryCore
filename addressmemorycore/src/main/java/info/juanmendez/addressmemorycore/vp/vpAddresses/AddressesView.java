@@ -1,8 +1,5 @@
 package info.juanmendez.addressmemorycore.vp.vpAddresses;
 
-import java.util.List;
-
-import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.vp.FragmentNav;
 
 /**
@@ -12,5 +9,4 @@ import info.juanmendez.addressmemorycore.vp.FragmentNav;
  */
 
 public interface AddressesView extends FragmentNav {
-    void setStreamingList(List<ShortAddress> addresses );
 }

@@ -18,7 +18,9 @@ import info.juanmendez.addressmemorycore.models.ShortAddress;
 public class AddressesViewModel extends BaseObservable {
     private ShortAddress mSelectedAddress;
     private List<ShortAddress> mStreamingAddresses;
-    @Bindable public ObservableBoolean isDoublePane = new ObservableBoolean();
+
+    @Bindable public final ObservableBoolean isDoublePane = new ObservableBoolean();
+    @Bindable public final ObservableBoolean isEmpty = new ObservableBoolean(true);
 
     @Bindable
     public List<ShortAddress> getStreamingAddresses() {

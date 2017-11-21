@@ -24,6 +24,7 @@ public class AddressUtils {
             uriString += "&travelmode=transit";
 
             mapIntent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uriString));
+            mapIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_DOCUMENT|Intent.FLAG_ACTIVITY_NEW_TASK);
         }else{
             uriString = String.format("%s %s", address.getAddress1(), address.getAddress2() );
             uriString = Uri.encode( uriString );

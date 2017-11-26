@@ -4,6 +4,7 @@ import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.dependencies.PhotoService;
 import info.juanmendez.addressmemorycore.dependencies.Response;
+import info.juanmendez.addressmemorycore.dependencies.WidgetService;
 import info.juanmendez.addressmemorycore.models.AddressException;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.modules.AddressCoreModule;
@@ -21,6 +22,7 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
     private PhotoService mPhotoService;
     private AddressProvider mAddressProvider;
     private NavigationService mNavigationService;
+    private WidgetService mWidgetService;
 
     private PhotoView mView;
     private PhotoViewModel mViewModel;
@@ -30,6 +32,7 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
         mPhotoService = module.getPhotoService();
         mAddressProvider = module.getAddressProvider();
         mNavigationService = module.getNavigationService();
+        mWidgetService = module.getWidgetService();
     }
 
     @Override
@@ -82,6 +85,7 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
 
                     @Override
                     public void onResult(ShortAddress addressResult) {
+                        mWidgetService.updateList();
                         mNavigationService.goBack();
                     }
                 });

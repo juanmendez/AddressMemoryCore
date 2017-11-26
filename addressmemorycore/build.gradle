@@ -26,6 +26,10 @@ android {
     dataBinding {
         enabled = true
     }
+
+    lintOptions{
+        abortOnError false
+    }
 }
 
 android.libraryVariants.all { variant ->

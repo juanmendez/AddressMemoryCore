@@ -147,7 +147,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
                     mAddressProvider.selectAddress( result );
                     mWidgetService.updateList();
                     mViewModel.setAddress(result);
-                    response.onResult(new RouteMessage(ADDRESS_VIEW_TAG, isNew?ADDRESS_JUST_CREATED:ADDRESS_JUST_UPDATED ));
+                    response.onResult(new RouteMessage(ADDRESS_VIEW_TAG, Long.toString(result.getAddressId()) ));
                 }
 
                 @Override

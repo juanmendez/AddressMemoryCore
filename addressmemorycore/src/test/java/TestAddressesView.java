@@ -22,6 +22,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.spy;
@@ -94,7 +95,7 @@ public class TestAddressesView extends TestAddressMemoryCore{
         assertEquals( mViewModel.getSelectedAddress().getAddressId(), mProvider.getSelectedAddress().getAddressId() );
 
         //in the app then we head to another fragment. See if that's happening
-        verify(mNavigationService).request( eq(AddressPresenter.ADDRESS_VIEW_TAG) );
+        verify(mNavigationService, times(2)).request( eq(AddressPresenter.ADDRESS_VIEW_TAG) );
         mPresenter.inactive(true);
     }
 

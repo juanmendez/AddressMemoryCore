@@ -8,8 +8,10 @@ import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.modules.AddressCoreModule;
 import info.juanmendez.addressmemorycore.utils.AddressUtils;
+import info.juanmendez.addressmemorycore.utils.ValueUtils;
 import info.juanmendez.addressmemorycore.vp.PresenterRotated;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressPresenter;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Juan Mendez on 6/24/2017.
@@ -23,8 +25,9 @@ public class AddressesPresenter extends Observable.OnPropertyChangedCallback imp
     private NavigationService mNavigationService;
 
     public static final String ADDRESSES_TAG = "addressesView";
-    private Boolean mRotated = false;
+    private boolean mRotated = false;
     private AddressesViewModel mViewModel;
+
 
     public AddressesPresenter( AddressCoreModule module ) {
 
@@ -43,8 +46,19 @@ public class AddressesPresenter extends Observable.OnPropertyChangedCallback imp
     public void active(String params) {
 
         mViewModel.setStreamingAddresses( mAddressProvider.getAddresses() );
+
+
         mViewModel.setSelectedAddress(mAddressProvider.getSelectedAddress());
         mViewModel.addOnPropertyChangedCallback( this );
+
+        if(ValueUtils.isLong( params )){
+
+            ShortAddress result = mAddressProvider.getAddress(Long.parseLong(params));
+
+            if( result != null ){
+                mViewModel.setSelectedAddress( result );
+            }
+        }
     }
 
     @Override
@@ -73,9 +87,9 @@ public class AddressesPresenter extends Observable.OnPropertyChangedCallback imp
                 mAddressProvider.selectAddress( AddressUtils.cloneAddress(mViewModel.getSelectedAddress()) );
 
                 if( selectedAddress.getAddressId() > 0 ){
-                    mNavigationService.request(AddressPresenter.ADDRESS_VIEW_TAG);
+                    mNavigationService.request(AddressPresenter.ADDRESS_VIEW_TAG, Long.toString(selectedAddress.getAddressId()) );
                 }else{
-                    mNavigationService.request(AddressPresenter.ADDDRESS_EDIT_TAG);
+                    mNavigationService.request(AddressPresenter.ADDDRESS_EDIT_TAG + "/" + "new");
                 }
             }
         }

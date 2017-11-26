@@ -23,4 +23,18 @@ public class ValueUtils {
     public static Boolean initialized(int field ){
         return field != 0;
     }
+
+    public static boolean isLong( String input ) {
+
+        if( emptyOrNull(input))
+            return false;
+
+        try {
+            Long.parseLong( input );
+            return true;
+        }
+        catch( NumberFormatException e ) {
+            return false;
+        }
+    }
 }

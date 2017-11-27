@@ -73,7 +73,9 @@ public class AddressesPresenter extends Observable.OnPropertyChangedCallback imp
     }
 
     public void requestNewAddress() {
-        mAddressProvider.selectAddress( new ShortAddress() );
+        ShortAddress newAddress = new ShortAddress();
+        mAddressProvider.selectAddress( newAddress );
+        mViewModel.setSelectedAddress( newAddress );
         mNavigationService.request(AddressPresenter.ADDDRESS_EDIT_TAG);
     }
 

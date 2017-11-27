@@ -16,7 +16,7 @@ public class Commute extends RealmObject {
     public static final String BUS = "t";
     public static final String UNDECIDED = "u";
 
-    private String mType = UNDECIDED;
+    private String mType = DRIVING;
     private boolean mAvoidXpressway = false;
     private boolean mAvoidTolls = false;
 

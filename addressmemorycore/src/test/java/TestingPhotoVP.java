@@ -13,7 +13,7 @@ import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.vp.vpPhoto.PhotoPresenter;
 import info.juanmendez.addressmemorycore.vp.vpPhoto.PhotoView;
 import info.juanmendez.addressmemorycore.vp.vpPhoto.PhotoViewModel;
-import rx.Observable;
+import io.reactivex.Observable;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;

@@ -1,6 +1,6 @@
 package info.juanmendez.addressmemorycore.utils;
 
-import rx.Subscription;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by Juan Mendez on 8/14/2017.
@@ -9,10 +9,11 @@ import rx.Subscription;
  */
 
 public class RxUtils {
-    public static boolean unsubscribe(Subscription subscription ){
-        if( subscription != null && !subscription.isUnsubscribed() ){
-            subscription.unsubscribe();
-            subscription = null;
+
+    //TODO: rename dispose
+    public static boolean unsubscribe(Disposable disposable ){
+        if( disposable != null && !disposable.isDisposed() ){
+            disposable.dispose();
             return true;
         }
 

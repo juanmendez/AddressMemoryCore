@@ -4,7 +4,7 @@ import java.util.List;
 
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.models.SubmitError;
-import rx.Observable;
+import io.reactivex.Observable;
 
 /**
  * Created by Juan Mendez on 7/7/2017.

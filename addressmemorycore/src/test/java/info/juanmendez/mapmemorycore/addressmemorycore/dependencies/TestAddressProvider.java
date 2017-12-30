@@ -10,8 +10,7 @@ import info.juanmendez.addressmemorycore.models.AddressException;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.models.SubmitError;
 import info.juanmendez.addressmemorycore.utils.AddressUtils;
-import rx.Observable;
-
+import io.reactivex.Observable;
 
 /**
  * Created by Juan Mendez on 7/7/2017.

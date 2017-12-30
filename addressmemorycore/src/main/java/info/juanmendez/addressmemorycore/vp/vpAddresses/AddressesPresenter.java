@@ -11,7 +11,6 @@ import info.juanmendez.addressmemorycore.utils.AddressUtils;
 import info.juanmendez.addressmemorycore.utils.ValueUtils;
 import info.juanmendez.addressmemorycore.vp.PresenterRotated;
 import info.juanmendez.addressmemorycore.vp.vpAddress.AddressPresenter;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Juan Mendez on 6/24/2017.

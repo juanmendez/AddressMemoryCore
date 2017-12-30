@@ -2,7 +2,7 @@ package info.juanmendez.addressmemorycore.dependencies;
 
 import android.app.Activity;
 
-import rx.Observable;
+import io.reactivex.Observable;
 
 /**
  * Created by Juan Mendez on 7/23/2017.

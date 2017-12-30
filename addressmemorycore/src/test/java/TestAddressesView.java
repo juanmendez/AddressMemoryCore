@@ -95,7 +95,7 @@ public class TestAddressesView extends TestAddressMemoryCore{
         assertEquals( mViewModel.getSelectedAddress().getAddressId(), mProvider.getSelectedAddress().getAddressId() );
 
         //in the app then we head to another fragment. See if that's happening
-        verify(mNavigationService, times(2)).request( eq(AddressPresenter.ADDRESS_VIEW_TAG) );
+        verify(mNavigationService).request( eq(AddressPresenter.ADDRESS_VIEW_TAG), eq(Long.toString(selectedAddress.getAddressId())) );
         mPresenter.inactive(true);
     }
 

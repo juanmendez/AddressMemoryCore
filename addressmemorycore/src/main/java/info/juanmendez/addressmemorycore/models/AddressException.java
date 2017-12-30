@@ -13,7 +13,6 @@ public class AddressException extends  Exception {
 
     private List<SubmitError> mErrors = new ArrayList<>();
 
-    //TODO: add constant error messages
     public AddressException(String message) {
         super(message);
     }

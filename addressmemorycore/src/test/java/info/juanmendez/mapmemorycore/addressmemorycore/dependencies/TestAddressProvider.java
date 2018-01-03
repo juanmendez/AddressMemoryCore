@@ -10,7 +10,7 @@ import info.juanmendez.addressmemorycore.models.AddressException;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.models.SubmitError;
 import info.juanmendez.addressmemorycore.utils.AddressUtils;
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 
 /**
  * Created by Juan Mendez on 7/7/2017.
@@ -27,7 +27,7 @@ public class TestAddressProvider implements AddressProvider {
     int totalAdded=0;
 
     @Override
-    public void connect() {
+    public boolean connect() {
 
     }
 
@@ -52,8 +52,8 @@ public class TestAddressProvider implements AddressProvider {
     }
 
     @Override
-    public Observable<List<ShortAddress>> getAddressesAsync() {
-        return Observable.just(mAddresses);
+    public Flowable<List<ShortAddress>> getAddressesAsync() {
+        return Flowable.just(mAddresses);
     }
 
     @Override
@@ -69,8 +69,8 @@ public class TestAddressProvider implements AddressProvider {
     }
 
     @Override
-    public Observable<ShortAddress> getAddressAsync(long addressId) {
-        return Observable.just(getAddress(addressId));
+    public Flowable<ShortAddress> getAddressAsync(long addressId) {
+        return Flowable.just(getAddress(addressId));
     }
 
     @Override

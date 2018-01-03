@@ -24,7 +24,7 @@ public class AddressesPresenter extends Observable.OnPropertyChangedCallback imp
     private NavigationService mNavigationService;
 
     public static final String ADDRESSES_TAG = "addressesView";
-    private boolean mRotated = false;
+    private boolean mLastRotated = false;
     private AddressesViewModel mViewModel;
 
 
@@ -62,13 +62,13 @@ public class AddressesPresenter extends Observable.OnPropertyChangedCallback imp
 
     @Override
     public void inactive(Boolean rotated){
-        mRotated = rotated;
+        mLastRotated = rotated;
         mViewModel.removeOnPropertyChangedCallback( this );
     }
 
     @Override
     public Boolean getRotated() {
-        return mRotated;
+        return mLastRotated;
     }
 
     public void requestNewAddress() {

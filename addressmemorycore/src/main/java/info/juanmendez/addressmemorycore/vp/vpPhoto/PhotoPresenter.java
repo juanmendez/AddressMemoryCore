@@ -26,7 +26,7 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
 
     private PhotoView mView;
     private PhotoViewModel mViewModel;
-    private boolean mRotated;
+    private boolean mLastRotated;
 
     public PhotoPresenter(AddressCoreModule module) {
         mPhotoService = module.getPhotoService();
@@ -55,14 +55,17 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
 
     //mView requests to take a photo
     public void requestTakePhoto(){
-         mPhotoService.takePhoto(mView.getActivity()).subscribe(photoLocation -> {
-            if(!ValueUtils.emptyOrNull(photoLocation)){
-                mViewModel.setPhoto( photoLocation );
-                mViewModel.isModified.set(true);
-            }
-        }, throwable -> {
-            mViewModel.setPhotoException(new AddressException(throwable.getMessage()));
-        });
+         mPhotoService.takePhoto(mView.getActivity())
+                 .subscribe( s -> {
+
+                     if(!ValueUtils.emptyOrNull(s)){
+                         mViewModel.setPhoto( s );
+                         mViewModel.isModified.set(true);
+                     }
+                 },
+                     throwable -> {
+                     mViewModel.setPhotoException(new AddressException(throwable.getMessage()));
+                 });
     }
 
     public void confirmPhoto(){
@@ -134,13 +137,13 @@ public class PhotoPresenter implements Presenter<PhotoViewModel,PhotoView> {
 
     @Override
     public void active(String params ) {
-        if( !mRotated){
+        if( !mLastRotated){
             mViewModel.setAddress( mAddressProvider.getSelectedAddress() );
         }
     }
 
     @Override
     public void inactive(Boolean rotated) {
-        mRotated = rotated;
+        mLastRotated = rotated;
     }
 }

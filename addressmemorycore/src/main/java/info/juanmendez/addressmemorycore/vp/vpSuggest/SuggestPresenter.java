@@ -31,7 +31,7 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
 
     private SuggestView mView;
     private SuggestViewModel mViewModel;
-    private boolean mRotated;
+    private boolean mLastRotated;
     public static final String SUGGEST_VIEW = "suggest_view";
 
     public SuggestPresenter(AddressCoreModule module) {
@@ -51,7 +51,7 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
     @Override
     public void active(String params ) {
 
-        if( !mRotated){
+        if( !mLastRotated){
             mViewModel.setSelectedAddress(mAddressProvider.getSelectedAddress());
         }
 
@@ -72,7 +72,7 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
 
     @Override
     public void inactive(Boolean isRotated) {
-        mRotated = isRotated;
+        mLastRotated = isRotated;
         mNetworkService.disconnect();
         mAddressService.onStop();
         mViewModel.removeOnPropertyChangedCallback(this);
@@ -124,7 +124,7 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
 
     @Override
     public Boolean getRotated() {
-        return mRotated;
+        return mLastRotated;
     }
 
     @Override

@@ -46,7 +46,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
 
     private AddressView mView;
     private AddressViewModel mViewModel;
-    private boolean mRotated;
+    private boolean mLastRotated;
 
     public static final String ADDRESS_VIEW_TAG = "viewAddressTag";
     public static final String ADDDRESS_EDIT_TAG = "editAddressTag";
@@ -77,7 +77,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
     @Override
     public void active( String params ) {
 
-        if( !mRotated){
+        if( !mLastRotated){
 
             if( params.equals(AddressPresenter.ADDRESS_JUST_CREATED)){
                 mView.iToast( mView.getString(R.string.toast_address_created));
@@ -106,7 +106,7 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
 
     @Override
     public void inactive(Boolean rotated) {
-        mRotated = rotated;
+        mLastRotated = rotated;
         mNetworkService.disconnect();
         mAddressService.onStop();
 

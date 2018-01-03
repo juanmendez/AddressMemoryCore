@@ -19,25 +19,24 @@ public class ShortAddress extends RealmObject{
     private long mAddressId;
 
     @Index
-    String mName = "";
+    private String mName = "";
 
-
-    String mAddress1 = "";
-    String mAddress2 = "";
-
-    @Index
-    int mTimesVisited;
+    private String mAddress1 = "";
+    private String mAddress2 = "";
 
     @Index
-    Date mDateUpdated;
+    private int mTimesVisited;
+
+    @Index
+    private Date mDateUpdated;
 
     //this is a google id if we were to get it from autocomplete
-    String mMapId;
+    private String mMapId;
 
-    double mLat;
-    double mLon;
-    String mUrl;
-    String mPhotoLocation = "";
+    private double mLat;
+    private double mLon;
+    private String mUrl;
+    private String mPhotoLocation = "";
 
     private Commute mCommute = new Commute();
 

@@ -1,6 +1,7 @@
 package info.juanmendez.addressmemorycore.dependencies;
 
 import android.app.Activity;
+import android.location.Location;
 
 import java.util.List;
 

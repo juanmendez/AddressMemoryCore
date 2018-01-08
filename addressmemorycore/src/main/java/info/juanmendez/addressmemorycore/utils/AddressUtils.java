@@ -1,8 +1,16 @@
 package info.juanmendez.addressmemorycore.utils;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import info.juanmendez.addressmemorycore.models.AddressFields;
 import info.juanmendez.addressmemorycore.models.Commute;
 import info.juanmendez.addressmemorycore.models.SubmitError;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
@@ -112,5 +120,35 @@ public class AddressUtils {
         cloned.setAvoidXpressway( commute.getAvoidXpressway());
 
         return cloned;
+    }
+
+    public static ShortAddress fromCursor(Cursor cursor) {
+        ShortAddress address = new ShortAddress();
+
+        /**
+         * public static final String[] sColumns = new String[]{ADDRESSID, NAME,
+         ADDRESS1, ADDRESS2, DATEUPDATED,
+         MAPID, PHOTOURL, TIMESVISITED, COMMUTE_TYPE };
+         */
+
+        address.setAddressId( cursor.getLong(cursor.getColumnIndex(AddressFields.ADDRESSID)));
+        address.setName( cursor.getString( cursor.getColumnIndex(AddressFields.NAME)));
+        address.setAddress1( cursor.getString( cursor.getColumnIndex(AddressFields.ADDRESS1)));
+        address.setAddress2( cursor.getString( cursor.getColumnIndex(AddressFields.ADDRESS2)));
+
+        Long dateTime = cursor.getLong( cursor.getColumnIndex(AddressFields.DATEUPDATED));
+        address.setDateUpdated( new Date(dateTime) );
+        address.setMapId( cursor.getString( cursor.getColumnIndex(AddressFields.MAPID)) );
+        address.setPhotoLocation( cursor.getString( cursor.getColumnIndex(AddressFields.PHOTOURL)) );
+        address.setMapId( cursor.getString( cursor.getColumnIndex(AddressFields.MAPID)) );
+        address.setTimesVisited( cursor.getInt( cursor.getColumnIndex(AddressFields.TIMESVISITED)) );
+
+        Commute commute = new Commute();
+        commute.setType( cursor.getString( cursor.getColumnIndex(AddressFields.COMMUTE_TYPE)) );
+        commute.setAvoidTolls( cursor.getInt( cursor.getColumnIndex(AddressFields.COMMUTE_TOLLS)) == 1 );
+        commute.setAvoidXpressway( cursor.getInt( cursor.getColumnIndex(AddressFields.COMMUTE_HIGHWAY)) == 1 );
+        address.setCommute( commute );
+
+        return address;
     }
 }

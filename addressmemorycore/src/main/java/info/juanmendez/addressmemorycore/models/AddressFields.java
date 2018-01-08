@@ -21,4 +21,12 @@ public class AddressFields {
     public static final String DATEUPDATED = "mDateUpdated";
     public static final String TIMESVISITED = "mTimesVisited";
     public static final String MAPID = "mMapId";
+
+    public static final String COMMUTE_TYPE = "mCommuteType";
+    public static final String COMMUTE_TOLLS = "mCommuteTolls";
+    public static final String COMMUTE_HIGHWAY = "mCommuteHighway";
+
+    public static final String[] sColumns = new String[]{ADDRESSID, NAME,
+            ADDRESS1, ADDRESS2, DATEUPDATED,
+            MAPID, PHOTOURL, TIMESVISITED, COMMUTE_TYPE, COMMUTE_TOLLS, COMMUTE_HIGHWAY };
 }

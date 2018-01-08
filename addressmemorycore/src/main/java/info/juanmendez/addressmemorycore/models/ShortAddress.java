@@ -31,7 +31,7 @@ public class ShortAddress extends RealmObject{
     private Date mDateUpdated;
 
     //this is a google id if we were to get it from autocomplete
-    private String mMapId;
+    private String mMapId = "";
 
     private double mLat;
     private double mLon;

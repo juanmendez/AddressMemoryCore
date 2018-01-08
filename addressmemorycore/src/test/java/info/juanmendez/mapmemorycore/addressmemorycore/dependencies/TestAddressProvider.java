@@ -28,12 +28,12 @@ public class TestAddressProvider implements AddressProvider {
 
     @Override
     public boolean connect() {
-
+        return true;
     }
 
     @Override
-    public void disconnect() {
-
+    public boolean disconnect() {
+        return true;
     }
 
     @Override
@@ -108,6 +108,15 @@ public class TestAddressProvider implements AddressProvider {
             response.onResult(updated);
         }else{
             response.onError( new AddressException("couldn't update address asynchronously"));
+        }
+    }
+
+    @Override
+    public void deleteAddress(long addressId) {
+        ShortAddress address = getAddress( addressId);
+
+        if( address != null ){
+            mAddresses.remove(address);
         }
     }
 

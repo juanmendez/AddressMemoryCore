@@ -5,4 +5,5 @@ package info.juanmendez.addressmemorycore.vp.vpAuth;
  */
 
 public interface AuthView {
+    void onAuthSuccess();
 }

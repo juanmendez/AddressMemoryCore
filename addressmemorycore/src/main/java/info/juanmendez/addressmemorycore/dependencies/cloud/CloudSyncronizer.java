@@ -18,4 +18,5 @@ public interface CloudSyncronizer {
 
     Single<Boolean> pushToTheCloud(List<ShortAddress> addresses);
     boolean isSynced();
+    void setSynced( boolean synced );
 }

@@ -34,6 +34,14 @@ public class TwistCloudSyncronizer {
         mCount = count;
     }
 
+    public boolean isSynced() {
+        return mIsSynced;
+    }
+
+    public void setSynced(boolean synced) {
+        mIsSynced = synced;
+    }
+
     public void setException(Exception exception) {
         mException = exception;
     }
@@ -77,6 +85,11 @@ public class TwistCloudSyncronizer {
         doAnswer( invocation -> {
            return mIsSynced;
         } ).when( mCloudSyncronizer ).isSynced();
+
+        doAnswer( invocation -> {
+            mIsSynced = invocation.getArgumentAt(0, boolean.class);
+            return null;
+        }).when( mCloudSyncronizer ).setSynced( Mockito.anyBoolean() );
 
     }
 }

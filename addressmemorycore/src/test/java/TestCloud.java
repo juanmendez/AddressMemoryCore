@@ -3,15 +3,20 @@ import android.app.Application;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.powermock.reflect.Whitebox;
 
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.QuickResponse;
 import info.juanmendez.addressmemorycore.dependencies.cloud.AuthService;
 import info.juanmendez.addressmemorycore.dependencies.cloud.CloudSyncronizer;
 import info.juanmendez.addressmemorycore.modules.CloudCoreModule;
+import info.juanmendez.addressmemorycore.vp.vpAuth.AuthPresenter;
+import info.juanmendez.addressmemorycore.vp.vpAuth.AuthView;
+import info.juanmendez.addressmemorycore.vp.vpAuth.AuthViewModel;
 import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TestAddressProvider;
 import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TwistAuthService;
 import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TwistCloudSyncronizer;
+import io.reactivex.disposables.Disposable;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -87,4 +92,56 @@ public class TestCloud extends TestAddressMemoryCore{
 
         assertFalse( mCloudSyncronizer.isSynced() );
     }
+
+
+    @Test
+    public void testPresenter(){
+        TwistAuthService twistAuthService = new TwistAuthService( mAuthService );
+        TwistCloudSyncronizer twistCloudSyncronizer = new TwistCloudSyncronizer( mCloudSyncronizer );
+
+
+        AuthPresenter authPresenter = new AuthPresenter( mCloudModule );
+
+        //lets see if we are doing the job right
+        AuthView view = mock( AuthView.class );
+        AuthViewModel viewModel = authPresenter.getViewModel( view );
+        authPresenter.active(null);
+
+        //lets check if presenter tried to push to the cloud
+        Mockito.verify( mCloudSyncronizer, Mockito.times(0) ).pushToTheCloud( Mockito.anyList() );
+
+        //lets login!
+        authPresenter.login();
+        Mockito.verify( mCloudSyncronizer, Mockito.times(1) ).pushToTheCloud( Mockito.anyList() );
+        authPresenter.logout();
+
+        //now login won't call to push
+        authPresenter.login();
+        Mockito.verify( mCloudSyncronizer, Mockito.times(1) ).pushToTheCloud( Mockito.anyList() );
+        authPresenter.logout();
+
+        //login twice, means we call this method twice
+        Mockito.verify( view, Mockito.times(2)).onAuthSuccess();
+
+        //lets ensure its disposable is unregistered.
+        Disposable disposable = Whitebox.getInternalState( authPresenter, "mPushDisposable");
+        assertNotNull( disposable );
+        assertTrue( disposable.isDisposed());
+
+
+        //lets repeat, this time we want to fire an exception from cloudSyncronizer when pushing..
+        mCloudSyncronizer.setSynced( false );
+        twistCloudSyncronizer.setException( new Exception("Firebase can't import realm data!!"));
+        authPresenter.login();
+
+        Mockito.verify( view, Mockito.times(3)).onAuthSuccess();
+        assertFalse( mCloudSyncronizer.isSynced() );
+        assertTrue( viewModel.loggedIn.get() );
+
+        authPresenter.logout();
+        assertFalse( viewModel.loggedIn.get() );
+    }
+
+
+
 }

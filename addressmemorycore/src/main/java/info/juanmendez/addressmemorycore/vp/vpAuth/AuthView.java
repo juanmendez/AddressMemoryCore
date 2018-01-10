@@ -1,9 +1,12 @@
 package info.juanmendez.addressmemorycore.vp.vpAuth;
 
+import android.content.Intent;
+
 /**
  * Created by juan on 1/8/18.
  */
 
 public interface AuthView {
-    void onAuthSuccess();
+    void startActivityForResult(Intent intent, int key);
+    void tryLogin();
 }

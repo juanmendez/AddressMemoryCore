@@ -1,3 +1,4 @@
+import android.app.Activity;
 import android.app.Application;
 
 import org.junit.Before;
@@ -6,17 +7,20 @@ import org.mockito.Mockito;
 import org.powermock.reflect.Whitebox;
 
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
-import info.juanmendez.addressmemorycore.dependencies.QuickResponse;
+import info.juanmendez.addressmemorycore.dependencies.cloud.Auth;
 import info.juanmendez.addressmemorycore.dependencies.cloud.AuthService;
+import info.juanmendez.addressmemorycore.dependencies.cloud.CloudStation;
 import info.juanmendez.addressmemorycore.dependencies.cloud.CloudSyncronizer;
 import info.juanmendez.addressmemorycore.modules.CloudCoreModule;
 import info.juanmendez.addressmemorycore.vp.vpAuth.AuthPresenter;
 import info.juanmendez.addressmemorycore.vp.vpAuth.AuthView;
 import info.juanmendez.addressmemorycore.vp.vpAuth.AuthViewModel;
 import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TestAddressProvider;
-import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TwistAuthService;
+import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TwistAuth;
+import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TwistAuthView;
+import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TwistCloudStation;
 import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TwistCloudSyncronizer;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.disposables.CompositeDisposable;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -36,6 +40,10 @@ public class TestCloud extends TestAddressMemoryCore{
     private AddressProvider mAddressProvider;
     private CloudSyncronizer mCloudSyncronizer;
 
+    private TwistAuth mTwistAuth;
+    private TwistCloudStation mTwistCloudStation;
+    private TwistCloudSyncronizer mTwistCloudSyncronizer;
+
 
     @Before
     public void before(){
@@ -45,33 +53,35 @@ public class TestCloud extends TestAddressMemoryCore{
             return "Mocked Error Message " + invocation.getArgumentAt(0, Integer.class ).toString();
         }).when( application ).getString( Mockito.anyInt() );
 
+        mAddressProvider = new TestAddressProvider();
+
+        mTwistAuth = new TwistAuth( mock(Auth.class) );
+        mAuthService = new AuthService(mTwistAuth.getAuth());
+        mTwistCloudStation = new TwistCloudStation( mock(CloudStation.class), mAuthService );
+
+        mCloudSyncronizer = mock(CloudSyncronizer.class);
+        mTwistCloudSyncronizer = new TwistCloudSyncronizer( mCloudSyncronizer );
 
         mCloudModule = new CloudCoreModule( application );
-        mCloudModule.applyAddressProvider( new TestAddressProvider() );
-        mCloudModule.applyAuthService( mock(AuthService.class) );
-        mCloudModule.applyCloudSyncronizer( mock(CloudSyncronizer.class));
-
-
-        mAddressProvider = mCloudModule.getAddressProvider();
-        mAuthService = mCloudModule.getAuthService();
-        mCloudSyncronizer = mCloudModule.getCloudSyncronizer();
+        mCloudModule.applyAddressProvider( mAddressProvider );
+        mCloudModule.applyAuthService( mAuthService );
+        mCloudModule.applyCloudSyncronizer( mCloudSyncronizer );
     }
 
     @Test
     public void testLogin(){
-        TwistAuthService twistAuthService = new TwistAuthService( mAuthService );
-        TwistCloudSyncronizer twistCloudSyncronizer = new TwistCloudSyncronizer( mCloudSyncronizer );
 
         assertFalse( mAuthService.isLoggedIn() );
-        assertEquals( mCloudSyncronizer.countAddresses(), 0);
 
-        twistAuthService.setLoggedIn( true );
+        mCloudSyncronizer.countAddresses().subscribe(result -> {
+            assertTrue( result== 0);
+        });
+
+
+        mAuthService.onLoginResponse( AuthService.FB_SESSION, Activity.RESULT_OK, null );
         assertTrue( mAuthService.isLoggedIn());
 
-        /**
-         * ok, so when logged in, find out if user's data is in the cloud already.
-         * the cloud should return some data..
-         */
+
         if( !mCloudSyncronizer.isSynced() ){
             mCloudSyncronizer.pushToTheCloud( mAddressProvider.getAddresses() ).subscribe(
                     aBoolean -> {
@@ -81,10 +91,9 @@ public class TestCloud extends TestAddressMemoryCore{
                     throwable -> {});
         }
 
-        /**
-         * how about something went wrong..
-         */
-        twistCloudSyncronizer.setException( new Exception("Some error"));
+
+
+        mTwistCloudSyncronizer.setException( new Exception("Some error"));
 
         mCloudSyncronizer.pushToTheCloud( mAddressProvider.getAddresses() ).subscribe(
                 aBoolean -> { throw new Exception("not good"); },
@@ -96,52 +105,76 @@ public class TestCloud extends TestAddressMemoryCore{
 
     @Test
     public void testPresenter(){
-        TwistAuthService twistAuthService = new TwistAuthService( mAuthService );
-        TwistCloudSyncronizer twistCloudSyncronizer = new TwistCloudSyncronizer( mCloudSyncronizer );
-
 
         AuthPresenter authPresenter = new AuthPresenter( mCloudModule );
 
         //lets see if we are doing the job right
         AuthView view = mock( AuthView.class );
         AuthViewModel viewModel = authPresenter.getViewModel( view );
+
+        TwistAuthView twistAuthView = new TwistAuthView( view, authPresenter, mAuthService );
+        twistAuthView.setEnableAccess(true);
+
         authPresenter.active(null);
-
-        //lets check if presenter tried to push to the cloud
-        Mockito.verify( mCloudSyncronizer, Mockito.times(0) ).pushToTheCloud( Mockito.anyList() );
-
-        //lets login!
-        authPresenter.login();
-        Mockito.verify( mCloudSyncronizer, Mockito.times(1) ).pushToTheCloud( Mockito.anyList() );
-        authPresenter.logout();
-
-        //now login won't call to push
-        authPresenter.login();
-        Mockito.verify( mCloudSyncronizer, Mockito.times(1) ).pushToTheCloud( Mockito.anyList() );
-        authPresenter.logout();
-
-        //login twice, means we call this method twice
-        Mockito.verify( view, Mockito.times(2)).onAuthSuccess();
-
-        //lets ensure its disposable is unregistered.
-        Disposable disposable = Whitebox.getInternalState( authPresenter, "mPushDisposable");
-        assertNotNull( disposable );
-        assertTrue( disposable.isDisposed());
-
-
-        //lets repeat, this time we want to fire an exception from cloudSyncronizer when pushing..
-        mCloudSyncronizer.setSynced( false );
-        twistCloudSyncronizer.setException( new Exception("Firebase can't import realm data!!"));
-        authPresenter.login();
-
-        Mockito.verify( view, Mockito.times(3)).onAuthSuccess();
-        assertFalse( mCloudSyncronizer.isSynced() );
+        mAuthService.login( view );
         assertTrue( viewModel.loggedIn.get() );
 
-        authPresenter.logout();
+        mAuthService.logout();
+        assertFalse( viewModel.loggedIn.get() );
+
+        mAuthService.login( view );
+        assertTrue( viewModel.loggedIn.get() );
+
+        //lets rotate
+        authPresenter.inactive(true);
+        mAuthService.logout();
+        authPresenter.active(null);
         assertFalse( viewModel.loggedIn.get() );
     }
 
+    @Test
+    public void testPushingToTheCloud(){
+
+        AuthPresenter authPresenter = new AuthPresenter( mCloudModule );
+
+        //lets see if we are doing the job right
+        AuthView view = mock( AuthView.class );
+        AuthViewModel viewModel = authPresenter.getViewModel( view );
+
+        TwistAuthView twistAuthView = new TwistAuthView( view, authPresenter, mAuthService );
+        twistAuthView.setEnableAccess(true);
+
+        authPresenter.active(null);
+        mAuthService.login( view );
+
+        //lets check if presenter tried to push to the cloud
+        Mockito.verify( mCloudSyncronizer, Mockito.times(1) ).pushToTheCloud( Mockito.anyList() );
+
+        mAuthService.logout();
 
 
+        mAuthService.login( view );
+        authPresenter.inactive(true);
+
+        //even if we rotate, we are still logged in.
+        assertTrue( mAuthService.isLoggedIn() );
+        CompositeDisposable compositeDisposable = Whitebox.getInternalState( authPresenter, "mComposite");
+        assertTrue( compositeDisposable.isDisposed() );
+
+        mCloudSyncronizer.setSynced( false );
+
+        mTwistCloudSyncronizer.setException( new Exception("Firebase can't import realm data!!"));
+
+        //after rotation..
+        authPresenter.active(null);
+        view.tryLogin();
+
+        assertTrue( mAuthService.isLoggedIn() );
+        assertFalse( mCloudSyncronizer.isSynced() );
+        assertTrue( viewModel.loggedIn.get() );
+
+        mAuthService.logout();
+        assertFalse( viewModel.loggedIn.get() );
+
+    }
 }

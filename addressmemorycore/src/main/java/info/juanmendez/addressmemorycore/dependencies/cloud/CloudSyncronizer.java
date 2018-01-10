@@ -3,7 +3,6 @@ package info.juanmendez.addressmemorycore.dependencies.cloud;
 import java.util.List;
 
 import info.juanmendez.addressmemorycore.models.ShortAddress;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 
 /**
@@ -13,10 +12,18 @@ import io.reactivex.Single;
 public interface CloudSyncronizer {
 
     void addOrUpdateAddress(ShortAddress address );
-    void removeAddress( ShortAddress address );
-    int countAddresses();
+
+    void deleteAddress( long addressId );
+
+    Single<Long> countAddresses();
 
     Single<Boolean> pushToTheCloud(List<ShortAddress> addresses);
+
     boolean isSynced();
+
     void setSynced( boolean synced );
+
+    void connect(SyncListener<ShortAddress> syncListener);
+
+    void disconnect();
 }

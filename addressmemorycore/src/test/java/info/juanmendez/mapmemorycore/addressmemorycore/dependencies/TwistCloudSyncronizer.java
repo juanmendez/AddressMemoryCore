@@ -48,7 +48,7 @@ public class TwistCloudSyncronizer {
 
     private void setupMock() {
         doAnswer( invocation -> {
-            return mCount;
+            return Single.just( Long.valueOf(mCount) );
         } ).when( mCloudSyncronizer ).countAddresses();
 
 
@@ -60,7 +60,7 @@ public class TwistCloudSyncronizer {
         doAnswer( invocation -> {
             mCount--;
             return null;
-        } ).when( mCloudSyncronizer ).removeAddress(Mockito.any(ShortAddress.class));
+        } ).when( mCloudSyncronizer ).deleteAddress(Mockito.anyLong());
 
 
         doAnswer( invocation -> {

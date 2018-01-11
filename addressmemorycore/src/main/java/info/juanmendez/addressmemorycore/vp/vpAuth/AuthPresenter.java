@@ -38,6 +38,7 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
 
         //lets have the provider connected while logged in
         mAddressProvider.connect();
+        mViewModel.loggedIn.set( mAuthService.isLoggedIn());
 
         mComposite = new CompositeDisposable();
         mComposite.add( mAuthService.getObservable().subscribe(loggedIn->{

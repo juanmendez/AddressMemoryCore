@@ -27,7 +27,6 @@ public class TwistAuth {
     }
 
     private void setUpMock(){
-
         doAnswer(invocation -> {
             return Mockito.mock( Intent.class );
         }).when(mAuth).getAuthIntent();

@@ -177,6 +177,28 @@ public class TestCloud extends TestAddressMemoryCore{
         mAuthService.logout();//2
         assertFalse( viewModel.loggedIn.get() );
         Mockito.verify( mAddressProvider, Mockito.times(2) ).deleteAddresses();
+    }
 
+    /**
+     * Making sure we don't deleteAddresses if we never logged in..
+     */
+    @Test
+    public void testAddressesDeleted(){
+
+
+        AuthPresenter authPresenter = new AuthPresenter( mCloudModule );
+
+        //lets see if we are doing the job right
+        AuthView view = mock( AuthView.class );
+        AuthViewModel viewModel = authPresenter.getViewModel( view );
+
+        TwistAuthView twistAuthView = new TwistAuthView( view, authPresenter, mAuthService );
+        twistAuthView.setEnableAccess(true);
+
+        authPresenter.active(null);
+
+        Mockito.verify( mAddressProvider, Mockito.times(0) ).deleteAddresses();
+        authPresenter.inactive(true);
+        Mockito.verify( mAddressProvider, Mockito.times(0) ).deleteAddresses();
     }
 }

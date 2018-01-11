@@ -1,7 +1,9 @@
 package info.juanmendez.addressmemorycore.dependencies.cloud;
 
 import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 
+import info.juanmendez.addressmemorycore.vp.vpAuth.AuthView;
 import io.reactivex.Single;
 
 /**
@@ -10,5 +12,5 @@ import io.reactivex.Single;
 
 public interface Auth {
     Intent getAuthIntent();
-    Single<Boolean> logOut();
+    Single<Boolean> logOut(AuthView view);
 }

@@ -9,7 +9,7 @@ import org.powermock.reflect.Whitebox;
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.cloud.Auth;
 import info.juanmendez.addressmemorycore.dependencies.cloud.AuthService;
-import info.juanmendez.addressmemorycore.dependencies.cloud.CloudStation;
+import info.juanmendez.addressmemorycore.dependencies.cloud.CloudRef;
 import info.juanmendez.addressmemorycore.dependencies.cloud.CloudSyncronizer;
 import info.juanmendez.addressmemorycore.modules.CloudCoreModule;
 import info.juanmendez.addressmemorycore.vp.vpAuth.AuthPresenter;
@@ -26,6 +26,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
 import static org.powermock.api.mockito.PowerMockito.doAnswer;
 import static org.powermock.api.mockito.PowerMockito.mock;
 
@@ -53,11 +54,11 @@ public class TestCloud extends TestAddressMemoryCore{
             return "Mocked Error Message " + invocation.getArgumentAt(0, Integer.class ).toString();
         }).when( application ).getString( Mockito.anyInt() );
 
-        mAddressProvider = new TestAddressProvider();
+        mAddressProvider = spy(new TestAddressProvider());
 
         mTwistAuth = new TwistAuth( mock(Auth.class) );
         mAuthService = new AuthService(mTwistAuth.getAuth());
-        mTwistCloudStation = new TwistCloudStation( mock(CloudStation.class), mAuthService );
+        mTwistCloudStation = new TwistCloudStation( mock(CloudRef.class), mAuthService );
 
         mCloudSyncronizer = mock(CloudSyncronizer.class);
         mTwistCloudSyncronizer = new TwistCloudSyncronizer( mCloudSyncronizer );
@@ -150,7 +151,7 @@ public class TestCloud extends TestAddressMemoryCore{
         //lets check if presenter tried to push to the cloud
         Mockito.verify( mCloudSyncronizer, Mockito.times(1) ).pushToTheCloud( Mockito.anyList() );
 
-        mAuthService.logout();
+        mAuthService.logout(); //1
 
 
         mAuthService.login( view );
@@ -173,8 +174,9 @@ public class TestCloud extends TestAddressMemoryCore{
         assertFalse( mCloudSyncronizer.isSynced() );
         assertTrue( viewModel.loggedIn.get() );
 
-        mAuthService.logout();
+        mAuthService.logout();//2
         assertFalse( viewModel.loggedIn.get() );
+        Mockito.verify( mAddressProvider, Mockito.times(2) ).deleteAddresses();
 
     }
 }

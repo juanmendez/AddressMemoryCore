@@ -3,22 +3,22 @@ package info.juanmendez.mapmemorycore.addressmemorycore.dependencies;
 import org.mockito.Mockito;
 
 import info.juanmendez.addressmemorycore.dependencies.cloud.AuthService;
-import info.juanmendez.addressmemorycore.dependencies.cloud.CloudStation;
+import info.juanmendez.addressmemorycore.dependencies.cloud.CloudRef;
 
 /**
  * Created by juan on 1/9/18.
  */
 
 public class TwistCloudStation {
-    CloudStation mCloudStation;
+    CloudRef mCloudRef;
     AuthService mAuthService;
 
-    public TwistCloudStation(CloudStation cloudStation, AuthService authService) {
-        mCloudStation = cloudStation;
+    public TwistCloudStation(CloudRef cloudRef, AuthService authService) {
+        mCloudRef = cloudRef;
     }
 
-    public CloudStation getCloudStation() {
-        return mCloudStation;
+    public CloudRef getCloudRef() {
+        return mCloudRef;
     }
 
     private void mock(){
@@ -29,6 +29,6 @@ public class TwistCloudStation {
                 return null;
             }
 
-        }).when( mCloudStation ).getUID();
+        }).when(mCloudRef).getUID();
     }
 }

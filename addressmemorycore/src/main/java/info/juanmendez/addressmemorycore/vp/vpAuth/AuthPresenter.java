@@ -35,14 +35,23 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
 
     @Override
     public void active(String action) {
-        mComposite = new CompositeDisposable();
 
+        //lets have the provider connected while logged in
+        mAddressProvider.connect();
+
+        mComposite = new CompositeDisposable();
         mComposite.add( mAuthService.getObservable().subscribe(loggedIn->{
             mViewModel.loggedIn.set(loggedIn);
 
             if( loggedIn ){
-                mAddressProvider.connect();
                 tryPushingToTheCloud();
+            }else{
+                /**
+                 * This is something new, we want to clear addresses while logged out.
+                 * When working with a cloud based addressProvider, then this will just
+                 * affect the realm based provider.
+                 */
+                mAddressProvider.deleteAddresses();
             }
         }));
     }
@@ -50,10 +59,7 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
     @Override
     public void inactive(Boolean rotated) {
 
-        if( mAuthService.isLoggedIn() ){
-            mAddressProvider.disconnect();
-        }
-
+        mAddressProvider.disconnect();
         mComposite.dispose();
     }
 

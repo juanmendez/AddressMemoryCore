@@ -1,6 +1,7 @@
 package info.juanmendez.mapmemorycore.addressmemorycore.dependencies;
 
 import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 
 import org.mockito.Mockito;
 
@@ -33,7 +34,7 @@ public class TwistAuth {
 
         doAnswer( invocation -> {
             return Single.just(true);
-        }).when( mAuth ).logOut();
+        }).when( mAuth ).logOut( Mockito.any(AuthView.class));
     }
 
     public Auth getAuth() {

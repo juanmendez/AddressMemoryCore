@@ -121,6 +121,11 @@ public class TestAddressProvider implements AddressProvider {
     }
 
     @Override
+    public void deleteAddresses() {
+        mAddresses.clear();
+    }
+
+    @Override
     public void deleteAddressAsync(long addressId, Response<Boolean> response) {
         ShortAddress address = getAddress( addressId);
 

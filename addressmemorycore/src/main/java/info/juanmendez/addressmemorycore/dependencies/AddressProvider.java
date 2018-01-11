@@ -36,6 +36,7 @@ public interface AddressProvider {
     void updateAddressAsync(ShortAddress address, Response<ShortAddress> response );
 
     void deleteAddress( long addressId );
+    void deleteAddresses();
     void deleteAddressAsync(long addressId, Response<Boolean> response );
 
     //utils

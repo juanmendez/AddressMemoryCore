@@ -17,6 +17,7 @@ public class AuthService {
 
     public static final int FB_SESSION = 2018;
     private Auth mAuth;
+    private AuthView mView;
     private BehaviorSubject<Boolean> mLoginObservable;
 
     public AuthService(Auth auth) {
@@ -25,13 +26,16 @@ public class AuthService {
     }
 
     public void login(AuthView view){
-        view.startActivityForResult( mAuth.getAuthIntent(), FB_SESSION );
+        mView = view;
+        mView.startActivityForResult( mAuth.getAuthIntent(), FB_SESSION );
     }
 
     public void logout(){
-         mAuth.logOut().subscribe(aBoolean -> {
-             mLoginObservable.onNext(false);
-         });
+        if( mView != null ){
+            mAuth.logOut(mView).subscribe(aBoolean -> {
+                mLoginObservable.onNext(false);
+            });
+        }
     }
 
     public void onLoginResponse(int requestCode, int resultCode, Intent data ){

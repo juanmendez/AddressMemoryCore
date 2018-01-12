@@ -18,6 +18,7 @@ import io.reactivex.subjects.PublishSubject;
 public class AuthService {
 
     public static final int FB_SESSION = 2018;
+    public static final String LOGOUT_ACTION = "info.juanmendez.addressmemory.logout";
     private Auth mAuth;
     private BehaviorSubject<Boolean> mLoginObservable;
 
@@ -44,6 +45,13 @@ public class AuthService {
     }
 
     public BehaviorSubject<Boolean> getObservable() {
+
+        //we want to fire value initially, specially when it is false
+        //in this way the observer catches the last value.
+        if( !mLoginObservable.hasObservers()){
+            mLoginObservable.onNext( isLoggedIn() );
+        }
+
         return mLoginObservable;
     }
 

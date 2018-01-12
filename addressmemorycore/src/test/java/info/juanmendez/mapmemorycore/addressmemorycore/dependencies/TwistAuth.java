@@ -50,7 +50,6 @@ public class TwistAuth {
 
     public void login( AuthView authView ){
         mIsLoggedIn = true;
-        mAuthService.login( authView );
     }
 
     public void logout( AuthView authView ){

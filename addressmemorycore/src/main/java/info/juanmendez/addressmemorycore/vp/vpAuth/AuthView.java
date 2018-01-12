@@ -10,5 +10,4 @@ public interface AuthView {
     void startActivityForResult(Intent intent, int key);
     void beforeLogin();
     void afterLogin();
-    String getString( int resourceId);
 }

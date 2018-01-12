@@ -40,27 +40,7 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
     @Override
     public void active(String action) {
 
-        /**
-         * When first landing, our observer below might never emit,
-         * so what we want is to find out the last state so we
-         * can show the user as logged in, or out.
-         * In the case of logout_action, the user wants to log out,
-         * so we go about doing that request, so our observer emits it after.
-         */
-        if( mAuthService.isLoggedIn() ){
-            if( action.equals(mAuthView.getString(R.string.logout_action))){
-                //logout, and let observer emit it.
-                mAuthService.logout( mAuthView );
-            }else{
-                //logged in, proceed to the next activity
-                mAuthView.afterLogin();
-            }
-        }else{
-            //show login menu
-            mAuthView.beforeLogin();
-        }
-
-        mComposite = new CompositeDisposable();
+       mComposite = new CompositeDisposable();
         mComposite.add( mAuthService.getObservable().subscribe(loggedIn->{
             mViewModel.loggedIn.set(loggedIn);
 

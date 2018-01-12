@@ -9,7 +9,6 @@ import info.juanmendez.addressmemorycore.dependencies.cloud.CloudSyncronizer;
 /**
  * Created by juan on 1/8/18.
  */
-
 public class CloudCoreModule{
 
     private Application mApplication;

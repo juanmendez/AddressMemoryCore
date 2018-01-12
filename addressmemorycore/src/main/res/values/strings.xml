@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AddressMemoryCore</string>
+    <string name="logout_action">info.juanmendez.addressmemory.logout</string>
 </resources>

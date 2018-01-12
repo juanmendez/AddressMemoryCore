@@ -13,4 +13,5 @@ import io.reactivex.Single;
 public interface Auth {
     Intent getAuthIntent();
     Single<Boolean> logOut(AuthView view);
+    boolean isLoggedIn();
 }

@@ -9,7 +9,6 @@ import org.powermock.reflect.Whitebox;
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.cloud.Auth;
 import info.juanmendez.addressmemorycore.dependencies.cloud.AuthService;
-import info.juanmendez.addressmemorycore.dependencies.cloud.CloudRef;
 import info.juanmendez.addressmemorycore.dependencies.cloud.CloudSyncronizer;
 import info.juanmendez.addressmemorycore.modules.CloudCoreModule;
 import info.juanmendez.addressmemorycore.vp.vpAuth.AuthPresenter;
@@ -18,7 +17,6 @@ import info.juanmendez.addressmemorycore.vp.vpAuth.AuthViewModel;
 import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TestAddressProvider;
 import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TwistAuth;
 import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TwistAuthView;
-import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TwistCloudStation;
 import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TwistCloudSyncronizer;
 import io.reactivex.disposables.CompositeDisposable;
 
@@ -42,7 +40,6 @@ public class TestCloud extends TestAddressMemoryCore{
     private CloudSyncronizer mCloudSyncronizer;
 
     private TwistAuth mTwistAuth;
-    private TwistCloudStation mTwistCloudStation;
     private TwistCloudSyncronizer mTwistCloudSyncronizer;
 
 
@@ -56,9 +53,9 @@ public class TestCloud extends TestAddressMemoryCore{
 
         mAddressProvider = spy(new TestAddressProvider());
 
-        mTwistAuth = new TwistAuth( mock(Auth.class) );
-        mAuthService = new AuthService(mTwistAuth.getAuth());
-        mTwistCloudStation = new TwistCloudStation( mock(CloudRef.class), mAuthService );
+        Auth auth = mock(Auth.class);
+        mAuthService = new AuthService(auth);
+        mTwistAuth = new TwistAuth( auth, mAuthService );
 
         mCloudSyncronizer = mock(CloudSyncronizer.class);
         mTwistCloudSyncronizer = new TwistCloudSyncronizer( mCloudSyncronizer );
@@ -79,6 +76,7 @@ public class TestCloud extends TestAddressMemoryCore{
         });
 
 
+        mTwistAuth.setLoggedIn(true);
         mAuthService.onLoginResponse( AuthService.FB_SESSION, Activity.RESULT_OK, null );
         assertTrue( mAuthService.isLoggedIn());
 
@@ -93,7 +91,7 @@ public class TestCloud extends TestAddressMemoryCore{
         }
 
 
-
+        mTwistAuth.setLoggedIn(false);
         mTwistCloudSyncronizer.setException( new Exception("Some error"));
 
         mCloudSyncronizer.pushToTheCloud( mAddressProvider.getAddresses() ).subscribe(
@@ -117,18 +115,22 @@ public class TestCloud extends TestAddressMemoryCore{
         twistAuthView.setEnableAccess(true);
 
         authPresenter.active(null);
-        mAuthService.login( view );
+        mTwistAuth.login( view );
         assertTrue( viewModel.loggedIn.get() );
 
-        mAuthService.logout();
+        mTwistAuth.logout(view);
         assertFalse( viewModel.loggedIn.get() );
 
-        mAuthService.login( view );
+        authPresenter.inactive(true);
+        authPresenter.active(null);
+        mTwistAuth.login( view );
+        authPresenter.inactive(true);
+        authPresenter.active(null);
         assertTrue( viewModel.loggedIn.get() );
 
         //lets rotate
         authPresenter.inactive(true);
-        mAuthService.logout();
+        mTwistAuth.logout(view);
         authPresenter.active(null);
         assertFalse( viewModel.loggedIn.get() );
     }
@@ -146,15 +148,15 @@ public class TestCloud extends TestAddressMemoryCore{
         twistAuthView.setEnableAccess(true);
 
         authPresenter.active(null);
-        mAuthService.login( view );
+        mTwistAuth.login( view );
 
         //lets check if presenter tried to push to the cloud
         Mockito.verify( mCloudSyncronizer, Mockito.times(1) ).pushToTheCloud( Mockito.anyList() );
 
-        mAuthService.logout(); //1
+        mTwistAuth.logout(view); //1
 
 
-        mAuthService.login( view );
+        mTwistAuth.login( view );
         authPresenter.inactive(true);
 
         //even if we rotate, we are still logged in.
@@ -168,13 +170,13 @@ public class TestCloud extends TestAddressMemoryCore{
 
         //after rotation..
         authPresenter.active(null);
-        view.tryLogin();
+        view.beforeLogin();
 
         assertTrue( mAuthService.isLoggedIn() );
         assertFalse( mCloudSyncronizer.isSynced() );
         assertTrue( viewModel.loggedIn.get() );
 
-        mAuthService.logout();//2
+        mTwistAuth.logout(view);//2
         assertFalse( viewModel.loggedIn.get() );
         Mockito.verify( mAddressProvider, Mockito.times(2) ).deleteAddresses();
     }
@@ -196,6 +198,7 @@ public class TestCloud extends TestAddressMemoryCore{
         twistAuthView.setEnableAccess(true);
 
         authPresenter.active(null);
+        Mockito.verify( mAddressProvider, Mockito.times(0) ).connect();
 
         Mockito.verify( mAddressProvider, Mockito.times(0) ).deleteAddresses();
         authPresenter.inactive(true);

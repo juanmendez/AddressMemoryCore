@@ -2,9 +2,11 @@ package info.juanmendez.addressmemorycore.dependencies.cloud;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 
 import info.juanmendez.addressmemorycore.vp.vpAuth.AuthView;
 import io.reactivex.subjects.BehaviorSubject;
+import io.reactivex.subjects.PublishSubject;
 
 /**
  * Created by juan on 1/8/18.
@@ -17,7 +19,6 @@ public class AuthService {
 
     public static final int FB_SESSION = 2018;
     private Auth mAuth;
-    private AuthView mView;
     private BehaviorSubject<Boolean> mLoginObservable;
 
     public AuthService(Auth auth) {
@@ -25,22 +26,21 @@ public class AuthService {
         mLoginObservable = BehaviorSubject.create();
     }
 
-    public void login(AuthView view){
-        mView = view;
-        mView.startActivityForResult( mAuth.getAuthIntent(), FB_SESSION );
+    public void login(@NonNull AuthView view){
+        view.startActivityForResult( mAuth.getAuthIntent(), FB_SESSION );
     }
 
-    public void logout(){
-        if( mView != null ){
-            mAuth.logOut(mView).subscribe(aBoolean -> {
-                mLoginObservable.onNext(false);
-            });
-        }
+    public void logout(@NonNull AuthView view){
+        mAuth.logOut(view).subscribe(aBoolean -> {
+            mLoginObservable.onNext(false);
+        });
     }
 
     public void onLoginResponse(int requestCode, int resultCode, Intent data ){
 
-       mLoginObservable.onNext(requestCode == FB_SESSION && resultCode == Activity.RESULT_OK );
+        if( requestCode == FB_SESSION ){
+            mLoginObservable.onNext(resultCode == Activity.RESULT_OK );
+        }
     }
 
     public BehaviorSubject<Boolean> getObservable() {
@@ -48,11 +48,6 @@ public class AuthService {
     }
 
     public boolean isLoggedIn() {
-
-        //even prior to login, ensure this returns false
-        if( mLoginObservable.getValue() == null)
-            return false;
-
-        return mLoginObservable.getValue();
+        return mAuth.isLoggedIn();
     }
 }

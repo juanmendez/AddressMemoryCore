@@ -8,5 +8,7 @@ import android.content.Intent;
 
 public interface AuthView {
     void startActivityForResult(Intent intent, int key);
-    void tryLogin();
+    void beforeLogin();
+    void afterLogin();
+    String getString( int resourceId);
 }

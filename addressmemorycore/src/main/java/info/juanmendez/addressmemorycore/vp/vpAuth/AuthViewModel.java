@@ -12,4 +12,7 @@ public class AuthViewModel  extends BaseObservable{
 
     @Bindable
     public final ObservableBoolean loggedIn = new ObservableBoolean(false);
+
+    @Bindable
+    public final ObservableBoolean loginWhenOnline = new ObservableBoolean( false );
 }

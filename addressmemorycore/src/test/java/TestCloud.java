@@ -7,6 +7,7 @@ import org.mockito.Mockito;
 import org.powermock.reflect.Whitebox;
 
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
+import info.juanmendez.addressmemorycore.dependencies.NetworkService;
 import info.juanmendez.addressmemorycore.dependencies.cloud.Auth;
 import info.juanmendez.addressmemorycore.dependencies.cloud.AuthService;
 import info.juanmendez.addressmemorycore.dependencies.cloud.CloudSyncronizer;
@@ -17,12 +18,15 @@ import info.juanmendez.addressmemorycore.vp.vpAuth.AuthViewModel;
 import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TestAddressProvider;
 import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TwistAuth;
 import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TwistCloudSyncronizer;
+import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TwistNetworkService;
 import io.reactivex.disposables.CompositeDisposable;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.doAnswer;
 import static org.powermock.api.mockito.PowerMockito.mock;
 
@@ -39,6 +43,7 @@ public class TestCloud extends TestAddressMemoryCore{
 
     private TwistAuth mTwistAuth;
     private TwistCloudSyncronizer mTwistCloudSyncronizer;
+    private TwistNetworkService mTwistNetworkService;
 
 
     @Before
@@ -57,11 +62,13 @@ public class TestCloud extends TestAddressMemoryCore{
 
         mCloudSyncronizer = mock(CloudSyncronizer.class);
         mTwistCloudSyncronizer = new TwistCloudSyncronizer( mCloudSyncronizer );
+        mTwistNetworkService = new TwistNetworkService( mock(NetworkService.class));
 
         mCloudModule = new CloudCoreModule( application );
         mCloudModule.applyAddressProvider( mAddressProvider );
         mCloudModule.applyAuthService( mAuthService );
         mCloudModule.applyCloudSyncronizer( mCloudSyncronizer );
+        mCloudModule.applyNetworkService( mTwistNetworkService.getNetworkService() );
     }
 
     @Test
@@ -75,7 +82,6 @@ public class TestCloud extends TestAddressMemoryCore{
 
 
         mTwistAuth.setLoggedIn(true);
-        mAuthService.onLoginResponse( AuthService.FB_SESSION, Activity.RESULT_OK, null );
         assertTrue( mAuthService.isLoggedIn());
 
 
@@ -193,5 +199,54 @@ public class TestCloud extends TestAddressMemoryCore{
         Mockito.verify( mAddressProvider, Mockito.times(1) ).deleteAddresses();
         authPresenter.inactive(true);
         Mockito.verify( mAddressProvider, Mockito.times(1) ).deleteAddresses();
+    }
+
+
+    @Test
+    public void testNetworkAgainstLogin(){
+
+        AuthPresenter authPresenter = new AuthPresenter( mCloudModule );
+        NetworkService networkService = mCloudModule.getNetworkService();
+
+        //lets see if we are doing the job right
+        AuthView view = mock( AuthView.class );
+        AuthViewModel viewModel = authPresenter.getViewModel( view );
+
+        authPresenter.active(null);
+        assertTrue( viewModel.loginWhenOnline.get()  );
+
+        //because we are not logged in, then beforeLogin is not invoked!
+        verify( view, times(0)).beforeLogin();
+
+        //ok, lets go back online!!
+        mTwistNetworkService.setConnected( true );
+
+        //we show the firebaseLogin screen
+        verify( view, times(1)).beforeLogin();
+
+        //we are going offline :)
+        mTwistNetworkService.setConnected( false );
+        assertTrue( viewModel.loginWhenOnline.get()  );
+        verify( view, times(1)).beforeLogin();
+
+        authPresenter.inactive(true);
+
+        authPresenter.active(null);
+        assertTrue( viewModel.loginWhenOnline.get()  );
+        verify( view, times(1)).beforeLogin();
+
+        //we are going to go online once again
+        mTwistNetworkService.setConnected( true );
+        assertFalse( viewModel.loginWhenOnline.get()  );
+        verify( view, times(2)).beforeLogin();
+
+        //lets login
+        authPresenter.inactive(true);
+        mTwistAuth.login( view );
+        authPresenter.active(null);
+        assertFalse( viewModel.loginWhenOnline.get()  );
+        verify( view, times(2)).beforeLogin();
+        verify( view, times(1)).afterLogin();
+
     }
 }

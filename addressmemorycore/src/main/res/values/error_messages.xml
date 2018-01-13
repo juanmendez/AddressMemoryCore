@@ -19,5 +19,6 @@
     <string name="address_name_repeated">Another address has the same name</string>
     <string name="edit_offline">fill in form while offline</string>
     <string name="view_offline">you appear offline</string>
+    <string name="login_when_online">login when you are online</string>
 
 </resources>

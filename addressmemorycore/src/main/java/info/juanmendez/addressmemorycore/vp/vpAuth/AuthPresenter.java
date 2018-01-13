@@ -2,12 +2,17 @@ package info.juanmendez.addressmemorycore.vp.vpAuth;
 
 import android.app.Application;
 
+import java.util.concurrent.TimeUnit;
+
 import info.juanmendez.addressmemorycore.R;
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
+import info.juanmendez.addressmemorycore.dependencies.NetworkService;
+import info.juanmendez.addressmemorycore.dependencies.WidgetService;
 import info.juanmendez.addressmemorycore.dependencies.cloud.AuthService;
 import info.juanmendez.addressmemorycore.dependencies.cloud.CloudSyncronizer;
 import info.juanmendez.addressmemorycore.modules.CloudCoreModule;
 import info.juanmendez.addressmemorycore.vp.Presenter;
+import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import timber.log.Timber;
 
@@ -24,11 +29,13 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
     private AuthService mAuthService;
     private CloudSyncronizer mCloudSyncronizer;
     private CompositeDisposable mComposite;
+    private NetworkService mNetworkService;
 
     public AuthPresenter(CloudCoreModule module) {
         mAddressProvider = module.getAddressProvider();
         mAuthService = module.getAuthService();
         mCloudSyncronizer = module.getCloudSyncronizer();
+        mNetworkService = module.getNetworkService();
     }
 
     @Override
@@ -41,6 +48,8 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
     public void active(String action) {
 
        mComposite = new CompositeDisposable();
+
+
         mComposite.add( mAuthService.getObservable().subscribe(loggedIn->{
             mViewModel.loggedIn.set(loggedIn);
 
@@ -57,17 +66,29 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
                 mAddressProvider.connect();
                 mAddressProvider.deleteAddresses();
                 mAddressProvider.disconnect();
-
-                //lets ensure user sees login menu
-                mAuthView.beforeLogin();
             }
         }));
+
+        mNetworkService.reset();
+        mNetworkService.connect(connected -> {
+            if( !mAuthService.isLoggedIn() ){
+                if (connected) {
+                    mViewModel.loginWhenOnline.set(false);
+                    mAuthView.beforeLogin();
+                }else{
+                    mViewModel.loginWhenOnline.set(true);
+                }
+            }else{
+                mViewModel.loginWhenOnline.set(false);
+            }
+        });
     }
 
     @Override
     public void inactive(Boolean rotated) {
 
-       mComposite.dispose();
+        mNetworkService.disconnect();
+        mComposite.dispose();
     }
 
     private void tryPushingToTheCloud(){

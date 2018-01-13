@@ -37,13 +37,6 @@ public class AuthService {
         });
     }
 
-    public void onLoginResponse(int requestCode, int resultCode, Intent data ){
-
-        if( requestCode == FB_SESSION ){
-            mLoginObservable.onNext(resultCode == Activity.RESULT_OK );
-        }
-    }
-
     public BehaviorSubject<Boolean> getObservable() {
 
         //we want to fire value initially, specially when it is false

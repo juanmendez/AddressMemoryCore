@@ -1,4 +1,3 @@
-import android.app.Activity;
 import android.app.Application;
 
 import org.junit.Before;
@@ -10,15 +9,15 @@ import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.NetworkService;
 import info.juanmendez.addressmemorycore.dependencies.cloud.Auth;
 import info.juanmendez.addressmemorycore.dependencies.cloud.AuthService;
-import info.juanmendez.addressmemorycore.dependencies.cloud.CloudSyncronizer;
+import info.juanmendez.addressmemorycore.dependencies.cloud.Syncronizer;
 import info.juanmendez.addressmemorycore.modules.CloudCoreModule;
 import info.juanmendez.addressmemorycore.vp.vpAuth.AuthPresenter;
 import info.juanmendez.addressmemorycore.vp.vpAuth.AuthView;
 import info.juanmendez.addressmemorycore.vp.vpAuth.AuthViewModel;
 import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TestAddressProvider;
 import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TwistAuth;
-import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TwistCloudSyncronizer;
 import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TwistNetworkService;
+import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TwistSyncronizer;
 import io.reactivex.disposables.CompositeDisposable;
 
 import static junit.framework.Assert.assertFalse;
@@ -39,10 +38,10 @@ public class TestCloud extends TestAddressMemoryCore{
     private CloudCoreModule mCloudModule;
     private AuthService mAuthService;
     private AddressProvider mAddressProvider;
-    private CloudSyncronizer mCloudSyncronizer;
+    private Syncronizer mSyncronizer;
 
     private TwistAuth mTwistAuth;
-    private TwistCloudSyncronizer mTwistCloudSyncronizer;
+    private TwistSyncronizer mTwistSyncronizer;
     private TwistNetworkService mTwistNetworkService;
 
 
@@ -60,14 +59,13 @@ public class TestCloud extends TestAddressMemoryCore{
         mAuthService = new AuthService(auth);
         mTwistAuth = new TwistAuth( auth, mAuthService );
 
-        mCloudSyncronizer = mock(CloudSyncronizer.class);
-        mTwistCloudSyncronizer = new TwistCloudSyncronizer( mCloudSyncronizer );
+        mSyncronizer = mock(Syncronizer.class);
+        mTwistSyncronizer = new TwistSyncronizer(mSyncronizer, mAddressProvider );
         mTwistNetworkService = new TwistNetworkService( mock(NetworkService.class));
 
         mCloudModule = new CloudCoreModule( application );
-        mCloudModule.applyAddressProvider( mAddressProvider );
         mCloudModule.applyAuthService( mAuthService );
-        mCloudModule.applyCloudSyncronizer( mCloudSyncronizer );
+        mCloudModule.applySyncronizer(mSyncronizer);
         mCloudModule.applyNetworkService( mTwistNetworkService.getNetworkService() );
     }
 
@@ -76,33 +74,28 @@ public class TestCloud extends TestAddressMemoryCore{
 
         assertFalse( mAuthService.isLoggedIn() );
 
-        mCloudSyncronizer.countAddresses().subscribe(result -> {
-            assertTrue( result== 0);
-        });
-
-
         mTwistAuth.setLoggedIn(true);
         assertTrue( mAuthService.isLoggedIn());
 
 
-        if( !mCloudSyncronizer.isSynced() ){
-            mCloudSyncronizer.pushToTheCloud( mAddressProvider.getAddresses() ).subscribe(
+        if( !mSyncronizer.isSynced() ){
+            mSyncronizer.pushToTheCloud().subscribe(
                     aBoolean -> {
                         assertTrue( aBoolean);
-                        assertTrue( mCloudSyncronizer.isSynced() );
+                        assertTrue( mSyncronizer.isSynced() );
                         },
                     throwable -> {});
         }
 
 
         mTwistAuth.setLoggedIn(false);
-        mTwistCloudSyncronizer.setException( new Exception("Some error"));
+        mTwistSyncronizer.setException( new Exception("Some error"));
 
-        mCloudSyncronizer.pushToTheCloud( mAddressProvider.getAddresses() ).subscribe(
+        mSyncronizer.pushToTheCloud().subscribe(
                 aBoolean -> { throw new Exception("not good"); },
                 throwable -> { assertNotNull( throwable );});
 
-        assertFalse( mCloudSyncronizer.isSynced() );
+        assertFalse( mSyncronizer.isSynced() );
     }
 
 
@@ -151,7 +144,7 @@ public class TestCloud extends TestAddressMemoryCore{
         authPresenter.active(null);
 
         //lets check if presenter tried to push to the cloud
-        Mockito.verify( mCloudSyncronizer, Mockito.times(1) ).pushToTheCloud( Mockito.anyList() );
+        Mockito.verify(mSyncronizer, Mockito.times(1) ).pushToTheCloud();
 
         mTwistAuth.logout(view); //1
 
@@ -164,15 +157,15 @@ public class TestCloud extends TestAddressMemoryCore{
         CompositeDisposable compositeDisposable = Whitebox.getInternalState( authPresenter, "mComposite");
         assertTrue( compositeDisposable.isDisposed() );
 
-        mCloudSyncronizer.setSynced( false );
+        mSyncronizer.setSynced( false );
 
-        mTwistCloudSyncronizer.setException( new Exception("Firebase can't import realm data!!"));
+        mTwistSyncronizer.setException( new Exception("Firebase can't import realm data!!"));
 
         //after rotation..
         authPresenter.active(null);
 
         assertTrue( mAuthService.isLoggedIn() );
-        assertFalse( mCloudSyncronizer.isSynced() );
+        assertFalse( mSyncronizer.isSynced() );
         assertTrue( viewModel.loggedIn.get() );
 
         mTwistAuth.logout(view);//2
@@ -194,7 +187,7 @@ public class TestCloud extends TestAddressMemoryCore{
         AuthViewModel viewModel = authPresenter.getViewModel( view );
 
         authPresenter.active(null);
-        Mockito.verify( mAddressProvider, Mockito.times(1) ).connect();
+        Mockito.verify( mAddressProvider, Mockito.times(0) ).connect();
 
         Mockito.verify( mAddressProvider, Mockito.times(1) ).deleteAddresses();
         authPresenter.inactive(true);

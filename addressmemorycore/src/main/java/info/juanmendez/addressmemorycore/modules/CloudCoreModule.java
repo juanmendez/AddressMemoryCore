@@ -4,9 +4,9 @@ import android.app.Application;
 
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.NetworkService;
-import info.juanmendez.addressmemorycore.dependencies.WidgetService;
 import info.juanmendez.addressmemorycore.dependencies.cloud.AuthService;
 import info.juanmendez.addressmemorycore.dependencies.cloud.CloudSyncronizer;
+import info.juanmendez.addressmemorycore.dependencies.cloud.Syncronizer;
 
 /**
  * Created by juan on 1/8/18.
@@ -15,9 +15,9 @@ public class CloudCoreModule{
 
     private Application mApplication;
     private AuthService mAuthService;
-    private AddressProvider mAddressProvider;
-    private CloudSyncronizer mCloudSyncronizer;
+    private Syncronizer mSyncronizer;
     private NetworkService mNetworkService;
+
     public CloudCoreModule(Application application) {
         mApplication = application;
     }
@@ -33,24 +33,13 @@ public class CloudCoreModule{
     }
     //</editor-fold>
 
-    //<editor-fold desc="addressProvider">
-    public CloudCoreModule applyAddressProvider(AddressProvider addressProvider) {
-        mAddressProvider = addressProvider;
-        return this;
+    //<editor-fold desc="syncronizer">
+    public Syncronizer getSyncronizer() {
+        return mSyncronizer;
     }
 
-    public AddressProvider getAddressProvider() {
-        return mAddressProvider;
-    }
-    //</editor-fold>
-
-    //<editor-fold desc="cloudSynchronizer">
-    public CloudSyncronizer getCloudSyncronizer() {
-        return mCloudSyncronizer;
-    }
-
-    public CloudCoreModule applyCloudSyncronizer(CloudSyncronizer cloudSyncronizer) {
-        mCloudSyncronizer = cloudSyncronizer;
+    public CloudCoreModule applySyncronizer(Syncronizer syncronizer) {
+        mSyncronizer = syncronizer;
         return this;
     }
     //</editor-fold>

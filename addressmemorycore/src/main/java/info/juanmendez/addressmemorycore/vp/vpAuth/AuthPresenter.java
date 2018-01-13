@@ -1,18 +1,16 @@
 package info.juanmendez.addressmemorycore.vp.vpAuth;
 
-import android.app.Application;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.util.concurrent.TimeUnit;
-
-import info.juanmendez.addressmemorycore.R;
-import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.NetworkService;
-import info.juanmendez.addressmemorycore.dependencies.WidgetService;
 import info.juanmendez.addressmemorycore.dependencies.cloud.AuthService;
-import info.juanmendez.addressmemorycore.dependencies.cloud.CloudSyncronizer;
+import info.juanmendez.addressmemorycore.dependencies.cloud.Syncronizer;
 import info.juanmendez.addressmemorycore.modules.CloudCoreModule;
 import info.juanmendez.addressmemorycore.vp.Presenter;
 import io.reactivex.Observable;
+import io.reactivex.Single;
+import io.reactivex.SingleSource;
 import io.reactivex.disposables.CompositeDisposable;
 import timber.log.Timber;
 
@@ -20,21 +18,18 @@ import timber.log.Timber;
  * Created by juan on 1/8/18.
  */
 public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
+    private CompositeDisposable mComposite;
 
     private AuthView mAuthView;
     private AuthViewModel mViewModel;
 
-    private Application mApplication;
-    private AddressProvider mAddressProvider;
     private AuthService mAuthService;
-    private CloudSyncronizer mCloudSyncronizer;
-    private CompositeDisposable mComposite;
+    private Syncronizer mSyncronizer;
     private NetworkService mNetworkService;
 
     public AuthPresenter(CloudCoreModule module) {
-        mAddressProvider = module.getAddressProvider();
         mAuthService = module.getAuthService();
-        mCloudSyncronizer = module.getCloudSyncronizer();
+        mSyncronizer = module.getSyncronizer();
         mNetworkService = module.getNetworkService();
     }
 
@@ -55,17 +50,13 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
 
             if( loggedIn ){
                 //lets have the provider connected while logged in
-                tryPushingToTheCloud();
+                trySyncing();
             }else{
 
                 /**
-                 * This is something new, we want to clear addresses while logged out.
-                 * When working with a cloud based addressProvider, then this will just
-                 * affect the realm based provider.
+                 * Lets clear up the session
                  */
-                mAddressProvider.connect();
-                mAddressProvider.deleteAddresses();
-                mAddressProvider.disconnect();
+                mSyncronizer.clearLocalList();
             }
         }));
 
@@ -91,22 +82,20 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
         mComposite.dispose();
     }
 
-    private void tryPushingToTheCloud(){
+    private void trySyncing(){
+        List<Single<Boolean>> observables = new ArrayList<>();
 
-        if( !mCloudSyncronizer.isSynced() ){
-            mAddressProvider.connect();
-            mComposite.add( mCloudSyncronizer.pushToTheCloud( mAddressProvider.getAddresses() ).subscribe(
-                    aBoolean -> {
-                        mCloudSyncronizer.setSynced( true );
-                        mAddressProvider.disconnect();
-                        mAuthView.afterLogin();
-                    },
-                    throwable -> {
-                        Timber.e( throwable.getMessage() );
-                        mAddressProvider.disconnect();
-                    } ) );
-        }else{
-            mAuthView.afterLogin();
+        //append only if user has never pushed all elements before to the cloud
+        if( !mSyncronizer.isSynced() ){
+            observables.add( mSyncronizer.pushToTheCloud() );
         }
+
+        //when user logs in, we need to recover all the data
+        observables.add( mSyncronizer.pullFromTheCloud() );
+
+        Single.concat( observables).subscribe( aBoolean -> {
+            mSyncronizer.setSynced( true );
+            mAuthView.afterLogin();
+        });
     }
 }

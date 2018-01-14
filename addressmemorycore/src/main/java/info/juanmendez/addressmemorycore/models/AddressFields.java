@@ -29,4 +29,7 @@ public class AddressFields {
     public static final String[] sColumns = new String[]{ADDRESSID, NAME,
             ADDRESS1, ADDRESS2, DATEUPDATED,
             MAPID, PHOTOURL, TIMESVISITED, COMMUTE_TYPE, COMMUTE_TOLLS, COMMUTE_HIGHWAY };
+
+    public static final String COUNT = "mCount";
+    public static  final  String[] sCountColumn = new String[]{COUNT};
 }

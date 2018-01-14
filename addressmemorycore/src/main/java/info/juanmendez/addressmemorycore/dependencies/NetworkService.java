@@ -1,5 +1,8 @@
 package info.juanmendez.addressmemorycore.dependencies;
 
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+
 /**
  * Created by Juan Mendez on 7/14/2017.
  * www.juanmendez.info
@@ -9,6 +12,6 @@ package info.juanmendez.addressmemorycore.dependencies;
 public interface NetworkService {
     boolean isConnected();
     void reset();
-    void connect( QuickResponse<Boolean> response );
+    void connect(Consumer<Boolean> consumer);
     void disconnect();
 }

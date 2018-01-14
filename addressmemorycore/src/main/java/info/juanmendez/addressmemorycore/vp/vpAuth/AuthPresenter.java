@@ -43,6 +43,7 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
     public void active(String action) {
 
        mComposite = new CompositeDisposable();
+       mNetworkService.reset();
 
 
         mComposite.add( mAuthService.getObservable().subscribe(loggedIn->{
@@ -50,7 +51,12 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
 
             if( loggedIn ){
                 //lets have the provider connected while logged in
-                trySyncing();
+                if( mNetworkService.isConnected() ){
+                    trySyncing();
+                }else{
+                    mAuthView.afterLogin();
+                }
+
             }else{
 
                 /**
@@ -60,19 +66,20 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
             }
         }));
 
-        mNetworkService.reset();
-        mNetworkService.connect(connected -> {
-            if( !mAuthService.isLoggedIn() ){
-                if (connected) {
-                    mViewModel.loginWhenOnline.set(false);
-                    mAuthView.beforeLogin();
-                }else{
-                    mViewModel.loginWhenOnline.set(true);
-                }
-            }else{
+        mNetworkService.connect(this::onConnect);
+    }
+
+    private void onConnect( boolean connected ){
+        if( !mAuthService.isLoggedIn() ){
+            if (connected) {
                 mViewModel.loginWhenOnline.set(false);
+                mAuthView.beforeLogin();
+            }else{
+                mViewModel.loginWhenOnline.set(true);
             }
-        });
+        }else{
+            mViewModel.loginWhenOnline.set(false);
+        }
     }
 
     @Override

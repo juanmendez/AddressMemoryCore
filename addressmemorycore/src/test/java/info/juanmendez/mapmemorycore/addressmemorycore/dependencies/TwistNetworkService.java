@@ -5,8 +5,10 @@ import org.mockito.Mockito;
 
 import info.juanmendez.addressmemorycore.dependencies.NetworkService;
 import info.juanmendez.addressmemorycore.dependencies.QuickResponse;
+import io.reactivex.functions.Consumer;
 
 import static org.mockito.Matchers.any;
+import static org.powermock.api.mockito.PowerMockito.doAnswer;
 
 /**
  * Created by juan on 1/12/18.
@@ -24,13 +26,12 @@ public class TwistNetworkService {
 
 
     private void asMocked(){
-        Mockito.doAnswer(invocation -> {
-            mQuickResponse = invocation.getArgumentAt(0, QuickResponse.class );
 
-            //notify
-            mQuickResponse.onResult( mIsConnected );
+        doAnswer(invocation -> {
+            Consumer<Boolean> response = invocation.getArgumentAt(0, Consumer.class);
+            response.accept(mIsConnected);
             return null;
-        }).when( mNetworkService ).connect( any(QuickResponse.class));
+        }).when( mNetworkService ).connect(any(Consumer.class));
 
         Mockito.doAnswer( invocation -> {
             mQuickResponse = null;

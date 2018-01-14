@@ -21,6 +21,7 @@ import info.juanmendez.addressmemorycore.vp.vpAddress.AddressViewModel;
 import info.juanmendez.addressmemorycore.vp.vpSuggest.SuggestPresenter;
 import info.juanmendez.addressmemorycore.vp.vpSuggest.SuggestView;
 import info.juanmendez.addressmemorycore.vp.vpSuggest.SuggestViewModel;
+import io.reactivex.functions.Consumer;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -169,10 +170,10 @@ public class TestingAddressServices extends TestAddressMemoryCore{
         doReturn(true).when(networkServiceMocked).isConnected();
 
         doAnswer(invocation -> {
-            QuickResponse<Boolean> response = invocation.getArgumentAt(0, Response.class);
-            response.onResult(true);
+            Consumer<Boolean> response = invocation.getArgumentAt(0, Consumer.class);
+            response.accept(true);
             return null;
-        }).when( networkServiceMocked ).connect(any(QuickResponse.class));
+        }).when( networkServiceMocked ).connect(any(Consumer.class));
 
         doReturn(true).when( addressServiceMocked ).isConnected();
 

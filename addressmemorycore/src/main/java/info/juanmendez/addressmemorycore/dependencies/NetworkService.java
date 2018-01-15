@@ -11,7 +11,6 @@ import io.reactivex.functions.Consumer;
 
 public interface NetworkService {
     boolean isConnected();
-    void reset();
     void connect(Consumer<Boolean> consumer);
     void disconnect();
 }

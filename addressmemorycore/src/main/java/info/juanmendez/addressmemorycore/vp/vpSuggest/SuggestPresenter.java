@@ -56,7 +56,6 @@ public class SuggestPresenter extends Observable.OnPropertyChangedCallback imple
         }
 
         mViewModel.addOnPropertyChangedCallback(this);
-        mNetworkService.reset();
 
         //We update addressEdited in that way we generate matching addresses.
         mNetworkService.connect(result -> {});

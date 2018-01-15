@@ -93,8 +93,6 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
             mViewModel.setAddress(  mAddressProvider.getSelectedAddress() );
         }
 
-        mNetworkService.reset();
-
         mNetworkService.connect(result ->{
             mViewModel.isOnline.set(result);
             mViewModel.notifyPropertyChanged( BR.isOnline );

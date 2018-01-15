@@ -57,6 +57,23 @@ public class TwistSyncronizer {
 
 
         doAnswer( invocation -> {
+
+            if( mException == null ){
+                mIsSynced = true;
+                return Single.just( true );
+            }else{
+                Single<Boolean> single = Single.create( emitter -> {
+                    mIsSynced = false;
+                    emitter.onError( mException );
+                });
+
+                return single;
+            }
+
+        }).when(mSyncronizer).pullFromTheCloud();
+
+
+        doAnswer( invocation -> {
            return mIsSynced;
         } ).when(mSyncronizer).isSynced();
 

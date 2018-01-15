@@ -5,14 +5,12 @@ import java.util.List;
 
 import info.juanmendez.addressmemorycore.dependencies.NetworkService;
 import info.juanmendez.addressmemorycore.dependencies.cloud.AuthService;
+import info.juanmendez.addressmemorycore.dependencies.cloud.ContentProviderService;
 import info.juanmendez.addressmemorycore.dependencies.cloud.Syncronizer;
 import info.juanmendez.addressmemorycore.modules.CloudCoreModule;
 import info.juanmendez.addressmemorycore.vp.Presenter;
-import io.reactivex.Observable;
 import io.reactivex.Single;
-import io.reactivex.SingleSource;
 import io.reactivex.disposables.CompositeDisposable;
-import timber.log.Timber;
 
 /**
  * Created by juan on 1/8/18.
@@ -26,11 +24,13 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
     private AuthService mAuthService;
     private Syncronizer mSyncronizer;
     private NetworkService mNetworkService;
+    private ContentProviderService mProviderService;
 
     public AuthPresenter(CloudCoreModule module) {
         mAuthService = module.getAuthService();
         mSyncronizer = module.getSyncronizer();
         mNetworkService = module.getNetworkService();
+        mProviderService = module.getContentProviderService();
     }
 
     @Override
@@ -43,8 +43,6 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
     public void active(String action) {
 
        mComposite = new CompositeDisposable();
-       mNetworkService.reset();
-
 
         mComposite.add( mAuthService.getObservable().subscribe(loggedIn->{
             mViewModel.loggedIn.set(loggedIn);
@@ -66,10 +64,10 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
             }
         }));
 
-        mNetworkService.connect(this::onConnect);
+        mNetworkService.connect(this::onNetworkConnection);
     }
 
-    private void onConnect( boolean connected ){
+    private void onNetworkConnection(boolean connected ){
         if( !mAuthService.isLoggedIn() ){
             if (connected) {
                 mViewModel.loginWhenOnline.set(false);

@@ -5,7 +5,7 @@ import java.util.List;
 
 import info.juanmendez.addressmemorycore.dependencies.NetworkService;
 import info.juanmendez.addressmemorycore.dependencies.cloud.AuthService;
-import info.juanmendez.addressmemorycore.dependencies.cloud.ContentProviderService;
+import info.juanmendez.addressmemorycore.dependencies.cloud.ContentProviderSyncronizer;
 import info.juanmendez.addressmemorycore.dependencies.cloud.Syncronizer;
 import info.juanmendez.addressmemorycore.modules.CloudCoreModule;
 import info.juanmendez.addressmemorycore.vp.Presenter;
@@ -24,13 +24,13 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
     private AuthService mAuthService;
     private Syncronizer mSyncronizer;
     private NetworkService mNetworkService;
-    private ContentProviderService mProviderService;
+    private ContentProviderSyncronizer mProviderSyncronizer;
 
     public AuthPresenter(CloudCoreModule module) {
         mAuthService = module.getAuthService();
         mSyncronizer = module.getSyncronizer();
         mNetworkService = module.getNetworkService();
-        mProviderService = module.getContentProviderService();
+        mProviderSyncronizer = module.getContentProviderSyncronizer();
     }
 
     @Override
@@ -42,8 +42,19 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
     @Override
     public void active(String action) {
 
-       mComposite = new CompositeDisposable();
+        mComposite = new CompositeDisposable();
 
+        /**
+         * ContentProviderSyncronizer evaluates if there is a need to import
+         * addresses from the free version app. If not, it still requires being called
+         * as it will not do anything but will emit back to continue
+         */
+        mComposite.add( mProviderSyncronizer.connect().subscribe(aBoolean -> {
+            loginState();
+        }));
+    }
+
+    private void loginState() {
         mComposite.add( mAuthService.getObservable().subscribe(loggedIn->{
             mViewModel.loggedIn.set(loggedIn);
 
@@ -56,10 +67,6 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
                 }
 
             }else{
-
-                /**
-                 * Lets clear up the session
-                 */
                 mSyncronizer.clearLocalList();
             }
         }));
@@ -84,6 +91,7 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
     public void inactive(Boolean rotated) {
 
         mNetworkService.disconnect();
+        mProviderSyncronizer.disconnect();
         mComposite.dispose();
     }
 

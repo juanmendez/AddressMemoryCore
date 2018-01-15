@@ -4,6 +4,7 @@ import io.reactivex.Single;
 
 /**
  * Created by juan on 1/14/18.
+ *
  */
 
 public class ContentProviderSyncronizer {
@@ -14,17 +15,20 @@ public class ContentProviderSyncronizer {
     }
 
     public Single<Boolean> connect(){
+
+        mService.connect();
         return Single.create(emitter -> {
 
             if( !mService.getSynced()){
 
                 mService.confirmRequiresSyncing(itRequires -> {
 
-                    if( itRequires ){
+                     if( itRequires ){
                         //if provider has records, then go ahead and sync
                         mService.confirmSyncing(done -> {
                             mService.setSynced(true);
                             emitter.onSuccess(true);
+
                         });
                     }else{
                         //if provider has no records, then don't sync
@@ -37,5 +41,10 @@ public class ContentProviderSyncronizer {
                 emitter.onSuccess(true);
             }
         });
+    }
+
+
+    public void disconnect(){
+        mService.disconnect();
     }
 }

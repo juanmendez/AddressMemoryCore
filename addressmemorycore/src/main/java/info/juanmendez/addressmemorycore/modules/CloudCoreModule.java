@@ -2,11 +2,10 @@ package info.juanmendez.addressmemorycore.modules;
 
 import android.app.Application;
 
-import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.NetworkService;
 import info.juanmendez.addressmemorycore.dependencies.cloud.AuthService;
-import info.juanmendez.addressmemorycore.dependencies.cloud.CloudSyncronizer;
 import info.juanmendez.addressmemorycore.dependencies.cloud.ContentProviderService;
+import info.juanmendez.addressmemorycore.dependencies.cloud.ContentProviderSyncronizer;
 import info.juanmendez.addressmemorycore.dependencies.cloud.Syncronizer;
 
 /**
@@ -18,7 +17,7 @@ public class CloudCoreModule{
     private AuthService mAuthService;
     private Syncronizer mSyncronizer;
     private NetworkService mNetworkService;
-    private ContentProviderService mContentProviderService;
+    private ContentProviderSyncronizer mContentProviderSyncronizer;
 
     public CloudCoreModule(Application application) {
         mApplication = application;
@@ -55,7 +54,12 @@ public class CloudCoreModule{
         return mNetworkService;
     }
 
-    public ContentProviderService getContentProviderService() {
-        return mContentProviderService;
+    public ContentProviderSyncronizer getContentProviderSyncronizer() {
+        return mContentProviderSyncronizer;
+    }
+
+    public CloudCoreModule applyContentProviderSyncronizer(ContentProviderSyncronizer providerService) {
+        mContentProviderSyncronizer = providerService;
+        return this;
     }
 }

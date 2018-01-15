@@ -14,6 +14,8 @@ public interface ContentProviderService {
     void setSynced( boolean synced );
     boolean getSynced();
 
-    void confirmRequiresSyncing(Consumer<Boolean> consumer );
-    void confirmSyncing(Consumer<Boolean> consumer);
+    void connect();
+    void disconnect();
+    void confirmRequiresSyncing(Consumer<Boolean> consumer ) throws Exception;
+    void confirmSyncing(Consumer<Boolean> consumer) throws Exception;
 }

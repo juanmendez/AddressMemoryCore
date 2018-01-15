@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import info.juanmendez.addressmemorycore.vp.vpAuth.AuthView;
+import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
-import io.reactivex.subjects.PublishSubject;
 
 /**
  * Created by juan on 1/8/18.
@@ -37,18 +37,19 @@ public class AuthService {
         });
     }
 
-    public BehaviorSubject<Boolean> getObservable() {
+    public Observable<Boolean> getObservable() {
 
         //we want to fire value initially, specially when it is false
         //in this way the observer catches the last value.
-        if( !mLoginObservable.hasObservers()){
-            mLoginObservable.onNext( isLoggedIn() );
-        }
-
-        return mLoginObservable;
+        mLoginObservable.onNext( isLoggedIn() );
+        return mLoginObservable.distinct();
     }
 
     public boolean isLoggedIn() {
         return mAuth.isLoggedIn();
+    }
+
+    public void onLoginResponse(int requestCode, int resultCode, Intent data) {
+        mLoginObservable.onNext( requestCode == FB_SESSION && resultCode == Activity.RESULT_OK );
     }
 }

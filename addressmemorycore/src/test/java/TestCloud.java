@@ -245,7 +245,7 @@ public class TestCloud extends TestAddressMemoryCore{
     }
 
     @Test
-    public void testInitialSync(){
+    public void testInitialSync() throws Exception {
 
         TwistContentProvider twistContentProvider = new TwistContentProvider( mock(ContentProviderService.class));
 
@@ -260,15 +260,19 @@ public class TestCloud extends TestAddressMemoryCore{
 
         if( !service.getSynced()){
 
-            service.confirmRequiresSyncing(itRequires -> {
-                assertTrue( itRequires );
-                if( itRequires ){
-                    service.confirmSyncing(done -> {
-                       assertTrue( done );
-                       service.setSynced(true);
-                    });
-                }
-            });
+            try {
+                service.confirmRequiresSyncing(itRequires -> {
+                    assertTrue( itRequires );
+                    if( itRequires ){
+                        service.confirmSyncing(done -> {
+                           assertTrue( done );
+                           service.setSynced(true);
+                        });
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         assertTrue(service.getSynced());
@@ -302,5 +306,45 @@ public class TestCloud extends TestAddressMemoryCore{
         syncronizer.connect().subscribe(aBoolean -> {
 
         });
+    }
+
+    @Test
+    public void testContentProviderSync(){
+        TwistContentProvider twistContentProvider = new TwistContentProvider( mock(ContentProviderService.class));
+
+        List<ShortAddress> remoteAddresses = new ArrayList<>();
+        remoteAddresses.add( new ShortAddress( ));
+        remoteAddresses.add( new ShortAddress( ));
+        remoteAddresses.add( new ShortAddress( ));
+        twistContentProvider.setRemoteAddresses( remoteAddresses );
+
+
+        ContentProviderService service = twistContentProvider.getService();
+        ContentProviderSyncronizer syncronizer = spy(new ContentProviderSyncronizer( service ));
+        syncronizer.connect().subscribe(aBoolean -> {
+            assertTrue( service.getSynced() );
+        });
+
+
+        //this is also called..
+        syncronizer.connect().subscribe(aBoolean -> {
+            assertTrue( service.getSynced() );
+        });
+
+        //ok.. now we want to work with AuthPresenter
+        service.setSynced(false);
+        mCloudModule.applyContentProviderSyncronizer( syncronizer );
+        AuthPresenter authPresenter = new AuthPresenter( mCloudModule );
+
+        //lets see if we are doing the job right
+        AuthView view = mock( AuthView.class );
+        AuthViewModel viewModel = authPresenter.getViewModel( view );
+
+        mTwistAuth.login( view );
+        mTwistNetworkService.setConnected(true);
+        authPresenter.active(null);
+
+        assertTrue( service.getSynced() );
+        verify( view, times(2) ).afterLogin();
     }
 }

@@ -55,10 +55,6 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
         mComposite.add( mProviderSyncronizer.connect().subscribe((Boolean synced) -> {
 
             if( synced ){
-                /**
-                 * Let the user know we have synced his free app into the paid app.
-                 */
-                mViewModel.notifySyncing.set(AuthViewModel.SYNC_NOTIFICATION);
 
                 /**
                  * User will confirm she read the message, and then continue through the login process
@@ -71,6 +67,12 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
                         }
                     }
                 });
+
+                /**
+                 * Let the user know we have synced his free app into the paid app.
+                 */
+                mViewModel.notifySyncing.set(AuthViewModel.SYNC_NOTIFICATION);
+
             }else{
                 loginState();
             }
@@ -119,7 +121,7 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
         mComposite.clear();
 
         if( mCallBack != null ){
-            mViewModel.removeOnPropertyChangedCallback( mCallBack );
+            mViewModel.notifySyncing.removeOnPropertyChangedCallback( mCallBack );
             mCallBack = null;
         }
     }

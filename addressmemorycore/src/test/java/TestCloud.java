@@ -27,6 +27,7 @@ import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TwistNetwork
 import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TwistSyncronizer;
 import io.reactivex.disposables.CompositeDisposable;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
@@ -241,7 +242,7 @@ public class TestCloud extends TestAddressMemoryCore{
         assertFalse( viewModel.loginWhenOnline.get()  );
 
         //there is a problem with DroidNetworkService not executing the first time
-        verify( view, times(2)).afterLogin();
+        verify( view ).afterLogin();
     }
 
     @Test
@@ -264,9 +265,8 @@ public class TestCloud extends TestAddressMemoryCore{
                 service.confirmRequiresSyncing(itRequires -> {
                     assertTrue( itRequires );
                     if( itRequires ){
-                        service.confirmSyncing(done -> {
-                           assertTrue( done );
-                           service.setSynced(true);
+                        service.confirmSyncing(updates -> {
+                           service.setSynced(updates>0);
                         });
                     }
                 });
@@ -289,9 +289,8 @@ public class TestCloud extends TestAddressMemoryCore{
             service.confirmRequiresSyncing(itRequires -> {
                 assertFalse( itRequires );
                 if( itRequires ){
-                    service.confirmSyncing(done -> {
-                        service.setSynced(true);
-                        assertTrue( done );
+                    service.confirmSyncing(updates -> {
+                        service.setSynced(updates>0);
                     });
                 }else{
                     service.setSynced(true);
@@ -330,6 +329,21 @@ public class TestCloud extends TestAddressMemoryCore{
         syncronizer.connect().subscribe(aBoolean -> {
             assertTrue( service.getSynced() );
         });
+    }
+
+    @Test
+    public void testPresenterWhenSyncing(){
+        TwistContentProvider twistContentProvider = new TwistContentProvider( mock(ContentProviderService.class));
+
+        List<ShortAddress> remoteAddresses = new ArrayList<>();
+        remoteAddresses.add( new ShortAddress( ));
+        remoteAddresses.add( new ShortAddress( ));
+        remoteAddresses.add( new ShortAddress( ));
+        twistContentProvider.setRemoteAddresses( remoteAddresses );
+
+
+        ContentProviderService service = twistContentProvider.getService();
+        ContentProviderSyncronizer syncronizer = spy(new ContentProviderSyncronizer( service ));
 
         //ok.. now we want to work with AuthPresenter
         service.setSynced(false);
@@ -340,11 +354,35 @@ public class TestCloud extends TestAddressMemoryCore{
         AuthView view = mock( AuthView.class );
         AuthViewModel viewModel = authPresenter.getViewModel( view );
 
-        mTwistAuth.login( view );
         mTwistNetworkService.setConnected(true);
+
+        mTwistAuth.login( view );
         authPresenter.active(null);
 
         assertTrue( service.getSynced() );
+        verify( view, times(0) ).afterLogin();
+        assertEquals( viewModel.notifySyncing.get(), AuthViewModel.SYNC_NOTIFICATION );
+
+        //ok now the view is updated with these notification
+        //user is going to click yes, he understand syncing happened
+        //next is to  says yes, and move on
+        viewModel.notifySyncing.set( AuthViewModel.SYNC_CONFIRMED );
+        verify( view, times(1) ).afterLogin();
+
+        //ok, user comes back
+        authPresenter.inactive(true);
+        authPresenter.active( null );
+
+        //this time there is no need to sync, so it goes straight to loginState
         verify( view, times(2) ).afterLogin();
+        authPresenter.inactive(true);
+
+        //lets rewind, and we don't have now any remote data
+        //so it's suppose to go straight to login
+        twistContentProvider.setRemoteAddresses( new ArrayList<>());
+        service.setSynced( false );
+        authPresenter.active(null);
+        verify( view, times(3) ).afterLogin();
+        authPresenter.inactive(true);
     }
 }

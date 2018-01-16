@@ -49,10 +49,6 @@ public class TwistNetworkService {
 
     public void setConnected(boolean connected) {
         mIsConnected = connected;
-
-        if( mQuickResponse != null ){
-            mQuickResponse.onResult( mIsConnected );
-        }
     }
 
     public NetworkService getNetworkService() {

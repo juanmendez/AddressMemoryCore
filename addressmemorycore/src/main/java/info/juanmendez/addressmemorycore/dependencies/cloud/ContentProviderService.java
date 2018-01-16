@@ -16,6 +16,10 @@ public interface ContentProviderService {
 
     void connect();
     void disconnect();
+
+    //subscribe and be notified if there is syncing required
     void confirmRequiresSyncing(Consumer<Boolean> consumer ) throws Exception;
-    void confirmSyncing(Consumer<Boolean> consumer) throws Exception;
+
+    //subscribe and be notified about number of records added
+    void confirmSyncing(Consumer<Integer> consumer) throws Exception;
 }

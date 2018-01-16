@@ -25,7 +25,12 @@ public class TwistContentProvider {
 
     public TwistContentProvider(ContentProviderService service) {
         mService = service;
-        asMocked();
+
+        try {
+            asMocked();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void setRemoteAddresses(List<ShortAddress> remoteAddresses) {
@@ -54,7 +59,7 @@ public class TwistContentProvider {
         this.mSynced[0] = synced;
     }
 
-    private void asMocked(){
+    private void asMocked() throws Exception {
 
         doAnswer(invocation -> {
 
@@ -72,15 +77,23 @@ public class TwistContentProvider {
 
         doAnswer(invocation -> {
 
-            Consumer<Boolean> consumer = invocation.getArgumentAt(0, Consumer.class);
+            Consumer<Integer> consumer = invocation.getArgumentAt(0, Consumer.class);
+            int updates = 0;
 
             if( !mService.getSynced() ) {
                 for (ShortAddress address : mRemoteAddresses) {
-                    mLocalAddresses.add(address);
+
+                    /**
+                     * this is a great opportunity to ensure we only add new addresses.. :)
+                     */
+                    if( !mLocalAddresses.contains(address)){
+                        mLocalAddresses.add(address);
+                        updates++;
+                    }
                 }
             }
 
-            consumer.accept(true);
+            consumer.accept(updates);
             return null;
         }).when( mService ).confirmSyncing(any(Consumer.class));
 

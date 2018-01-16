@@ -1,5 +1,8 @@
 package info.juanmendez.addressmemorycore.vp.vpAuth;
 
+import android.databinding.Observable;
+import android.databinding.Observable.OnPropertyChangedCallback;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +12,7 @@ import info.juanmendez.addressmemorycore.dependencies.cloud.ContentProviderSyncr
 import info.juanmendez.addressmemorycore.dependencies.cloud.Syncronizer;
 import info.juanmendez.addressmemorycore.modules.CloudCoreModule;
 import info.juanmendez.addressmemorycore.vp.Presenter;
-import io.reactivex.Single;
+import io.reactivex.Completable;
 import io.reactivex.disposables.CompositeDisposable;
 
 /**
@@ -25,12 +28,14 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
     private Syncronizer mSyncronizer;
     private NetworkService mNetworkService;
     private ContentProviderSyncronizer mProviderSyncronizer;
+    private OnPropertyChangedCallback mCallBack;
 
     public AuthPresenter(CloudCoreModule module) {
         mAuthService = module.getAuthService();
         mSyncronizer = module.getSyncronizer();
         mNetworkService = module.getNetworkService();
         mProviderSyncronizer = module.getContentProviderSyncronizer();
+        mComposite = new CompositeDisposable();
     }
 
     @Override
@@ -42,15 +47,33 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
     @Override
     public void active(String action) {
 
-        mComposite = new CompositeDisposable();
-
         /**
          * ContentProviderSyncronizer evaluates if there is a need to import
          * addresses from the free version app. If not, it still requires being called
          * as it will not do anything but will emit back to continue
          */
-        mComposite.add( mProviderSyncronizer.connect().subscribe(aBoolean -> {
-            loginState();
+        mComposite.add( mProviderSyncronizer.connect().subscribe((Boolean synced) -> {
+
+            if( synced ){
+                /**
+                 * Let the user know we have synced his free app into the paid app.
+                 */
+                mViewModel.notifySyncing.set(AuthViewModel.SYNC_NOTIFICATION);
+
+                /**
+                 * User will confirm she read the message, and then continue through the login process
+                 */
+                mViewModel.notifySyncing.addOnPropertyChangedCallback( mCallBack = new OnPropertyChangedCallback() {
+                    @Override
+                    public void onPropertyChanged(Observable sender, int brID) {
+                        if( mViewModel.notifySyncing.get() == AuthViewModel.SYNC_CONFIRMED){
+                            loginState();
+                        }
+                    }
+                });
+            }else{
+                loginState();
+            }
         }));
     }
 
@@ -66,7 +89,8 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
                     mAuthView.afterLogin();
                 }
 
-            }else{
+            }else if(mSyncronizer.isSynced()){
+                //clear only if already synced
                 mSyncronizer.clearLocalList();
             }
         }));
@@ -92,21 +116,26 @@ public class AuthPresenter implements Presenter<AuthViewModel,AuthView> {
 
         mNetworkService.disconnect();
         mProviderSyncronizer.disconnect();
-        mComposite.dispose();
+        mComposite.clear();
+
+        if( mCallBack != null ){
+            mViewModel.removeOnPropertyChangedCallback( mCallBack );
+            mCallBack = null;
+        }
     }
 
     private void trySyncing(){
-        List<Single<Boolean>> observables = new ArrayList<>();
+        List<Completable> observables = new ArrayList<>();
 
         //append only if user has never pushed all elements before to the cloud
         if( !mSyncronizer.isSynced() ){
-            observables.add( mSyncronizer.pushToTheCloud() );
+            observables.add( Completable.fromSingle(mSyncronizer.pushToTheCloud()) );
         }
 
         //when user logs in, we need to recover all the data
-        observables.add( mSyncronizer.pullFromTheCloud() );
+        observables.add( Completable.fromSingle(mSyncronizer.pullFromTheCloud()) );
 
-        Single.concat( observables).subscribe( aBoolean -> {
+        Completable.concat( observables).subscribe(() -> {
             mSyncronizer.setSynced( true );
             mAuthView.afterLogin();
         });

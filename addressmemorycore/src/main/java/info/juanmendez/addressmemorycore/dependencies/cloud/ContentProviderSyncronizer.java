@@ -21,28 +21,32 @@ public class ContentProviderSyncronizer {
 
             if( !mService.getSynced()){
 
+                /**
+                 * If it requires syncing, then sync, otherwise notify false.
+                 * If after syncing, there were no updates made, then notify false.
+                 */
                 mService.confirmRequiresSyncing(itRequires -> {
 
                      if( itRequires ){
+
                         //if provider has records, then go ahead and sync
-                        mService.confirmSyncing(done -> {
+                        mService.confirmSyncing(updates -> {
                             mService.setSynced(true);
-                            emitter.onSuccess(true);
+                            emitter.onSuccess(updates>0);
 
                         });
                     }else{
                         //if provider has no records, then don't sync
                         mService.setSynced(true);
-                        emitter.onSuccess(true);
+                        emitter.onSuccess(false);
                     }
                 });
             }else{
                 //previously synced, no need to wait then
-                emitter.onSuccess(true);
+                emitter.onSuccess(false);
             }
         });
     }
-
 
     public void disconnect(){
         mService.disconnect();

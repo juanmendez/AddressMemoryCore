@@ -9,4 +9,5 @@ import info.juanmendez.addressmemorycore.vp.FragmentNav;
  */
 
 public interface AddressesView extends FragmentNav {
+    void notifyAddressLimit();
 }

@@ -5,6 +5,7 @@ import android.databinding.Observable;
 import info.juanmendez.addressmemorycore.BR;
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
+import info.juanmendez.addressmemorycore.models.AppConfig;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.modules.AddressCoreModule;
 import info.juanmendez.addressmemorycore.utils.AddressUtils;
@@ -26,18 +27,21 @@ public class AddressesPresenter extends Observable.OnPropertyChangedCallback imp
     public static final String ADDRESSES_TAG = "addressesView";
     private boolean mLastRotated = false;
     private AddressesViewModel mViewModel;
+    private AddressesView mAddressesView;
+    private AppConfig mAppConfig;
 
 
     public AddressesPresenter( AddressCoreModule module ) {
 
         mAddressProvider = module.getAddressProvider();
         mNavigationService = module.getNavigationService();
-
+        mAppConfig = module.getAppConfig();
         mViewModel = new AddressesViewModel();
     }
 
     @Override
     public AddressesViewModel getViewModel(AddressesView view) {
+        mAddressesView = view;
         return mViewModel;
     }
 
@@ -72,10 +76,27 @@ public class AddressesPresenter extends Observable.OnPropertyChangedCallback imp
     }
 
     public void requestNewAddress() {
-        ShortAddress newAddress = new ShortAddress();
-        mAddressProvider.selectAddress( newAddress );
-        mViewModel.setSelectedAddress( newAddress );
-        mNavigationService.request(AddressPresenter.ADDDRESS_EDIT_TAG);
+
+        boolean allowNewAddress = false;
+
+        if( mAppConfig.getFlavor().equals( AppConfig.LITE ) ){
+
+            allowNewAddress = mAddressProvider.countAddresses() < mAppConfig.getAddressLimit();
+
+            if( !allowNewAddress ){
+                mAddressesView.notifyAddressLimit();
+            }
+
+        }else if( mAppConfig.getFlavor().equals( AppConfig.PRO )){
+            allowNewAddress = true;
+        }
+
+        if( allowNewAddress ){
+            ShortAddress newAddress = new ShortAddress();
+            mAddressProvider.selectAddress( newAddress );
+            mViewModel.setSelectedAddress( newAddress );
+            mNavigationService.request(AddressPresenter.ADDDRESS_EDIT_TAG);
+        }
     }
 
     @Override

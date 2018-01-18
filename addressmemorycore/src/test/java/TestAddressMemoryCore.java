@@ -7,6 +7,7 @@ import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.dependencies.NetworkService;
 import info.juanmendez.addressmemorycore.dependencies.PhotoService;
 import info.juanmendez.addressmemorycore.dependencies.WidgetService;
+import info.juanmendez.addressmemorycore.models.AppConfig;
 import info.juanmendez.addressmemorycore.modules.AddressCoreModule;
 import info.juanmendez.mapmemorycore.addressmemorycore.dependencies.TestAddressProvider;
 
@@ -20,7 +21,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
  */
 
 public class TestAddressMemoryCore {
-    AddressCoreModule coreModule;
+    protected AddressCoreModule coreModule;
 
     public TestAddressMemoryCore(){
 
@@ -37,6 +38,7 @@ public class TestAddressMemoryCore {
                 .applyNavigationService( mock(NavigationService.class)  )
                 .applyNetworkService( mock( NetworkService.class ) )
                 .applyPhotoService( mock( PhotoService.class ) )
-                .applyWidgetService( mock(WidgetService.class) );
+                .applyWidgetService( mock(WidgetService.class) )
+                .applyAppConfig( new AppConfig() );
     }
 }

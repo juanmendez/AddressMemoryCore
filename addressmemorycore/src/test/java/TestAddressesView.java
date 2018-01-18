@@ -1,12 +1,12 @@
 import org.junit.Before;
 import org.junit.Test;
-import org.powermock.reflect.Whitebox;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import info.juanmendez.addressmemorycore.dependencies.AddressProvider;
 import info.juanmendez.addressmemorycore.dependencies.NavigationService;
+import info.juanmendez.addressmemorycore.models.AppConfig;
 import info.juanmendez.addressmemorycore.models.ShortAddress;
 import info.juanmendez.addressmemorycore.utils.AddressUtils;
 import info.juanmendez.addressmemorycore.vp.FragmentNav;
@@ -49,8 +49,7 @@ public class TestAddressesView extends TestAddressMemoryCore{
         mAddressView = mock( AddressesView.class );
         mPresenter = spy(new AddressesPresenter(coreModule));
 
-        //we want to spy the mViewModel, so we get it, and put it back as a spied one
-        mViewModel = Whitebox.getInternalState(mPresenter, "mViewModel");
+        mViewModel = mPresenter.getViewModel( mAddressView );
 
         mNavigationService = coreModule.getNavigationService();
         mProvider = coreModule.getAddressProvider();
@@ -112,6 +111,30 @@ public class TestAddressesView extends TestAddressMemoryCore{
         verify(mNavigationService).request( eq(AddressPresenter.ADDDRESS_EDIT_TAG) );
         assertEquals( mProvider.getSelectedAddress().getAddressId(), 0 );
         mPresenter.inactive(true);
+    }
+
+    @Test
+    public void testFreeAddressLimit(){
+        coreModule.getAppConfig().setFlavor( AppConfig.LITE );
+        coreModule.getAppConfig().setAddressLimit( mAddresses.size() );
+
+        mPresenter.active(null);
+
+        //going above
+        mPresenter.requestNewAddress();
+        verify( mAddressView, times(1) ).notifyAddressLimit();
+
+        //going below
+        coreModule.getAppConfig().setAddressLimit( mAddresses.size() + 1 );
+        mPresenter.requestNewAddress();
+        verify( mAddressView, times(1) ).notifyAddressLimit();
+
+
+        //using pro flavor
+        coreModule.getAppConfig().setFlavor( AppConfig.PRO);
+        coreModule.getAppConfig().setAddressLimit( 1 );
+        mPresenter.requestNewAddress();
+        verify( mAddressView, times(1) ).notifyAddressLimit();
     }
 
     //<editor-fold desc="utils">

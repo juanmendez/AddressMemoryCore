@@ -219,19 +219,8 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
         if( address.getCommute().getType().equals(Commute.UNDECIDED))
             return;
 
-        address.setTimesVisited( address.getTimesVisited()+1);
-
-        mAddressProvider.updateAddressAsync(address, new Response<ShortAddress>() {
-            @Override
-            public void onError(Exception exception) {
-
-            }
-
-            @Override
-            public void onResult(ShortAddress result) {
-                response.onResult( AddressUtils.fromAddress( mViewModel.getAddress() ) );
-            }
-        });
+        //we are removing updating by visits. this may come handy in the next phase
+        response.onResult( AddressUtils.fromAddress( mViewModel.getAddress() ) );
     }
 
     /**

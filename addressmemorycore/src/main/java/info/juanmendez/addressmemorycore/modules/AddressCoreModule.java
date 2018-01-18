@@ -8,6 +8,7 @@ import info.juanmendez.addressmemorycore.dependencies.NavigationService;
 import info.juanmendez.addressmemorycore.dependencies.NetworkService;
 import info.juanmendez.addressmemorycore.dependencies.PhotoService;
 import info.juanmendez.addressmemorycore.dependencies.WidgetService;
+import info.juanmendez.addressmemorycore.models.AppConfig;
 
 /**
  * Created by Juan Mendez on 11/12/2017.
@@ -18,6 +19,7 @@ import info.juanmendez.addressmemorycore.dependencies.WidgetService;
 public class AddressCoreModule {
 
     Application mApplication;
+    AppConfig mAppConfig;
     AddressProvider mAddressProvider;
     AddressService mAddressService;
     PhotoService mPhotoService;
@@ -85,6 +87,15 @@ public class AddressCoreModule {
 
     public AddressCoreModule applyWidgetService(WidgetService widgetService) {
         mWidgetService = widgetService;
+        return this;
+    }
+
+    public AppConfig getAppConfig() {
+        return mAppConfig;
+    }
+
+    public AddressCoreModule applyAppConfig(AppConfig appConfig) {
+        mAppConfig = appConfig;
         return this;
     }
 }

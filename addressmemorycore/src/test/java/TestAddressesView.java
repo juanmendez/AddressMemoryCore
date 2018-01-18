@@ -47,6 +47,9 @@ public class TestAddressesView extends TestAddressMemoryCore{
     public void before() throws Exception {
 
         mAddressView = mock( AddressesView.class );
+
+        //start with pro version...
+        coreModule.getAppConfig().setFlavor( AppConfig.PRO );
         mPresenter = spy(new AddressesPresenter(coreModule));
 
         mViewModel = mPresenter.getViewModel( mAddressView );

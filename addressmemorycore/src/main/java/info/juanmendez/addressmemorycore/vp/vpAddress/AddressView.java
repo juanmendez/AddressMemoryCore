@@ -1,5 +1,6 @@
 package info.juanmendez.addressmemorycore.vp.vpAddress;
 
+import info.juanmendez.addressmemorycore.dependencies.QuickResponse;
 import info.juanmendez.addressmemorycore.vp.FragmentNav;
 
 /**
@@ -10,4 +11,5 @@ import info.juanmendez.addressmemorycore.vp.FragmentNav;
 public interface AddressView extends FragmentNav {
     void iToast(String message );
     void eToast(String message );
+    void checkLocationPermission(QuickResponse<Boolean> response );
 }

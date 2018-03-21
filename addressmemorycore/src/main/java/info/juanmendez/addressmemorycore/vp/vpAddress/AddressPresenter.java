@@ -228,9 +228,11 @@ public class AddressPresenter extends Observable.OnPropertyChangedCallback
      * checks if there is connection and open up addressSuggestFragment
      */
     public void requestAddressSuggestion(){
-        if( mAddressService.isConnected() && mNetworkService.isConnected() ){
-            mNavigationService.request(SuggestPresenter.SUGGEST_VIEW );
-        }
+        mView.checkLocationPermission( granted -> {
+            if( granted && mAddressService.isConnected() && mNetworkService.isConnected() ){
+                mNavigationService.request(SuggestPresenter.SUGGEST_VIEW );
+            }
+        });
     }
 
     @Override

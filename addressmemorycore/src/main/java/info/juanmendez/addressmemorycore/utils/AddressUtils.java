@@ -28,15 +28,14 @@ public class AddressUtils {
         String uriString;
 
         if( commute.getType().equals(Commute.BUS)){
-            uriString = String.format("https://www.google.com/maps/dir/?api=1&destination=%s %s", address.getAddress1(), address.getAddress2() );
+            uriString = String.format("%s %s", address.getAddress1(), address.getAddress2() );
             uriString += "&travelmode=transit";
+            uriString = String.format( "https://www.google.com/maps/dir/?api=1&destination=%s", Uri.encode( uriString));
 
             mapIntent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(uriString));
             mapIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED|Intent.FLAG_ACTIVITY_NEW_DOCUMENT|Intent.FLAG_ACTIVITY_NEW_TASK);
         }else{
             uriString = String.format("%s %s", address.getAddress1(), address.getAddress2() );
-            uriString = Uri.encode( uriString );
-            uriString = String.format( "google.navigation:q=%s&mode=%s", uriString, commute.getType() );
 
             if( commute.getType().equals(Commute.DRIVING)){
                 if( commute.getAvoidTolls() ){
@@ -49,7 +48,9 @@ public class AddressUtils {
             }
 
             uriString = String.format( "%s&time=%s", uriString, System.currentTimeMillis() );
+            uriString = String.format( "%s&mode=%s", uriString, commute.getType() );
 
+            uriString = String.format( "google.navigation:q=%s", Uri.encode( uriString ) );
             Uri gmnIntentUri = Uri.parse( uriString );
 
             mapIntent = new Intent( Intent.ACTION_VIEW, gmnIntentUri );
